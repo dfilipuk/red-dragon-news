@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="{{ asset('public/bootstrap/css/bootstrap.min.css') }}" >
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.red-indigo.min.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="{{ asset('public/css/style.css') }}">
+        <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        <script src="{{ asset('public/js/jquery-3.2.1.min.js') }}"></script>
+        <script src="{{ asset('public/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('public/mdl/material.min.js') }}"></script>
     </body>
 </html>

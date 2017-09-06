@@ -1,0 +1,177 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Red Dragon news
+{% endblock %}
+
+{% block body %}
+    <div class="layout-transparent mdl-layout mdl-js-layout">
+        <header class="mdl-layout__header mdl-layout__header--transparent">
+            <div class="mdl-layout__header-row">
+                <div class="mdl-layout-spacer"></div>
+                <nav class="mdl-navigation">
+                    <button class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Subscribe</button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Logout</button>
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">Title</span>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="">Link</a>
+                <a class="mdl-navigation__link" href="">Link</a>
+                <a class="mdl-navigation__link" href="">Link</a>
+                <a class="mdl-navigation__link" href="">Link</a>
+            </nav>
+        </div>
+        <main class="mdl-layout__content">
+            <div class="container-fluid ">
+                <div class="row">
+                    <div class="col-sm-8 col-sm-offset-2">
+                        <div class="layout-background-logo mdl-card mdl-shadow--2dp">
+                            <div class="row">
+                                <div class="col-sm-4 text-center">
+                                    <img src="{{ asset('public/img/logo.png') }}" class="logo">
+                                </div>
+                                <div class="col-sm-8 margin-top-15">
+                                    <form class="search-input">
+                                        <input type="text">
+                                        <span class="highlight"></span>
+                                        <span class="bar"></span>
+                                        <label>Search something...</label>
+                                        <span class="glyphicon glyphicon-search"></span>
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-8 col-sm-offset-2 margin-top-20">
+                        <div class="layout-background mdl-card mdl-shadow--2dp">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a href="#" class="news-href">
+                                        <div class="row">
+                                            <div class="col-sm-4 text-center margin-top-20">
+                                                <img src="{{ asset('public/img/1.jpg') }}" class="news-small-picture">
+                                            </div>
+                                            <div class="col-sm-7">
+                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
+                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
+                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
+                                                    wefgwegwergrgwergwergwerg
+                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
+                                                    qergqergqergqergqergerqergqergqergqergq
+                                                    ergergqergqergqergqergergqergqergr.....</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-sm-10 col-sm-offset-1">
+                                    <hr class="news-hr" />
+                                </div>
+                                <div class="col-sm-12">
+                                    <a href="#" class="news-href">
+                                        <div class="row ">
+                                            <div class="col-sm-7 col-sm-offset-1">
+                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
+                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
+                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
+                                                    wefgwegwergrgwergwergwerg
+                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
+                                                    qergqergqergqergqergerqergqergqergqergq
+                                                    ergergqergqergqergqergergqergqergr.....</p>
+                                            </div>
+                                            <div class="col-sm-4 text-center margin-top-20">
+                                                <img src="{{ asset('public/img/2.jpg') }}" class="news-small-picture">
+                                            </div>
+                                        </div>
+                                        <a/>
+                                </div>
+                                <div class="col-sm-10 col-sm-offset-1">
+                                    <hr class="news-hr" />
+                                </div>
+                                <div class="col-sm-12">
+                                    <a href="#" class="news-href">
+                                        <div class="row">
+                                            <div class="col-sm-4 text-center margin-top-20">
+                                                <img src="{{ asset('public/img/3.jpg') }}" class="news-small-picture">
+                                            </div>
+                                            <div class="col-sm-7">
+                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
+                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
+                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
+                                                    wefgwegwergrgwergwergwerg
+                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
+                                                    qergqergqergqergqergerqergqergqergqergq
+                                                    ergergqergqergqergqergergqergqergr.....</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-sm-10 col-sm-offset-1">
+                                    <hr class="news-hr" />
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <a href="#" class="news-href">
+                                        <div class="row ">
+                                            <div class="col-sm-7 col-sm-offset-1">
+                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
+                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
+                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
+                                                    wefgwegwergrgwergwergwerg
+                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
+                                                    qergqergqergqergqergerqergqergqergqergq
+                                                    ergergqergqergqergqergergqergqergr.....</p>
+                                            </div>
+                                            <div class="col-sm-4 text-center margin-top-20">
+                                                <img src="{{ asset('public/img/1.jpg') }}" class="news-small-picture">
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-sm-10 col-sm-offset-1">
+                                    <hr class="news-hr" />
+                                </div>
+                                <div class="col-sm-12">
+                                    <a href="#" class="news-href">
+                                        <div class="row">
+                                            <div class="col-sm-4 text-center margin-top-20">
+                                                <img src="{{ asset('public/img/2.jpg') }}" class="news-small-picture">
+                                            </div>
+                                            <div class="col-sm-7">
+                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
+                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
+                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
+                                                    wefgwegwergrgwergwergwerg
+                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
+                                                    qergqergqergqergqergerqergqergqergqergq
+                                                    ergergqergqergqergqergergqergqergr.....</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-sm-10 col-sm-offset-1 margin-bottom-50">
+                                    <hr class="news-hr" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="mdl-mini-footer margin-top-20">
+                <div class="row footer-row">
+                    <div class="col-sm-12">
+                        <h5 class="text-center footer-h4">RedDragon News &#169; 2017</h5>
+                    </div>
+                </div>
+
+            </footer>
+        </main>
+    </div>
+{% endblock %}
+
