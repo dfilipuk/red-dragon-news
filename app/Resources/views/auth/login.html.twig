@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Login
+    Sign In
 {% endblock %}
 
 {% block body %}
@@ -10,6 +10,7 @@
             <div class="col-sm-4 col-sm-offset-4 text-center">
                 <img src="{{ asset('public/img/logo.png') }}" class="auth-logo">
             </div>
+
             <div class="col-sm-4 col-sm-offset-4">
                 <div class="card-square mdl-card mdl-shadow--2dp">
                     <div class="mdl-card__title mdl-card--expand mdl-card--border row first-color">
@@ -23,17 +24,18 @@
                         </div>
 
                     </div>
-                    <form action="#">
+
+                    <form action="{{ path('signin') }}" method="post">
                         <div class="row auth-inputs margin-escape">
                             <div class="col-sm-6 col-sm-offset-3">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input class="mdl-textfield__input" type="email" id="e-mail">
-                                    <label class="mdl-textfield__label" for="e-mail">E-mail</label>
+                                    <input class="mdl-textfield__input" type="email" id="email" name="_username" value="{{ last_username }}">
+                                    <label class="mdl-textfield__label" for="email">E-mail</label>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-sm-offset-3">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input class="mdl-textfield__input" type="password" id="password">
+                                    <input class="mdl-textfield__input" type="password" id="password" name="_password">
                                     <label class="mdl-textfield__label" for="password">Password</label>
                                 </div>
                             </div>
@@ -47,6 +49,11 @@
                     </form>
                     <h6 class="text-center">Forgot your password? <a href="#">Reset password</a></h6>
                 </div>
+                {% if error %}
+                    <h6 class="text-center alert alert-danger">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </h6>
+                {% endif %}
             </div>
         </div>
     </div>
