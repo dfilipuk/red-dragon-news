@@ -43,7 +43,7 @@ class SecurityController extends Controller
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->redirectToRoute('signin');
+            return $this->render(':auth:register_finish.html.twig', ['email' => $user->getEmail()]);
         }
 
         return $this->render('auth/register.html.twig', [
