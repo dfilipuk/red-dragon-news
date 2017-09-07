@@ -7,6 +7,10 @@ a:visited {
 a:active {
 	color: rgb(83,109,254); 
 }
+
+html, body {
+  font-family: 'Roboto', 'Helvetica', sans-serif;
+}
 body{
 	background-color: #EEEEEE ;
 }
@@ -25,17 +29,26 @@ body{
 
 .news-href:visited {
   color: black;
+  text-decoration: none;
 }
 .news-href:active {
   color: black;
+  text-decoration: none;
 }
+
+.news-href:hover{
+  color: black;
+  text-decoration: none;
+}
+
 .news-href{
   color: black;
+  text-decoration: none;
 }
 
 .auth-logo{
   width: 550px;
-  height: 25  0px;
+  height: 250px;
 }
 
 .card-square.mdl-card {
@@ -62,9 +75,6 @@ body{
 }
 
 
-html, body {
-  font-family: 'Roboto', 'Helvetica', sans-serif;
-}
 .layout .mdl-layout__header .mdl-layout__drawer-button {
   color: rgba(0, 0, 0, 0.54);
 }

@@ -5,29 +5,40 @@
 {% endblock %}
 
 {% block body %}
-    <div class="layout-transparent mdl-layout mdl-js-layout">
+    <div class="layout-transparent mdl-layout mdl-js-layout wrapper">
         <header class="mdl-layout__header mdl-layout__header--transparent">
             <div class="mdl-layout__header-row">
+                <button class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Subscribe</button>
+
+
                 <div class="mdl-layout-spacer"></div>
                 <nav class="mdl-navigation">
-                    <button class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Subscribe</button>
-                    <a href="{{ path('signout') }}">
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Logout</button>
-                    </a>
+                    <div class="avatar-dropdown">
+                        <span class="mdl-layout-title ">{{ app.user.email }}</span>
+                        <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                            <i class="material-icons" role="presentation">arrow_drop_down</i>
+                            <span class="visuallyhidden">Accounts</span>
+                        </button>
+                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                            {% if is_granted('ROLE_MANAGER') %}
+                                <li class="mdl-menu__item"><a class="news-href" href="#">Admin panel</a></li>
+                            {% endif %}
+                            <li class="mdl-menu__item" ><a class="news-href" href="{{ path('signout') }}" >Sign out</a></li>
+                        </ul>
+                    </div>
                 </nav>
             </div>
         </header>
         <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title">{{ app.user.email }}</span>
+            <div class="mdl-layout-title">Categories</div>
             <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="">Link</a>
-                <a class="mdl-navigation__link" href="">Link</a>
-                <a class="mdl-navigation__link" href="">Link</a>
-                <a class="mdl-navigation__link" href="">Link</a>
+                {% for category in categories %}
+                    <a class="mdl-navigation__link news-href" href="#">{{ category.name }}</a>
+                {% endfor %}
             </nav>
         </div>
         <main class="mdl-layout__content">
-            <div class="container-fluid ">
+            <div class="container-fluid main-container">
                 <div class="row">
                     <div class="col-sm-8 col-sm-offset-2">
                         <div class="layout-background-logo mdl-card mdl-shadow--2dp">
