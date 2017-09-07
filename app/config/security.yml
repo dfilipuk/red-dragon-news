@@ -43,3 +43,6 @@ security:
                 path: /signout
                 target: /signin
 
+    access_control:
+            - { path: ^/admin, roles: ROLE_MANAGER }
+            - { path: ^/main, roles: ROLE_USER }
