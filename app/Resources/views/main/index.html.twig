@@ -84,6 +84,10 @@
                                     </div>
                                     {% set i = i + 1 %}
                                 {% endfor %}
+
+                                <div class="navigation text-center">
+                                    {{ knp_pagination_render(news) }}
+                                </div>
                             </div>
                         </div>
                     </div>
