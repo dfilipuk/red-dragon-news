@@ -72,7 +72,11 @@
                                             <div class="row">
                                                 {% if (i%2==0) %}
                                                     <div class="col-sm-4 text-center margin-top-20">
-                                                        <img src="{{ asset('public/img/3.jpg') }}" class="news-small-picture">
+                                                        {% if one_news.picture is null %}
+                                                            <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
+                                                        {% else %}
+                                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                                        {% endif %}
                                                     </div>
                                                     <div class="col-sm-7">
                                                         <h4 class="news-title">{{ one_news.title }}</h4>
@@ -84,7 +88,11 @@
                                                         <p>{{ one_news.text|sliceAdvanced }}</p>
                                                     </div>
                                                     <div class="col-sm-4 text-center margin-top-20">
-                                                        <img src="{{ asset('public/img/2.jpg') }}" class="news-small-picture">
+                                                        {% if one_news.picture is null %}
+                                                            <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
+                                                        {% else %}
+                                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                                        {% endif %}
                                                     </div>
                                                 {% endif %}
                                             </div>
