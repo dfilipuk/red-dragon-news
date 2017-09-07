@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Service\NewsManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -17,8 +18,9 @@ class MainController extends Controller
     /**
      * @Route("/main/", name="home")
      */
-    public function indexAction()
+    public function indexAction(NewsManager $newsManager)
     {
-        return $this->render("main/index.html.twig");
+        $news = $newsManager->findAll();
+        return $this->render("main/index.html.twig", array('news' => $news));
     }
 }
