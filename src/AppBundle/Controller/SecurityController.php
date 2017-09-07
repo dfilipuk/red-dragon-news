@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
+use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +34,7 @@ class SecurityController extends Controller
     /**
      * @Route("/signup", name="signup")
      */
-    public function signUpAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function signUpAction(Request $request, UserManager $userManager)
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('homepage');
@@ -43,6 +44,7 @@ class SecurityController extends Controller
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $userManager->addNewUser($user);
             return $this->render(':auth:register_finish.html.twig', ['email' => $user->getEmail()]);
         }
 
