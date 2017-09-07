@@ -36,7 +36,9 @@ class User implements AdvancedUserInterface, \Serializable
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max=4096)
+     * @Assert\Length(max=4096, min=4,
+     *     minMessage="Password should be 4 and more characters",
+     *     maxMessage="Paswword should be less than 4096 characters")
      */
     private $plainPassword;
 
