@@ -9,7 +9,10 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\Article;
+use AppBundle\Entity\Category;
 use AppBundle\Service\NewsManager;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,9 +22,11 @@ class MainController extends Controller
     /**
      * @Route("/main/", name="home")
      */
-    public function indexAction(Request $request, NewsManager $newsManager)
+    public function indexAction(Request $request, EntityManager $entityManager)
     {
-        $allNews = $newsManager->findAll();
+        $newsManager = new NewsManager($this->getDoctrine()->getRepository(Article::class), $this->getDoctrine()->getRepository(Category::class));
+        $allNews = $newsManager->findAllNews();
+        $generalCategories = $newsManager->findAllGeneralCategories();
 
         $paginator  = $this->get('knp_paginator');
         $newsOnPage = $paginator->paginate(
@@ -30,6 +35,6 @@ class MainController extends Controller
             10
         );
 
-        return $this->render("main/index.html.twig", array('news' => $newsOnPage));
+        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories));
     }
 }
