@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Registration
+    Sign Up
 {% endblock %}
 
 {% block body %}
@@ -17,7 +17,9 @@
                             <h2 class="mdl-card__title-text">Hello, stranger</h2>
                         </div>
                         <div class="col-sm-3">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12">Sign in</button>
+                            <a href={{ path('signin') }}>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12">Sign in</button>
+                            </a>
                         </div>
 
                     </div>
@@ -45,7 +47,7 @@
 
                         <div class="mdl-card__actions row margin-escape">
                             <div class="col-sm-4 col-sm-offset-4">
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect col-sm-12 margin-bottom-20">Sign in</button>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect col-sm-12 margin-bottom-20">Sign up</button>
                             </div>
                         </div>
                     </form>
