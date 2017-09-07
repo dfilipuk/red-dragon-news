@@ -8,10 +8,13 @@
     <div class="layout-transparent mdl-layout mdl-js-layout">
         <header class="mdl-layout__header mdl-layout__header--transparent">
             <div class="mdl-layout__header-row">
+                <span class="mdl-layout-title">{{ app.user.email }}</span>
                 <div class="mdl-layout-spacer"></div>
                 <nav class="mdl-navigation">
                     <button class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Subscribe</button>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Logout</button>
+                    <a href="{{ path('signout') }}">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Logout</button>
+                    </a>
                 </nav>
             </div>
         </header>

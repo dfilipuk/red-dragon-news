@@ -35,5 +35,11 @@ security:
             form_login:
                 login_path: signin
                 check_path: signin
+                default_target_path: homepage
 
             provider: users_db_provider
+
+            logout:
+                path: /signout
+                target: /signin
+
