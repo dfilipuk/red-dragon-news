@@ -22,12 +22,12 @@ class MainController extends Controller
     /**
      * @Route("/main/", name="home")
      */
-    public function indexAction(Request $request, EntityManager $entityManager)
+    public function indexAction(Request $request)
     {
         $newsManager = new NewsManager($this->getDoctrine()->getRepository(Article::class), $this->getDoctrine()->getRepository(Category::class));
         $allNews = $newsManager->findAllNews();
         $generalCategories = $newsManager->findAllGeneralCategories();
-
+        //$generalCategories = $newsManager->getSortedCategories();
         $paginator  = $this->get('knp_paginator');
         $newsOnPage = $paginator->paginate(
             $allNews,
