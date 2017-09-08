@@ -9,8 +9,6 @@
         <header class="mdl-layout__header mdl-layout__header--transparent">
             <div class="mdl-layout__header-row">
                 <button class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Subscribe</button>
-
-
                 <div class="mdl-layout-spacer"></div>
                 <nav class="mdl-navigation">
                     <div class="avatar-dropdown">
@@ -21,9 +19,9 @@
                         </button>
                         <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
                             {% if is_granted('ROLE_MANAGER') %}
-                                <li class="mdl-menu__item"><a class="news-href" href="#">Admin panel</a></li>
+                                <a class="news-href" href="#"><li class="mdl-menu__item">Admin panel</li></a>
                             {% endif %}
-                            <li class="mdl-menu__item" ><a class="news-href" href="{{ path('signout') }}" >Sign out</a></li>
+                            <a class="news-href" href="{{ path('signout') }}" ><li class="mdl-menu__item" >Sign out</li></a>
                         </ul>
                     </div>
                 </nav>
@@ -33,7 +31,7 @@
             <div class="mdl-layout-title">Categories</div>
             <nav class="mdl-navigation">
                 {% for category in categories %}
-                    <a class="mdl-navigation__link news-href" href="#">{{ category.name }}</a>
+                    <a class="mdl-navigation__link news-href" href="#">{{ category.name|sliceAdvanced(40) }}</a>
                 {% endfor %}
             </nav>
         </div>
@@ -80,12 +78,12 @@
                                                     </div>
                                                     <div class="col-sm-7">
                                                         <h4 class="news-title">{{ one_news.title }}</h4>
-                                                        <p>{{ one_news.text|sliceAdvanced }}</p>
+                                                        <p>{{ one_news.text|sliceAdvanced(780) }}</p>
                                                     </div>
                                                 {% else %}
                                                     <div class="col-sm-7 col-sm-offset-1">
                                                         <h4 class="news-title">{{ one_news.title }}</h4>
-                                                        <p>{{ one_news.text|sliceAdvanced }}</p>
+                                                        <p>{{ one_news.text|sliceAdvanced(780) }}</p>
                                                     </div>
                                                     <div class="col-sm-4 text-center margin-top-20">
                                                         {% if one_news.picture is null %}
