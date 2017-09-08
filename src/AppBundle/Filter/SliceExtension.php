@@ -18,12 +18,16 @@ class SliceExtension extends \Twig_Extension
         );
     }
 
-    public function sliceFilter($text)
+    public function sliceFilter($text, int $sliceCount)
     {
-        $text = substr($text, 0, 780);
-        $text = rtrim($text, "!,.-");
-        $text = substr($text, 0, strrpos($text, ' '));
-        $text .= '...';
+        if (strlen($text) < $sliceCount){
+            $text = substr($text, 0, strlen($text));
+        } else{
+            $text = substr($text, 0, $sliceCount);
+            $text = rtrim($text, "!,.-");
+            $text = substr($text, 0, strrpos($text, ' '));
+            $text .= '...';
+        }
         return $text;
     }
 }
