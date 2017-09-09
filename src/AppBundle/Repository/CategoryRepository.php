@@ -10,7 +10,7 @@ namespace AppBundle\Repository;
  */
 class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findAllGeneralCategories()
+    public function findGeneralCategories()
     {
         return $this->getEntityManager()
             ->createQuery(

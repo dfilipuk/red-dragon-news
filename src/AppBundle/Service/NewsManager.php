@@ -8,43 +8,17 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Article;
 use AppBundle\Entity\Category;
-use AppBundle\Repository\ArticleRepository;
-use AppBundle\Repository\CategoryRepository;
+use \Doctrine\Common\Persistence\ManagerRegistry;
 
 class NewsManager
 {
+    private $doctrine;
 
-    private $newsRepository;
-    private $categoryRepository;
-
-    public function __construct(ArticleRepository $articleRepository, CategoryRepository $categoryRepository)
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $this->newsRepository = $articleRepository;
-        $this->categoryRepository = $categoryRepository;
-    }
-
-    private function checkOnNull(Category $category)
-    {
-        $parent = $category->getParent();
-        if ($parent == null){
-            return 0;
-        } else {
-            return $parent->getId();
-        }
-    }
-
-    private function sortByParentID(Category $a, Category $b)
-    {
-        $aParentID = $this->checkOnNull($a);
-        $bParentID = $this->checkOnNull($b);
-        if($aParentID == $bParentID){
-            return 0;
-        } else if($aParentID > $bParentID){
-            return -1;
-        } else {
-            return 1;
-        }
+        $this->doctrine = $doctrine;
     }
 
     private function categoriesToArray(array $categories): array
@@ -64,15 +38,15 @@ class NewsManager
         return $categoryArray;
     }
 
-    private function makeTree(array $items, int $root = 0): array
+    private function makeCategoriesTree(array $items, int $root = 0): array
     {
         $tree = [];
-        foreach($items as $item) {
+        foreach($items as $item) {;
             if($item['parent_id'] == $root && $item['id'] != $item['parent_id']) {
                 unset($items[$item['id']]);
                 $tree[$item['id']] = array(
                     $item['id'] => $item,
-                    'children' => $this->makeTree($items, $item['id'] )
+                    'children' => $this->makeCategoriesTree($items, $item['id'] )
                 );
             }
         }
@@ -82,7 +56,7 @@ class NewsManager
     private function transformToTree(array $categories): array
     {
         $transformedArray = $this->categoriesToArray($categories);
-        return $this->makeTree($transformedArray);
+        return $this->makeCategoriesTree($transformedArray);
 
     }
 
@@ -93,18 +67,18 @@ class NewsManager
         return $categories;
     }
 
-    public function findAllNews()
+    public function findAllNews(): array
     {
-        return $this->newsRepository->findAll();
+        return $this->doctrine->getManager()->getRepository(Article::class)->findAll();
     }
 
-    public function findAllGeneralCategories()
+    public function findAllCategories(): array
     {
-        return $this->categoryRepository->findAllGeneralCategories();
+        return $this->doctrine->getManager()->getRepository(Category::class)->findAll();
     }
 
-    public function findAllCategories()
+    public function findGeneralCategories(): array
     {
-        return $this->categoryRepository->findAll();
+        return $this->doctrine->getManager()->getRepository(Category::class)->findGeneralCategories();
     }
 }
