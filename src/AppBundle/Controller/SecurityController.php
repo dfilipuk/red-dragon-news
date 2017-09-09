@@ -14,7 +14,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends Controller
 {
     /**
-     * @Route("/signin", name="signin")
+     * @Route("/auth/sign-in", name="sign_in")
      */
     public function signInAction(AuthenticationUtils $authUtils)
     {
@@ -32,7 +32,7 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/signup", name="signup")
+     * @Route("/auth/sign-up", name="sign_up")
      */
     public function signUpAction(Request $request, UserManager $userManager)
     {
