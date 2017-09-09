@@ -135,7 +135,7 @@ class Token
     /**
      * @return mixed
      */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -146,6 +146,11 @@ class Token
     public function setUser(User $user)
     {
         $this->user = $user;
+    }
+
+    public function isValid(string $value): bool
+    {
+        return $this->token === $value;
     }
 }
 
