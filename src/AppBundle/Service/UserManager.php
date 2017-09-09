@@ -21,7 +21,7 @@ class UserManager
         $this->encoder = $encoder;
     }
 
-    public function addNewUser(User $newUser)
+    public function registerNewUser(User $newUser)
     {
         if (!$this->isUserAlreadyExists($newUser)) {
             $this->setUserInfo($newUser);
@@ -31,7 +31,7 @@ class UserManager
 
     private function isUserAlreadyExists(User $user)
     {
-        $repository = $this->doctrine->getRepository(User::class);
+        $repository = $this->doctrine->getManager()->getRepository(User::class);
         return $repository->findOneBy(['email' => $user->getEmail()]) !== null;
     }
 
