@@ -21,10 +21,8 @@ class SecurityController extends Controller
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('homepage');
         }
-
         $error = $authUtils->getLastAuthenticationError();
         $lastUsername = $authUtils->getLastUsername();
-
         return $this->render('auth/login.html.twig', [
             'error' => $error,
             'last_username' => $lastUsername
@@ -47,6 +45,36 @@ class SecurityController extends Controller
             return $this->renderRegistrationFinishedMessage($user);
         }
         return $this->renderRegistrationFormErrors($form);
+    }
+
+    /**
+     * @Route("auth/activation/{id}/{token}", name="account_activation", requirements={"id": "\d+"})
+     */
+    public function accountActivationAction(int $id, string $token, UserManager $userManager)
+    {
+        if ($userManager->activateUserAccount($id, $token)) {
+            return $this->renderActivationSuccessMessage();
+        } else {
+            return $this->renderActivationFailMessage();
+        }
+    }
+
+    private function renderActivationSuccessMessage()
+    {
+        return $this->render('auth/message.twig', [
+            'params' => [],
+            'message_template' => 'auth/messages/activation_success.html.twig',
+            'title' => 'Account activation success'
+        ]);
+    }
+
+    private function renderActivationFailMessage()
+    {
+        return $this->render('auth/message.twig', [
+            'params' => [],
+            'message_template' => 'auth/messages/activation_fail.html.twig',
+            'title' => 'Account activation fail'
+        ]);
     }
 
     private function renderRegistrationFormErrors(Form $form)

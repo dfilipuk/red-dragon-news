@@ -34,6 +34,11 @@ class UserManager
         }
     }
 
+    public function activateUserAccount(int $id, string $token): bool
+    {
+        return true;
+    }
+
     private function isUserAlreadyExists(User $user): bool
     {
         $repository = $this->doctrine->getManager()->getRepository(User::class);
