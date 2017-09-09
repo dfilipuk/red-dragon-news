@@ -52,7 +52,7 @@ class SecurityController extends Controller
      */
     public function accountActivationAction(int $id, string $token, UserManager $userManager)
     {
-        if ($userManager->activateUserAccount($id, $token)) {
+        if ($userManager->isUserAccountActivationSucceed($id, $token)) {
             return $this->renderActivationSuccessMessage();
         } else {
             return $this->renderActivationFailMessage();

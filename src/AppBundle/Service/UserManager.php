@@ -34,8 +34,16 @@ class UserManager
         }
     }
 
-    public function activateUserAccount(int $id, string $token): bool
+    public function isUserAccountActivationSucceed(int $id, string $tokenValue): bool
     {
+        $token = $this->getActivationToken($id);
+        if ($token === null) {
+            return false;
+        }
+        if (!$token->isValid($tokenValue)) {
+            return false;
+        }
+        $this->activateUserAcount($token);
         return true;
     }
 
@@ -65,6 +73,26 @@ class UserManager
         $manager->persist($user);
         $manager->flush();
         $manager->persist($token);
+        $manager->flush();
+    }
+
+    private function getActivationToken(int $id):? Token
+    {
+        $repository = $this->doctrine->getManager()->getRepository(Token::class);
+        return $repository->findOneBy([
+            'id' => $id,
+            'type' => self::ACCOUNT_ACTIVATION_TOKEN_TYPE
+        ]);
+    }
+
+    private function activateUserAcount(Token $token)
+    {
+        $manager = $this->doctrine->getManager();
+        $manager->persist($token);
+        $user = $token->getUser();
+        $user->setIsActive(true);
+        $manager->persist($user);
+        $manager->remove($token);
         $manager->flush();
     }
 
