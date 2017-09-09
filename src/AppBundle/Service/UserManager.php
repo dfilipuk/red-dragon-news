@@ -18,11 +18,13 @@ class UserManager
 
     private $doctrine;
     private $encoder;
+    private $mailManager;
 
-    public function __construct(ManagerRegistry $doctrine, UserPasswordEncoderInterface $encoder)
+    public function __construct(ManagerRegistry $doctrine, MailManager $mailManager, UserPasswordEncoderInterface $encoder)
     {
         $this->doctrine = $doctrine;
         $this->encoder = $encoder;
+        $this->mailManager = $mailManager;
     }
 
     public function registerNewUser(User $newUser)
@@ -30,7 +32,8 @@ class UserManager
         if (!$this->isUserAlreadyExists($newUser)) {
             $token = $this->createSecurityToken();
             $this->prepareEntitiesForSavingInDatabase($newUser, $token);
-            $this->saveEntitiesInDatabase($newUser, $token);
+            $this->saveEntitiesToDatabase($newUser, $token);
+            $this->mailManager->sendActivationEmail($newUser, $token);
         }
     }
 
@@ -67,7 +70,7 @@ class UserManager
         $user->setPassword($encodedPassword);
     }
 
-    private function saveEntitiesInDatabase(User $user, TOken $token)
+    private function saveEntitiesToDatabase(User $user, TOken $token)
     {
         $manager = $this->doctrine->getManager();
         $manager->persist($user);
