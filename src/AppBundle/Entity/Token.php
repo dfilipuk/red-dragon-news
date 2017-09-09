@@ -48,7 +48,7 @@ class Token
      * @ManyToOne(targetEntity="User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private $userID;
+    private $user;
 
     /**
      * Get id
@@ -135,17 +135,17 @@ class Token
     /**
      * @return mixed
      */
-    public function getUserID()
+    public function getUser()
     {
-        return $this->userID;
+        return $this->user;
     }
 
     /**
-     * @param mixed $userID
+     * @param mixed $user
      */
-    public function setUserID($userID)
+    public function setUser(User $user)
     {
-        $this->userID = $userID;
+        $this->user = $user;
     }
 }
 
