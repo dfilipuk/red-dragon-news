@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
@@ -10,6 +12,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="Email already taken")
  */
 class User implements AdvancedUserInterface, \Serializable
 {
@@ -26,8 +29,19 @@ class User implements AdvancedUserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Email()
+     * @Assert\Length(max=255, maxMessage="Email address too long")
      */
     private $email;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(max=4096, min=4,
+     *     minMessage="Password should be 4 and more characters",
+     *     maxMessage="Password should be less than 4096 characters")
+     */
+    private $plainPassword;
 
     /**
      * @var string
@@ -49,7 +63,6 @@ class User implements AdvancedUserInterface, \Serializable
      * @ORM\Column(name="role", type="string", length=20)
      */
     private $role;
-
 
     /**
      * Get id
@@ -155,6 +168,22 @@ class User implements AdvancedUserInterface, \Serializable
     public function getRole()
     {
         return $this->role;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
     }
 
     public function getUsername()

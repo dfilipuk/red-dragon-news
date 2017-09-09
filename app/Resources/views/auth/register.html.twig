@@ -17,29 +17,44 @@
                             <h2 class="mdl-card__title-text">Hello, stranger</h2>
                         </div>
                         <div class="col-sm-3">
-                            <a href={{ path('signin') }}>
+                            <a href={{ path('sign_in') }}>
                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12">Sign in</button>
                             </a>
                         </div>
 
                     </div>
-                    <form action="#">
+                    {{ form_start(form) }}
                         <div class="row auth-inputs margin-escape">
                             <div class="col-sm-6 col-sm-offset-3">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input class="mdl-textfield__input" type="email" id="e-mail">
+                                    {{
+                                        form_widget(form.email, {'attr': {
+                                            'class': 'mdl-textfield__input',
+                                            'id': 'e-mail'
+                                        }})
+                                    }}
                                     <label class="mdl-textfield__label" for="e-mail">E-mail</label>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-sm-offset-3">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input class="mdl-textfield__input" type="password" id="password">
+                                    {{
+                                        form_widget(form.plainPassword.first, {'attr': {
+                                            'class': 'mdl-textfield__input',
+                                            'id': 'password'
+                                        }})
+                                    }}
                                     <label class="mdl-textfield__label" for="password">Password</label>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-sm-offset-3">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input class="mdl-textfield__input" type="password" id="password-rep">
+                                    {{
+                                        form_widget(form.plainPassword.second, {'attr': {
+                                            'class': 'mdl-textfield__input',
+                                            'id': 'password-rep'
+                                        }})
+                                    }}
                                     <label class="mdl-textfield__label" for="password-rep">Repeat password</label>
                                 </div>
                             </div>
@@ -50,9 +65,11 @@
                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect col-sm-12 margin-bottom-20">Sign up</button>
                             </div>
                         </div>
-                    </form>
-
+                    {{ form_end(form) }}
                 </div>
+                {% for error in errors %}
+                    <h6 class="text-center alert alert-danger">{{ error.getMessage() }}</h6>
+                {% endfor%}
             </div>
         </div>
     </div>

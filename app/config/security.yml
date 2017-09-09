@@ -33,13 +33,13 @@ security:
 
             # https://symfony.com/doc/current/security/form_login_setup.html
             form_login:
-                login_path: signin
-                check_path: signin
+                login_path: sign_in
+                check_path: sign_in
                 default_target_path: homepage
 
             provider: users_db_provider
 
             logout:
-                path: /signout
-                target: /signin
+                path: sign_out
+                target: sign_in
 
