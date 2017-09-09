@@ -5,30 +5,38 @@
 {% endblock %}
 
 {% block body %}
-    <div class="layout-transparent mdl-layout mdl-js-layout">
+    <div class="layout-transparent mdl-layout mdl-js-layout wrapper">
         <header class="mdl-layout__header mdl-layout__header--transparent">
             <div class="mdl-layout__header-row">
-                <span class="mdl-layout-title">{{ app.user.email }}</span>
+                <button class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Subscribe</button>
                 <div class="mdl-layout-spacer"></div>
                 <nav class="mdl-navigation">
-                    <button class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Subscribe</button>
-                    <a href="{{ path('sign_out') }}">
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Logout</button>
-                    </a>
+                    <div class="avatar-dropdown">
+                        <span class="mdl-layout-title ">{{ app.user.email }}</span>
+                        <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                            <i class="material-icons" role="presentation">arrow_drop_down</i>
+                            <span class="visuallyhidden">Accounts</span>
+                        </button>
+                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                            {% if is_granted('ROLE_MANAGER') %}
+                                <a class="news-href" href="#"><li class="mdl-menu__item">Admin panel</li></a>
+                            {% endif %}
+                            <a class="news-href" href="{{ path('sign_out') }}" ><li class="mdl-menu__item" >Logout</li></a>
+                        </ul>
+                    </div>
                 </nav>
             </div>
         </header>
         <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title">Title</span>
+            <div class="mdl-layout-title"><a href="#" class="news-href">All categories</a></div>
             <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="">Link</a>
-                <a class="mdl-navigation__link" href="">Link</a>
-                <a class="mdl-navigation__link" href="">Link</a>
-                <a class="mdl-navigation__link" href="">Link</a>
+                {% for category in categories %}
+                    <a class="mdl-navigation__link news-href" href="#">{{ category.name|sliceAdvanced(40) }}</a>
+                {% endfor %}
             </nav>
         </div>
         <main class="mdl-layout__content">
-            <div class="container-fluid ">
+            <div class="container-fluid main-container">
                 <div class="row">
                     <div class="col-sm-8 col-sm-offset-2">
                         <div class="layout-background-logo mdl-card mdl-shadow--2dp">
@@ -55,111 +63,47 @@
                     <div class="col-sm-8 col-sm-offset-2 margin-top-20">
                         <div class="layout-background mdl-card mdl-shadow--2dp">
                             <div class="row">
-                                <div class="col-sm-12">
-                                    <a href="#" class="news-href">
-                                        <div class="row">
-                                            <div class="col-sm-4 text-center margin-top-20">
-                                                <img src="{{ asset('public/img/1.jpg') }}" class="news-small-picture">
+                                {% set i = 0 %}
+                                {% for one_news in news %}
+                                    <div class="col-sm-12">
+                                        <a href="#" class="news-href">
+                                            <div class="row">
+                                                {% if (i%2==0) %}
+                                                    <div class="col-sm-4 text-center margin-top-20">
+                                                        {% if one_news.picture is null %}
+                                                            <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
+                                                        {% else %}
+                                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="col-sm-7">
+                                                        <h4 class="news-title">{{ one_news.title }}</h4>
+                                                        <p>{{ one_news.text|sliceAdvanced(780) }}</p>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="col-sm-7 col-sm-offset-1">
+                                                        <h4 class="news-title">{{ one_news.title }}</h4>
+                                                        <p>{{ one_news.text|sliceAdvanced(780) }}</p>
+                                                    </div>
+                                                    <div class="col-sm-4 text-center margin-top-20">
+                                                        {% if one_news.picture is null %}
+                                                            <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
+                                                        {% else %}
+                                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                            <div class="col-sm-7">
-                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
-                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
-                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
-                                                    wefgwegwergrgwergwergwerg
-                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
-                                                    qergqergqergqergqergerqergqergqergqergq
-                                                    ergergqergqergqergqergergqergqergr.....</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-sm-10 col-sm-offset-1">
-                                    <hr class="news-hr" />
-                                </div>
-                                <div class="col-sm-12">
-                                    <a href="#" class="news-href">
-                                        <div class="row ">
-                                            <div class="col-sm-7 col-sm-offset-1">
-                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
-                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
-                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
-                                                    wefgwegwergrgwergwergwerg
-                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
-                                                    qergqergqergqergqergerqergqergqergqergq
-                                                    ergergqergqergqergqergergqergqergr.....</p>
-                                            </div>
-                                            <div class="col-sm-4 text-center margin-top-20">
-                                                <img src="{{ asset('public/img/2.jpg') }}" class="news-small-picture">
-                                            </div>
-                                        </div>
-                                        <a/>
-                                </div>
-                                <div class="col-sm-10 col-sm-offset-1">
-                                    <hr class="news-hr" />
-                                </div>
-                                <div class="col-sm-12">
-                                    <a href="#" class="news-href">
-                                        <div class="row">
-                                            <div class="col-sm-4 text-center margin-top-20">
-                                                <img src="{{ asset('public/img/3.jpg') }}" class="news-small-picture">
-                                            </div>
-                                            <div class="col-sm-7">
-                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
-                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
-                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
-                                                    wefgwegwergrgwergwergwerg
-                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
-                                                    qergqergqergqergqergerqergqergqergqergq
-                                                    ergergqergqergqergqergergqergqergr.....</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-sm-10 col-sm-offset-1">
-                                    <hr class="news-hr" />
-                                </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-10 col-sm-offset-1">
+                                        <hr class="news-hr" />
+                                    </div>
+                                    {% set i = i + 1 %}
+                                {% endfor %}
 
-                                <div class="col-sm-12">
-                                    <a href="#" class="news-href">
-                                        <div class="row ">
-                                            <div class="col-sm-7 col-sm-offset-1">
-                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
-                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
-                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
-                                                    wefgwegwergrgwergwergwerg
-                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
-                                                    qergqergqergqergqergerqergqergqergqergq
-                                                    ergergqergqergqergqergergqergqergr.....</p>
-                                            </div>
-                                            <div class="col-sm-4 text-center margin-top-20">
-                                                <img src="{{ asset('public/img/1.jpg') }}" class="news-small-picture">
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-sm-10 col-sm-offset-1">
-                                    <hr class="news-hr" />
-                                </div>
-                                <div class="col-sm-12">
-                                    <a href="#" class="news-href">
-                                        <div class="row">
-                                            <div class="col-sm-4 text-center margin-top-20">
-                                                <img src="{{ asset('public/img/2.jpg') }}" class="news-small-picture">
-                                            </div>
-                                            <div class="col-sm-7">
-                                                <h4 class="news-title">Header of news fdgergerg ergerger esdfgsdfgsdfgsdfgdsfrgerger ergerger ergerg</h4>
-                                                <p>sfgwegwegfwefgfgdsfgsdfgsdfgwergeqreqrgegwfge
-                                                    ergergwergewrgewrgwergewrbqsdfwfgwerfvwe
-                                                    wefgwegwergrgwergwergwerg
-                                                    wergewrgwergergewrgwergwregqrgergw4rgefgwergeg
-                                                    qergqergqergqergqergerqergqergqergqergq
-                                                    ergergqergqergqergqergergqergqergr.....</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-sm-10 col-sm-offset-1 margin-bottom-50">
-                                    <hr class="news-hr" />
+                                <div class="navigation text-center">
+                                    {{ knp_pagination_render(news) }}
                                 </div>
                             </div>
                         </div>

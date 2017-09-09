@@ -10,4 +10,12 @@ namespace AppBundle\Repository;
  */
 class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findGeneralCategories()
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT c FROM AppBundle:Category c WHERE c.parent is null'
+            )
+            ->getResult();
+    }
 }
