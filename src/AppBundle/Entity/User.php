@@ -31,6 +31,7 @@ class User implements AdvancedUserInterface, \Serializable
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()
+     * @Assert\Length(max=255, maxMessage="Email address too long")
      */
     private $email;
 
@@ -38,7 +39,7 @@ class User implements AdvancedUserInterface, \Serializable
      * @Assert\NotBlank()
      * @Assert\Length(max=4096, min=4,
      *     minMessage="Password should be 4 and more characters",
-     *     maxMessage="Paswword should be less than 4096 characters")
+     *     maxMessage="Password should be less than 4096 characters")
      */
     private $plainPassword;
 
