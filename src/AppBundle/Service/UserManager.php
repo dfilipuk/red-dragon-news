@@ -3,7 +3,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use \Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserManager
@@ -15,7 +15,7 @@ class UserManager
     private $doctrine;
     private $encoder;
 
-    public function __construct(Registry $doctrine, UserPasswordEncoderInterface $encoder)
+    public function __construct(ManagerRegistry $doctrine, UserPasswordEncoderInterface $encoder)
     {
         $this->doctrine = $doctrine;
         $this->encoder = $encoder;
