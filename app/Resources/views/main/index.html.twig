@@ -63,6 +63,9 @@
                     <div class="col-sm-8 col-sm-offset-2 margin-top-20">
                         <div class="layout-background mdl-card mdl-shadow--2dp">
                             <div class="row">
+                                {% if news_count == 0 %}
+                                    <h3 class="text-center first-color-text margin-top-70">Nothing found</h3>
+                                {% endif %}
                                 {% set i = 0 %}
                                 {% for one_news in news %}
                                     <div class="col-sm-12">
