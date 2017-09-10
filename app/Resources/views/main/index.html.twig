@@ -31,7 +31,7 @@
             <div class="mdl-layout-title"><a href="#" class="news-href">All categories</a></div>
             <nav class="mdl-navigation">
                 {% for category in categories %}
-                    <a class="mdl-navigation__link news-href" href="#">{{ category.name|sliceAdvanced(40) }}</a>
+                    <a class="mdl-navigation__link news-href" href="{{ path('category', {'category': category.name}) }}">{{ category.name|sliceAdvanced(40) }}</a>
                 {% endfor %}
             </nav>
         </div>

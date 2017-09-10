@@ -14,6 +14,7 @@ use \Doctrine\Common\Persistence\ManagerRegistry;
 
 class NewsManager
 {
+    private const TREE_ROOT = 0;
     private $doctrine;
 
     public function __construct(ManagerRegistry $doctrine)
@@ -29,7 +30,7 @@ class NewsManager
             $temp['id'] = $category->getId();
             $temp['name'] = $category->getName();
             if ($category->getParent() === null){
-                $temp['parent_id'] = 0;
+                $temp['parent_id'] = self::TREE_ROOT;
             } else {
                 $temp['parent_id'] = $category->getParent()->getId();
             }
@@ -38,7 +39,7 @@ class NewsManager
         return $categoryArray;
     }
 
-    private function makeCategoriesTree(array $items, int $root = 0): array
+    private function makeCategoriesTree(array $items, int $root = self::TREE_ROOT): array
     {
         $tree = [];
         foreach($items as $item) {;
@@ -80,5 +81,25 @@ class NewsManager
     public function findGeneralCategories(): array
     {
         return $this->doctrine->getManager()->getRepository(Category::class)->findGeneralCategories();
+    }
+
+    public function getCategoryID(string $category): int
+    {
+        $result = $this->doctrine->getManager()->getRepository(Category::class)->findOneByName($category);
+        if ($result !== null){
+            return $result->getId();
+        } else {
+            return $result;
+        }
+    }
+
+    public function findNewsByCategory(string $category): array
+    {
+        $categoryID = $this->getCategoryID($category);
+        $result = [];
+        if ($categoryID !== null){
+            $result = $this->doctrine->getManager()->getRepository(Article::class)->findNewsByCategory($categoryID);
+        }
+        return $result;
     }
 }
