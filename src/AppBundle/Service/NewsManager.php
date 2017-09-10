@@ -54,6 +54,16 @@ class NewsManager
         return $tree;
     }
 
+    private function getCategoriesAndChildrensID(array $categoryAndChildrensTree, array &$categoriesID): void
+    {
+        if(!is_null($categoryAndChildrensTree) && count($categoryAndChildrensTree) > 0) {
+            foreach($categoryAndChildrensTree as $key=>$node) {
+                array_push($categoriesID,$node[$key]['id']);
+                $this->getCategoriesAndChildrensID($node['children'], $categoriesID);
+            }
+        }
+    }
+
     private function transformToTree(array $categories): array
     {
         $transformedArray = $this->categoriesToArray($categories);
@@ -83,22 +93,28 @@ class NewsManager
         return $this->doctrine->getManager()->getRepository(Category::class)->findGeneralCategories();
     }
 
-    public function getCategoryID(string $category): int
+    public function getCategoryAndChildrenID(string $category): ?array
     {
-        $result = $this->doctrine->getManager()->getRepository(Category::class)->findOneByName($category);
-        if ($result !== null){
-            return $result->getId();
-        } else {
-            return $result;
+        $categories = $this->doctrine->getManager()->getRepository(Category::class)->findAll();
+        $transformedArray = $this->categoriesToArray($categories);
+        $category = array_search($category, array_column($transformedArray, 'name'));
+        $categoryWithChildrensID = [];
+        if ($category === false){
+            return $categoryWithChildrensID;
         }
+        $categoryID = $transformedArray[$category]['id'];
+        $categoryAndChildrensTree = $this->makeCategoriesTree($transformedArray, $categoryID);
+        array_push($categoryWithChildrensID, $categoryID);
+        $this->getCategoriesAndChildrensID($categoryAndChildrensTree, $categoryWithChildrensID);
+        return $categoryWithChildrensID;
     }
 
-    public function findNewsByCategory(string $category): array
+    public function findNewsByCategory(string $category): ?array
     {
-        $categoryID = $this->getCategoryID($category);
+        $categoriesID = $this->getCategoryAndChildrenID($category);
         $result = [];
-        if ($categoryID !== null){
-            $result = $this->doctrine->getManager()->getRepository(Article::class)->findNewsByCategory($categoryID);
+        if (array_key_exists(0, $categoriesID)){
+            $result = $this->doctrine->getManager()->getRepository(Article::class)->findNewsByCategory($categoriesID);
         }
         return $result;
     }
