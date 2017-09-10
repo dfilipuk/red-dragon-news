@@ -16,6 +16,18 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MainController extends Controller
 {
+
+    private function paginateNews(Request $request, array $news)
+    {
+        $paginator  = $this->get('knp_paginator');
+        return $paginator->paginate(
+            $news,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+    }
+
     /**
      * @Route("/main/", name="homepage")
      */
@@ -23,13 +35,20 @@ class MainController extends Controller
     {
         $allNews = $newsManager->findAllNews();
         $generalCategories = $newsManager->findGeneralCategories();
-        $paginator  = $this->get('knp_paginator');
-        $newsOnPage = $paginator->paginate(
-            $allNews,
-            $request->query->getInt('page', 1),
-            10
-        );
+        $newsOnPage = $this->paginateNews($request, $allNews);
+        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories));
+    }
+
+    /**
+     * @Route("/main/{category}", name="category")
+     */
+    public function showCategoryNewsAction(string $category, Request $request, NewsManager $newsManager)
+    {
+        $currentCategoryNews = $newsManager->findNewsByCategory($category);
+        $generalCategories = $newsManager->findGeneralCategories();
+        $newsOnPage = $this->paginateNews($request, $currentCategoryNews);
 
         return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories));
     }
+
 }
