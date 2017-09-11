@@ -6,7 +6,6 @@ $(document).ready(function ()
         url: "/load-tree",
         datatype: "json",
         success: function(result){
-            console.log(result);
             printTree(result);
             $('#categoryDiv').append(cateroryTree);
             stopLoadingAnimation();
