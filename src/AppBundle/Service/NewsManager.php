@@ -14,6 +14,7 @@ use \Doctrine\Common\Persistence\ManagerRegistry;
 
 class NewsManager
 {
+    private const TREE_ROOT = 0;
     private $doctrine;
 
     public function __construct(ManagerRegistry $doctrine)
@@ -29,7 +30,7 @@ class NewsManager
             $temp['id'] = $category->getId();
             $temp['name'] = $category->getName();
             if ($category->getParent() === null){
-                $temp['parent_id'] = 0;
+                $temp['parent_id'] = self::TREE_ROOT;
             } else {
                 $temp['parent_id'] = $category->getParent()->getId();
             }
@@ -38,7 +39,7 @@ class NewsManager
         return $categoryArray;
     }
 
-    private function makeCategoriesTree(array $items, int $root = 0): array
+    private function makeCategoriesTree(array $items, int $root = self::TREE_ROOT): array
     {
         $tree = [];
         foreach($items as $item) {;
@@ -51,6 +52,16 @@ class NewsManager
             }
         }
         return $tree;
+    }
+
+    private function getCategoriesAndChildrensID(array $categoryAndChildrensTree, array &$categoriesID): void
+    {
+        if(!is_null($categoryAndChildrensTree) && count($categoryAndChildrensTree) > 0) {
+            foreach($categoryAndChildrensTree as $key=>$node) {
+                array_push($categoriesID,$node[$key]['id']);
+                $this->getCategoriesAndChildrensID($node['children'], $categoriesID);
+            }
+        }
     }
 
     private function transformToTree(array $categories): array
@@ -80,5 +91,31 @@ class NewsManager
     public function findGeneralCategories(): array
     {
         return $this->doctrine->getManager()->getRepository(Category::class)->findGeneralCategories();
+    }
+
+    public function getCategoryAndChildrenID(string $category): ?array
+    {
+        $categories = $this->findAllCategories();
+        $transformedArray = $this->categoriesToArray($categories);
+        $category = array_search($category, array_column($transformedArray, 'name'));
+        $categoryWithChildrensID = [];
+        if ($category === false){
+            return $categoryWithChildrensID;
+        }
+        $categoryID = $transformedArray[$category]['id'];
+        $categoryAndChildrensTree = $this->makeCategoriesTree($transformedArray, $categoryID);
+        array_push($categoryWithChildrensID, $categoryID);
+        $this->getCategoriesAndChildrensID($categoryAndChildrensTree, $categoryWithChildrensID);
+        return $categoryWithChildrensID;
+    }
+
+    public function findNewsByCategory(string $category): ?array
+    {
+        $categoriesID = $this->getCategoryAndChildrenID($category);
+        $result = [];
+        if (array_key_exists(0, $categoriesID)){
+            $result = $this->doctrine->getManager()->getRepository(Article::class)->findNewsByCategory($categoriesID);
+        }
+        return $result;
     }
 }

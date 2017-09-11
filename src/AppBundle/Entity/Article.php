@@ -70,7 +70,7 @@ class Article
      * @ManyToOne(targetEntity="Category", inversedBy="articles")
      * @JoinColumn(name="category_id", referencedColumnName="id")
      */
-    private $category;
+    private $categoryID;
 
     /**
      * @ManyToMany(targetEntity="Article", mappedBy="similarArticles")

@@ -10,4 +10,13 @@ namespace AppBundle\Repository;
  */
 class ArticleRepository extends \Doctrine\ORM\  EntityRepository
 {
+    public function findNewsByCategory(array $categoriesID)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT a FROM AppBundle:Article a WHERE a.categoryID IN(:categoriesID)'
+            )
+            ->setParameter('categoriesID', $categoriesID)
+            ->getResult();
+    }
 }
