@@ -1,127 +1,55 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_main.html.twig' %}
 
 {% block title %}
     Red Dragon news
 {% endblock %}
 
 {% block body %}
-    <div class="layout-transparent mdl-layout mdl-js-layout wrapper">
-        <header class="mdl-layout__header mdl-layout__header--transparent">
-            <div class="mdl-layout__header-row">
-                <button class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Subscribe</button>
-                <div class="mdl-layout-spacer"></div>
-                <nav class="mdl-navigation">
-                    <div class="avatar-dropdown">
-                        <span class="mdl-layout-title ">{{ app.user.email }}</span>
-                        <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
-                            <i class="material-icons" role="presentation">arrow_drop_down</i>
-                            <span class="visuallyhidden">Accounts</span>
-                        </button>
-                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
-                            {% if is_granted('ROLE_MANAGER') %}
-                                <a class="news-href" href="#"><li class="mdl-menu__item">Admin panel</li></a>
-                            {% endif %}
-                            <a class="news-href" href="{{ path('sign_out') }}" ><li class="mdl-menu__item" >Logout</li></a>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </header>
-        <div class="mdl-layout__drawer">
-            <div class="mdl-layout-title"><a href="#" class="news-href">All categories</a></div>
-            <nav class="mdl-navigation">
-                {% for category in categories %}
-                    <a class="mdl-navigation__link news-href" href="{{ path('category', {'category': category.name}) }}">{{ category.name|sliceAdvanced(40) }}</a>
-                {% endfor %}
-            </nav>
-        </div>
-        <main class="mdl-layout__content">
-            <div class="container-fluid main-container">
-                <div class="row">
-                    <div class="col-sm-8 col-sm-offset-2">
-                        <div class="layout-background-logo mdl-card mdl-shadow--2dp">
-                            <div class="row">
-                                <div class="col-sm-4 text-center">
-                                    <img src="{{ asset('public/img/logo.png') }}" class="logo">
-                                </div>
-                                <div class="col-sm-8 margin-top-15">
-                                    <form class="search-input">
-                                        <input type="text">
-                                        <span class="highlight"></span>
-                                        <span class="bar"></span>
-                                        <label>Search something...</label>
-                                        <span class="glyphicon glyphicon-search"></span>
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-8 col-sm-offset-2 margin-top-20">
-                        <div class="layout-background mdl-card mdl-shadow--2dp">
-                            <div class="row">
-                                {% if news_count == 0 %}
-                                    <h3 class="text-center first-color-text margin-top-70">Nothing found</h3>
+    <div class="row">
+        {% if news_count == 0 %}
+            <h3 class="text-center first-color-text margin-top-70">Nothing found</h3>
+        {% endif %}
+        {% set i = 0 %}
+        {% for one_news in news %}
+            <div class="col-sm-12">
+                <a href="#" class="news-href">
+                    <div class="row">
+                        {% if (i%2==0) %}
+                            <div class="col-sm-4 text-center margin-top-20">
+                                {% if one_news.picture is null %}
+                                    <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
+                                {% else %}
+                                    <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
                                 {% endif %}
-                                {% set i = 0 %}
-                                {% for one_news in news %}
-                                    <div class="col-sm-12">
-                                        <a href="#" class="news-href">
-                                            <div class="row">
-                                                {% if (i%2==0) %}
-                                                    <div class="col-sm-4 text-center margin-top-20">
-                                                        {% if one_news.picture is null %}
-                                                            <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
-                                                        {% else %}
-                                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
-                                                        {% endif %}
-                                                    </div>
-                                                    <div class="col-sm-7">
-                                                        <h4 class="news-title">{{ one_news.title }}</h4>
-                                                        <p>{{ one_news.text|sliceAdvanced(780) }}</p>
-                                                    </div>
-                                                {% else %}
-                                                    <div class="col-sm-7 col-sm-offset-1">
-                                                        <h4 class="news-title">{{ one_news.title }}</h4>
-                                                        <p>{{ one_news.text|sliceAdvanced(780) }}</p>
-                                                    </div>
-                                                    <div class="col-sm-4 text-center margin-top-20">
-                                                        {% if one_news.picture is null %}
-                                                            <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
-                                                        {% else %}
-                                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
-                                                        {% endif %}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-sm-10 col-sm-offset-1">
-                                        <hr class="news-hr" />
-                                    </div>
-                                    {% set i = i + 1 %}
-                                {% endfor %}
-
-                                <div class="navigation text-center">
-                                    {{ knp_pagination_render(news) }}
-                                </div>
                             </div>
-                        </div>
+                            <div class="col-sm-7">
+                                <h4 class="news-title">{{ one_news.title }}</h4>
+                                <p>{{ one_news.text|sliceAdvanced(780) }}</p>
+                            </div>
+                        {% else %}
+                            <div class="col-sm-7 col-sm-offset-1">
+                                <h4 class="news-title">{{ one_news.title }}</h4>
+                                <p>{{ one_news.text|sliceAdvanced(780) }}</p>
+                            </div>
+                            <div class="col-sm-4 text-center margin-top-20">
+                                {% if one_news.picture is null %}
+                                    <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
+                                {% else %}
+                                    <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </div>
-                </div>
+                </a>
             </div>
-            <footer class="mdl-mini-footer margin-top-20">
-                <div class="row footer-row">
-                    <div class="col-sm-12">
-                        <h5 class="text-center footer-h4">RedDragon News &#169; 2017</h5>
-                    </div>
-                </div>
-
-            </footer>
-        </main>
+            <div class="col-sm-10 col-sm-offset-1">
+                <hr class="news-hr" />
+            </div>
+            {% set i = i + 1 %}
+        {% endfor %}
+        <div class="navigation text-center">
+            {{ knp_pagination_render(news) }}
+        </div>
     </div>
 {% endblock %}
 

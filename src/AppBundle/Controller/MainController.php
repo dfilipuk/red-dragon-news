@@ -46,6 +46,9 @@ class MainController extends Controller
     {
         $currentCategoryNews = $newsManager->findNewsByCategory($category);
         $generalCategories = $newsManager->findGeneralCategories();
+        if ($category === 'all-categories'){
+            return $this->render("base_main.html.twig", array('categories' => $generalCategories));
+        }
         $newsOnPage = $this->paginateNews($request, $currentCategoryNews);
 
         return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage)));
