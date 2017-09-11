@@ -95,7 +95,7 @@ class NewsManager
 
     public function getCategoryAndChildrenID(string $category): ?array
     {
-        $categories = $this->doctrine->getManager()->getRepository(Category::class)->findAll();
+        $categories = $this->findAllCategories();
         $transformedArray = $this->categoriesToArray($categories);
         $category = array_search($category, array_column($transformedArray, 'name'));
         $categoryWithChildrensID = [];

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ asset('public/bootstrap/css/bootstrap.min.css') }}" >
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.red-indigo.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="{{ asset('public/css/style.css') }}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+<div class="layout-transparent mdl-layout mdl-js-layout wrapper">
+    <header class="mdl-layout__header mdl-layout__header--transparent">
+        <div class="mdl-layout__header-row">
+            <button class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Subscribe</button>
+            <div class="mdl-layout-spacer"></div>
+            <nav class="mdl-navigation">
+                <div class="avatar-dropdown">
+                    <span class="mdl-layout-title ">{{ app.user.email }}</span>
+                    <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                        <i class="material-icons" role="presentation">arrow_drop_down</i>
+                        <span class="visuallyhidden">Accounts</span>
+                    </button>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                        {% if is_granted('ROLE_MANAGER') %}
+                            <a class="news-href" href="#"><li class="mdl-menu__item">Admin panel</li></a>
+                        {% endif %}
+                        <a class="news-href" href="{{ path('sign_out') }}" ><li class="mdl-menu__item" >Logout</li></a>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div class="mdl-layout__drawer">
+        <div class="mdl-layout-title"><a href="{{ path('category', {'category': 'all-categories'}) }}" class="news-href">All categories</a></div>
+        <nav class="mdl-navigation">
+            {% for category in categories %}
+                <a class="mdl-navigation__link news-href" href="{{ path('category', {'category': category.name}) }}">{{ category.name|sliceAdvanced(40) }}</a>
+            {% endfor %}
+        </nav>
+    </div>
+    <main class="mdl-layout__content">
+        <div class="container-fluid main-container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="layout-background-logo mdl-card mdl-shadow--2dp">
+                        <div class="row">
+                            <div class="col-sm-4 text-center">
+                                <a href="{{ path("homepage") }}"><img src="{{ asset('public/img/logo.png') }}" class="logo"></a>
+                            </div>
+                            <div class="col-sm-8 margin-top-15">
+                                <form class="search-input">
+                                    <input type="text">
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Search something...</label>
+                                    <span class="glyphicon glyphicon-search"></span>
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2 margin-top-20">
+                    <div class="layout-background mdl-card mdl-shadow--2dp">
+                        {% block body %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+            </div>
+            <footer class="mdl-mini-footer margin-top-20">
+                <div class="row footer-row">
+                    <div class="col-sm-12">
+                        <h5 class="text-center footer-h4">RedDragon News &#169; 2017</h5>
+                    </div>
+                </div>
+
+            </footer>
+        </main>
+    </div>
+<script src="{{ asset('public/js/jquery-3.2.1.min.js') }}"></script>
+<script src="{{ asset('public/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/mdl/material.min.js') }}"></script>
+</body>
+</html>
