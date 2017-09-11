@@ -351,3 +351,9 @@ footer{
 .news-title{
   color: rgb(244,67,54);
 }
+
+#loadImg{
+  position:fixed;
+  z-index: 1000;
+  display:none
+}

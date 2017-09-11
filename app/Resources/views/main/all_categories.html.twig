@@ -1,0 +1,16 @@
+{% extends 'base_main.html.twig' %}
+
+{% block title %}
+    All categories
+{% endblock %}
+
+{% block body %}
+    <div class="row" >
+        <div class="col-sm-6 col-sm-offset-3" id="categoryDiv"></div>
+    </div>
+    <div id="loadImg" class="mdl-spinner mdl-js-spinner is-active"></div>
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript"  src="{{ asset('public/js/category-tree-loader.js') }}"></script>
+{% endblock %}
+

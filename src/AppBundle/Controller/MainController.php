@@ -13,6 +13,8 @@ use AppBundle\Service\NewsManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
 
 class MainController extends Controller
 {
@@ -36,7 +38,7 @@ class MainController extends Controller
         $allNews = $newsManager->findAllNews();
         $generalCategories = $newsManager->findGeneralCategories();
         $newsOnPage = $this->paginateNews($request, $allNews);
-        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage)));
+        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage), 'title' => 'Red Dragon news'));
     }
 
     /**
@@ -44,14 +46,24 @@ class MainController extends Controller
      */
     public function showCategoryNewsAction(string $category, Request $request, NewsManager $newsManager)
     {
-        $currentCategoryNews = $newsManager->findNewsByCategory($category);
         $generalCategories = $newsManager->findGeneralCategories();
         if ($category === 'all-categories'){
-            return $this->render("base_main.html.twig", array('categories' => $generalCategories));
+            return $this->render("main/all_categories.html.twig", array('categories' => $generalCategories));
         }
+        $currentCategoryNews = $newsManager->findNewsByCategory($category);
         $newsOnPage = $this->paginateNews($request, $currentCategoryNews);
 
-        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage)));
+        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage), 'title' => $category));
+    }
+
+    /**
+     * @Route("/load-tree", name="load-tree")
+     */
+    public function loadTreeAction(NewsManager $newsManager)
+    {
+        $response = new Response(json_encode($newsManager->getSortedCategories()));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
 }
