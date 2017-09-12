@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
- * @UniqueEntity(fields="email", message="Email already taken")
+ * @UniqueEntity(fields="email", message="Email already taken", groups={"registration"})
  */
 class User implements AdvancedUserInterface, \Serializable
 {
@@ -29,9 +29,9 @@ class User implements AdvancedUserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Assert\NotBlank()
-     * @Assert\Email()
-     * @Assert\Length(max=255, maxMessage="Email address too long")
+     * @Assert\NotBlank(groups={"registration", "checkEmail"})
+     * @Assert\Email(groups={"registration", "checkEmail"})
+     * @Assert\Length(max=255, maxMessage="Email address too long", groups={"registration", "checkEmail"})
      */
     private $email;
 
@@ -39,7 +39,8 @@ class User implements AdvancedUserInterface, \Serializable
      * @Assert\NotBlank()
      * @Assert\Length(max=4096, min=4,
      *     minMessage="Password should be 4 and more characters",
-     *     maxMessage="Password should be less than 4096 characters")
+     *     maxMessage="Password should be less than 4096 characters",
+     *     groups={"registration", "passwordReset"})
      */
     private $plainPassword;
 
@@ -69,7 +70,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -81,7 +82,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return User
      */
-    public function setEmail($email)
+    public function setEmail(string $email): User
     {
         $this->email = $email;
 
@@ -93,7 +94,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return string
      */
-    public function getEmail()
+    public function getEmail():? string
     {
         return $this->email;
     }
@@ -105,7 +106,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return User
      */
-    public function setPassword($password)
+    public function setPassword(string $password): User
     {
         $this->password = $password;
 
@@ -117,7 +118,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return string
      */
-    public function getPassword()
+    public function getPassword():? string
     {
         return $this->password;
     }
@@ -129,7 +130,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return User
      */
-    public function setIsActive($isActive)
+    public function setIsActive(bool $isActive): User
     {
         $this->isActive = $isActive;
 
@@ -141,7 +142,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return bool
      */
-    public function getIsActive()
+    public function getIsActive(): bool
     {
         return $this->isActive;
     }
@@ -153,7 +154,7 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return User
      */
-    public function setRole($role)
+    public function setRole(string $role): User
     {
         $this->role = $role;
 
@@ -165,38 +166,33 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @return string
      */
-    public function getRole()
+    public function getRole():? string
     {
         return $this->role;
     }
 
-    /**
-     * @param mixed $plainPassword
-     */
-    public function setPlainPassword($plainPassword)
+
+    public function setPlainPassword(string $plainPassword)
     {
         $this->plainPassword = $plainPassword;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPlainPassword()
+    public function getPlainPassword():? string
     {
         return $this->plainPassword;
     }
 
-    public function getUsername()
+    public function getUsername():? string
     {
         return $this->email;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return [$this->role];
     }
 
-    public function getSalt()
+    public function getSalt():? string
     {
         return null;
     }
@@ -205,22 +201,22 @@ class User implements AdvancedUserInterface, \Serializable
     {
     }
 
-    public function isAccountNonExpired()
+    public function isAccountNonExpired(): bool
     {
         return true;
     }
 
-    public function isAccountNonLocked()
+    public function isAccountNonLocked(): bool
     {
         return true;
     }
 
-    public function isCredentialsNonExpired()
+    public function isCredentialsNonExpired(): bool
     {
         return true;
     }
 
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->isActive;
     }
