@@ -30,10 +30,20 @@ class UserManager
     public function registerNewUser(User $newUser)
     {
         if (!$this->isUserAlreadyExists($newUser)) {
-            $token = $this->createSecurityToken();
+            $token = $this->createSecurityTokenForAccountActivation();
             $this->prepareEntitiesForSavingInDatabase($newUser, $token);
             $this->saveEntitiesToDatabase($newUser, $token);
             $this->mailManager->sendActivationEmail($newUser, $token);
+        }
+    }
+
+    public function setResetPasswordTokenForUser(User $userWithEmail)
+    {
+        $user = $this->getUserByEmail($userWithEmail->getEmail());
+        if ($user !== null) {
+            $token = $this->createSecurityTokenForPasswordReset();
+            $this->saveResetTokenToDatabase($user, $token);
+            $this->mailManager->sendResetPasswordEmail($user, $token);
         }
     }
 
@@ -46,14 +56,23 @@ class UserManager
         if (!$token->isValid($tokenValue)) {
             return false;
         }
-        $this->activateUserAcount($token);
+        $this->activateUserAccount($token);
         return true;
     }
 
-    private function isUserAlreadyExists(User $user): bool
+    public function isUserAlreadyExists(User $user): bool
+    {
+        if ($this->getUserByEmail($user->getEmail()) === null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private function getUserByEmail(string $userEmail):? User
     {
         $repository = $this->doctrine->getManager()->getRepository(User::class);
-        return $repository->findOneBy(['email' => $user->getEmail()]) !== null;
+        return $repository->findOneBy(['email' => $userEmail]);
     }
 
     private function prepareEntitiesForSavingInDatabase(User $user, Token $token)
@@ -79,6 +98,14 @@ class UserManager
         $manager->flush();
     }
 
+    private function saveResetTokenToDatabase(User $user, Token $token)
+    {
+        $token->setUser($user);
+        $manager = $this->doctrine->getManager();
+        $manager->persist($token);
+        $manager->flush();
+    }
+
     private function getActivationToken(int $id):? Token
     {
         $repository = $this->doctrine->getManager()->getRepository(Token::class);
@@ -88,7 +115,7 @@ class UserManager
         ]);
     }
 
-    private function activateUserAcount(Token $token)
+    private function activateUserAccount(Token $token)
     {
         $manager = $this->doctrine->getManager();
         $manager->persist($token);
@@ -99,12 +126,22 @@ class UserManager
         $manager->flush();
     }
 
-    private function createSecurityToken(): Token
+    private function createSecurityTokenForAccountActivation(): Token
     {
         $token = new Token();
         $tokenValue = bin2hex(openssl_random_pseudo_bytes(self::SECURITY_TOKEN_LENGTH));
         $token->setToken($tokenValue);
         $token->setType(self::ACCOUNT_ACTIVATION_TOKEN_TYPE);
+        return $token;
+    }
+
+    private function createSecurityTokenForPasswordReset(): Token
+    {
+        $token = new Token();
+        $tokenValue = bin2hex(openssl_random_pseudo_bytes(self::SECURITY_TOKEN_LENGTH));
+        $token->setToken($tokenValue);
+        $token->setType(self::PASSWORD_RESET_TOKEN_TYPE);
+        $token->setDate(new \DateTime('now'));
         return $token;
     }
 }
