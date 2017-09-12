@@ -155,10 +155,10 @@ class Token
         return $this->token === $value;
     }
 
-    public function isAlive(\DateTime $dateTime): bool
+    public function isAlive(): bool
     {
         $createTime = $this->getDate()->getTimestamp();
-        $currentTime = $dateTime->getTimestamp();
+        $currentTime = (new \DateTime('now'))->getTimestamp();
         if ($currentTime - $createTime <= self::ALIVE_TIME_SECONDS) {
             return true;
         } else {

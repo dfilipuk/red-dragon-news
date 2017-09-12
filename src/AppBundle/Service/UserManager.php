@@ -47,6 +47,23 @@ class UserManager
         }
     }
 
+    public function isResetPasswordTokenValid(int $id, string $tokenValue)
+    {
+        $token = $this->getResetPasswordToken($id);
+        if ($token === null) {
+            return false;
+        }
+        if (!$token->isValid($tokenValue)) {
+            return false;
+        }
+        if ($token->isAlive()) {
+            return true;
+        } else {
+            $this->removeResetPasswordTokenFromDatabase($token);
+            return false;
+        }
+    }
+
     public function isUserAccountActivationSucceed(int $id, string $tokenValue): bool
     {
         $token = $this->getActivationToken($id);
@@ -113,6 +130,22 @@ class UserManager
             'id' => $id,
             'type' => self::ACCOUNT_ACTIVATION_TOKEN_TYPE
         ]);
+    }
+
+    private function getResetPasswordToken(int $id):? Token
+    {
+        $repository = $this->doctrine->getManager()->getRepository(Token::class);
+        return $repository->findOneBy([
+            'id' => $id,
+            'type' => self::PASSWORD_RESET_TOKEN_TYPE,
+        ]);
+    }
+
+    private function removeResetPasswordTokenFromDatabase(Token $token)
+    {
+        $manager = $this->doctrine->getManager();
+        $manager->remove($token);
+        $manager->flush();
     }
 
     private function activateUserAccount(Token $token)
