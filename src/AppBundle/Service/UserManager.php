@@ -37,6 +37,17 @@ class UserManager
         }
     }
 
+    public function resetPasswordForUser(int $tokenId, User $userWithPassword)
+    {
+        $token = $this->getResetPasswordToken($tokenId);
+        if ($token !== null) {
+            $user = $token->getUser();
+            $this->encodeUserPassword($user, $userWithPassword->getPlainPassword());
+            $this->updateUserInformation($user);
+            $this->removeResetPasswordTokenFromDatabase($token);
+        }
+    }
+
     public function setResetPasswordTokenForUser(User $userWithEmail)
     {
         $user = $this->getUserByEmail($userWithEmail->getEmail());
@@ -47,7 +58,7 @@ class UserManager
         }
     }
 
-    public function isResetPasswordTokenValid(int $id, string $tokenValue)
+    public function isResetPasswordTokenValid(int $id, string $tokenValue): bool
     {
         $token = $this->getResetPasswordToken($id);
         if ($token === null) {
@@ -94,19 +105,26 @@ class UserManager
 
     private function prepareEntitiesForSavingInDatabase(User $user, Token $token)
     {
-        $this->encodeUserPassword($user);
+        $this->encodeUserPassword($user, $user->getPlainPassword());
         $user->setRole(self::USER_ROLE_NAME);
         $user->setIsActive(false);
         $token->setUser($user);
     }
 
-    private function encodeUserPassword(User $user)
+    private function encodeUserPassword(User $user, string $plainPassword)
     {
-        $encodedPassword = $this->encoder->encodePassword($user, $user->getPlainPassword());
+        $encodedPassword = $this->encoder->encodePassword($user, $plainPassword);
         $user->setPassword($encodedPassword);
     }
 
-    private function saveEntitiesToDatabase(User $user, TOken $token)
+    private function updateUserInformation(User $user)
+    {
+        $manager = $this->doctrine->getManager();
+        $manager->persist($user);
+        $manager->flush();
+    }
+
+    private function saveEntitiesToDatabase(User $user, Token $token)
     {
         $manager = $this->doctrine->getManager();
         $manager->persist($user);
@@ -120,31 +138,6 @@ class UserManager
         $token->setUser($user);
         $manager = $this->doctrine->getManager();
         $manager->persist($token);
-        $manager->flush();
-    }
-
-    private function getActivationToken(int $id):? Token
-    {
-        $repository = $this->doctrine->getManager()->getRepository(Token::class);
-        return $repository->findOneBy([
-            'id' => $id,
-            'type' => self::ACCOUNT_ACTIVATION_TOKEN_TYPE
-        ]);
-    }
-
-    private function getResetPasswordToken(int $id):? Token
-    {
-        $repository = $this->doctrine->getManager()->getRepository(Token::class);
-        return $repository->findOneBy([
-            'id' => $id,
-            'type' => self::PASSWORD_RESET_TOKEN_TYPE,
-        ]);
-    }
-
-    private function removeResetPasswordTokenFromDatabase(Token $token)
-    {
-        $manager = $this->doctrine->getManager();
-        $manager->remove($token);
         $manager->flush();
     }
 
@@ -176,5 +169,30 @@ class UserManager
         $token->setType(self::PASSWORD_RESET_TOKEN_TYPE);
         $token->setDate(new \DateTime('now'));
         return $token;
+    }
+
+    private function getActivationToken(int $id):? Token
+    {
+        $repository = $this->doctrine->getManager()->getRepository(Token::class);
+        return $repository->findOneBy([
+            'id' => $id,
+            'type' => self::ACCOUNT_ACTIVATION_TOKEN_TYPE
+        ]);
+    }
+
+    private function getResetPasswordToken(int $id):? Token
+    {
+        $repository = $this->doctrine->getManager()->getRepository(Token::class);
+        return $repository->findOneBy([
+            'id' => $id,
+            'type' => self::PASSWORD_RESET_TOKEN_TYPE,
+        ]);
+    }
+
+    private function removeResetPasswordTokenFromDatabase(Token $token)
+    {
+        $manager = $this->doctrine->getManager();
+        $manager->remove($token);
+        $manager->flush();
     }
 }

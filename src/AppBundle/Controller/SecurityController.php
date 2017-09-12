@@ -74,7 +74,7 @@ class SecurityController extends Controller
     public function newPasswordAction(Request $request, int $id, string $token, UserManager $userManager)
     {
         if ($userManager->isResetPasswordTokenValid($id, $token)) {
-            return $this->workWithNewPasswordForm($request, $id, $token, $userManager);
+            return $this->workWithNewPasswordForm($request, $id, $userManager);
         } else {
             return $this->renderResetPasswordAccessDeniedMessage();
         }
@@ -92,15 +92,30 @@ class SecurityController extends Controller
         }
     }
 
-    private function workWithNewPasswordForm(Request $request, int $id, string $token, UserManager $userManager)
+    private function workWithNewPasswordForm(Request $request, int $tokenId, UserManager $userManager)
     {
         $user = new User();
         $form = $this->createForm(NewPasswordType::class, $user, ['validation_groups' => 'passwordReset']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $userManager->resetPasswordForUser($tokenId, $user);
             return $this->renderPasswordChangedMessage();
         }
         return $this->renderNewPasswordFormErrors($form);
+    }
+
+    private function isEmailCheckFormValid(Form $form, User $user, UserManager $userManager): bool
+    {
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($userManager->isUserAlreadyExists($user)) {
+                return true;
+            } else {
+                $form->addError(new FormError('No account with the same e-mail'));
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     private function renderActivationSuccessMessage()
@@ -183,19 +198,5 @@ class SecurityController extends Controller
             'form' => $form->createView(),
             'errors' => $form->getErrors(true, true)
         ]);
-    }
-
-    private function isEmailCheckFormValid(Form $form, User $user, UserManager $userManager): bool
-    {
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($userManager->isUserAlreadyExists($user)) {
-                return true;
-            } else {
-                $form->addError(new FormError('No account with the same e-mail'));
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 }
