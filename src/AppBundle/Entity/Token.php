@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping\ManyToOne;
  */
 class Token
 {
+    private const ALIVE_TIME_SECONDS = 24 * 60 * 60;
+
     /**
      * @var int
      *
@@ -55,7 +57,7 @@ class Token
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -67,7 +69,7 @@ class Token
      *
      * @return Token
      */
-    public function setToken($token)
+    public function setToken(string $token): Token
     {
         $this->token = $token;
 
@@ -79,7 +81,7 @@ class Token
      *
      * @return string
      */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
@@ -91,7 +93,7 @@ class Token
      *
      * @return Token
      */
-    public function setType($type)
+    public function setType(string $type): Token
     {
         $this->type = $type;
 
@@ -103,7 +105,7 @@ class Token
      *
      * @return string
      */
-    public function getType()
+    public function getType():  string
     {
         return $this->type;
     }
@@ -115,7 +117,7 @@ class Token
      *
      * @return Token
      */
-    public function setDate($date)
+    public function setDate(\DateTime $date): Token
     {
         $this->date = $date;
 
@@ -127,7 +129,7 @@ class Token
      *
      * @return \DateTime
      */
-    public function getDate()
+    public function getDate(): \DateTime
     {
         return $this->date;
     }
@@ -151,6 +153,17 @@ class Token
     public function isValid(string $value): bool
     {
         return $this->token === $value;
+    }
+
+    public function isAlive(): bool
+    {
+        $createTime = $this->getDate()->getTimestamp();
+        $currentTime = (new \DateTime('now'))->getTimestamp();
+        if ($currentTime - $createTime <= self::ALIVE_TIME_SECONDS) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
