@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
- * @UniqueEntity(fields="email", message="Email already taken")
+ * @UniqueEntity(fields="email", message="Email already taken", groups={"registration"})
  */
 class User implements AdvancedUserInterface, \Serializable
 {
@@ -29,9 +29,9 @@ class User implements AdvancedUserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Assert\NotBlank()
-     * @Assert\Email()
-     * @Assert\Length(max=255, maxMessage="Email address too long")
+     * @Assert\NotBlank(groups={"registration", "checkEmail"})
+     * @Assert\Email(groups={"registration", "checkEmail"})
+     * @Assert\Length(max=255, maxMessage="Email address too long", groups={"registration", "checkEmail"})
      */
     private $email;
 
@@ -39,7 +39,8 @@ class User implements AdvancedUserInterface, \Serializable
      * @Assert\NotBlank()
      * @Assert\Length(max=4096, min=4,
      *     minMessage="Password should be 4 and more characters",
-     *     maxMessage="Password should be less than 4096 characters")
+     *     maxMessage="Password should be less than 4096 characters",
+     *     groups={"registration", "passwordReset"})
      */
     private $plainPassword;
 

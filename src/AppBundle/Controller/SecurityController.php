@@ -38,7 +38,7 @@ class SecurityController extends Controller
             return $this->redirectToRoute('homepage');
         }
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $user, ['validation_groups' => 'registration']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $userManager->registerNewUser($user);
