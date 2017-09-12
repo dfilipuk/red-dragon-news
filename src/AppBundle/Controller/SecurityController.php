@@ -72,7 +72,11 @@ class SecurityController extends Controller
      */
     public function newPasswordAction(int $id, string $token, UserManager $userManager)
     {
-
+        if ($userManager->isResetPasswordTokenValid($id, $token)) {
+            return $this->redirectToRoute('sign_in');
+        } else {
+            return $this->renderResetPasswordAccessDeniedMessage();
+        }
     }
 
     /**
@@ -124,6 +128,15 @@ class SecurityController extends Controller
             ],
             'message_template' => 'auth/messages/reset_password_continue.html.twig',
             'title' => 'Reset password continue'
+        ]);
+    }
+
+    private function renderResetPasswordAccessDeniedMessage()
+    {
+        return $this->render('auth/message.twig', [
+            'params' => [],
+            'message_template' => 'auth/messages/bad_reset_password_link.html.twig',
+            'title' => 'Access denied'
         ]);
     }
 
