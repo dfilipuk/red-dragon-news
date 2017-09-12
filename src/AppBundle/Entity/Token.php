@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping\ManyToOne;
  */
 class Token
 {
+    private const ALIVE_TIME_SECONDS = 24 * 60 * 60;
+
     /**
      * @var int
      *
@@ -151,6 +153,17 @@ class Token
     public function isValid(string $value): bool
     {
         return $this->token === $value;
+    }
+
+    public function isAlive(\DateTime $dateTime): bool
+    {
+        $createTime = $this->getDate()->getTimestamp();
+        $currentTime = $dateTime->getTimestamp();
+        if ($currentTime - $createTime <= self::ALIVE_TIME_SECONDS) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
