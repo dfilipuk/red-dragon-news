@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Form\NewPasswordType;
 use AppBundle\Form\UserEmailType;
 use AppBundle\Form\UserType;
 use AppBundle\Service\UserManager;
@@ -70,10 +71,10 @@ class SecurityController extends Controller
     /**
      * @Route("auth/new-password/{id}/{token}", name="new_password", requirements={"id": "\d+"})
      */
-    public function newPasswordAction(int $id, string $token, UserManager $userManager)
+    public function newPasswordAction(Request $request, int $id, string $token, UserManager $userManager)
     {
         if ($userManager->isResetPasswordTokenValid($id, $token)) {
-            return $this->redirectToRoute('sign_in');
+            return $this->workWithNewPasswordForm($request, $id, $token, $userManager);
         } else {
             return $this->renderResetPasswordAccessDeniedMessage();
         }
@@ -89,6 +90,17 @@ class SecurityController extends Controller
         } else {
             return $this->renderActivationFailMessage();
         }
+    }
+
+    private function workWithNewPasswordForm(Request $request, int $id, string $token, UserManager $userManager)
+    {
+        $user = new User();
+        $form = $this->createForm(NewPasswordType::class, $user, ['validation_groups' => 'passwordReset']);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->renderPasswordChangedMessage();
+        }
+        return $this->renderNewPasswordFormErrors($form);
     }
 
     private function renderActivationSuccessMessage()
@@ -140,6 +152,15 @@ class SecurityController extends Controller
         ]);
     }
 
+    private function renderPasswordChangedMessage()
+    {
+        return $this->render('auth/message.twig', [
+            'params' => [],
+            'message_template' => 'auth/messages/password_changed.html.twig',
+            'title' => 'Access denied'
+        ]);
+    }
+
     private function renderEmailCheckFormErrors(Form $form)
     {
         return $this->render('auth/email_check.html.twig', [
@@ -151,6 +172,14 @@ class SecurityController extends Controller
     private function renderRegistrationFormErrors(Form $form)
     {
         return $this->render('auth/register.html.twig', [
+            'form' => $form->createView(),
+            'errors' => $form->getErrors(true, true)
+        ]);
+    }
+
+    private function renderNewPasswordFormErrors(Form $form)
+    {
+        return $this->render(':auth:new_password.html.twig', [
             'form' => $form->createView(),
             'errors' => $form->getErrors(true, true)
         ]);
