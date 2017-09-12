@@ -172,7 +172,7 @@ class SecurityController extends Controller
         return $this->render('auth/message.twig', [
             'params' => [],
             'message_template' => 'auth/messages/password_changed.html.twig',
-            'title' => 'Access denied'
+            'title' => 'Password changed'
         ]);
     }
 
