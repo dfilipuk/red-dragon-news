@@ -357,3 +357,32 @@ footer{
   z-index: 1000;
   display:none
 }
+
+
+.news-container {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.news-content {
+  border-radius: 2px;
+  padding: 80px 56px;
+  margin-bottom: 80px;
+}
+
+.news-layout.is-small-screen .news-content {
+  padding: 40px 28px;
+}
+
+.news-content h3 {
+  margin-top: 48px;
+}
+
+.news-image{
+  width: 100%;
+  height: 500px;
+}
+
+.margin-top-10{
+  margin-top: 10px;
+}

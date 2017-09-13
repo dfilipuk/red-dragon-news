@@ -118,4 +118,9 @@ class NewsManager
         }
         return $result;
     }
+
+    public function findNewsById(int $id): ?Article
+    {
+        return $this->doctrine->getManager()->getRepository(Article::class)->find($id);
+    }
 }
