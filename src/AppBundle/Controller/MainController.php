@@ -57,6 +57,17 @@ class MainController extends Controller
     }
 
     /**
+     * @Route("/main/news/{id}", name="news-page")
+     */
+    public function showNewsAction(int $id, Request $request, NewsManager $newsManager)
+    {
+        $generalCategories = $newsManager->findGeneralCategories();
+        $oneNews = $newsManager->findNewsById($id);
+
+        return $this->render("main/news.html.twig", ['news' => $oneNews, 'categories' => $generalCategories,  'title' => $oneNews->getTitle()]);
+    }
+
+    /**
      * @Route("/load-tree", name="load-tree")
      */
     public function loadTreeAction(NewsManager $newsManager)

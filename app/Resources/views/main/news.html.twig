@@ -1,0 +1,39 @@
+{% extends 'base_main.html.twig' %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="news-container mdl-grid">
+            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+            <div class="news-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+                {% if news.picture is null %}
+                    <img src="{{ asset('public/img/no-photo.png') }}" class="news-image">
+                {% else %}
+                    <img src="{{ asset('public/img/' ~ news.picture) }}" class="news-image">
+                {% endif %}
+                <div class="text-center margin-top-10">
+                    <p>Author: <b></b>. Date: <b>{{ news.date|date }}</b>. Number of Views: <b>{{ news.viewsCount }}</b></p>
+                </div>
+
+                <h3>{{ news.title }}</h3>
+                <p>
+                    {{ news.text }}
+
+                </p>
+                <h5>Similar news:</h5>
+                <ul>
+                    <li><a>Some similar news</a></li>
+                    <li><a>Some similar news</a></li>
+                    <li><a>Some similar news</a></li>
+                    <li><a>Some similar news</a></li>
+                    <li><a>Some similar news</a></li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
