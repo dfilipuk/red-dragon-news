@@ -38,7 +38,7 @@ class MainController extends Controller
         $allNews = $newsManager->findAllNews();
         $generalCategories = $newsManager->findGeneralCategories();
         $newsOnPage = $this->paginateNews($request, $allNews);
-        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage), 'title' => 'Red Dragon news'));
+        return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage), 'title' => 'Red Dragon news']);
     }
 
     /**
@@ -48,12 +48,12 @@ class MainController extends Controller
     {
         $generalCategories = $newsManager->findGeneralCategories();
         if ($category === 'all-categories'){
-            return $this->render("main/all_categories.html.twig", array('categories' => $generalCategories));
+            return $this->render("main/all_categories.html.twig", ['categories' => $generalCategories]);
         }
         $currentCategoryNews = $newsManager->findNewsByCategory($category);
         $newsOnPage = $this->paginateNews($request, $currentCategoryNews);
 
-        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage), 'title' => $category));
+        return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage), 'title' => $category]);
     }
 
     /**
