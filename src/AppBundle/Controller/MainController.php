@@ -27,7 +27,6 @@ class MainController extends Controller
             $request->query->getInt('page', 1),
             10
         );
-
     }
 
     /**
@@ -52,22 +51,23 @@ class MainController extends Controller
         }
         $currentCategoryNews = $newsManager->findNewsByCategory($category);
         $newsOnPage = $this->paginateNews($request, $currentCategoryNews);
-
         return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => $category]);
     }
 
     /**
-     * @Route("/main/news/{id}", name="news-page")
+     * @Route("/main/news/{id}", name="news-page", requirements={"id": "\d+"})
      */
     public function showNewsAction(int $id, Request $request, NewsManager $newsManager)
     {
         $generalCategories = $newsManager->findGeneralCategories();
         $oneNews = $newsManager->findNewsById($id);
+        if ($oneNews === null)
+            return $this->redirectToRoute("homepage");
         return $this->render("main/news.html.twig", ['news' => $oneNews, 'categories' => $generalCategories]);
     }
 
     /**
-     * @Route("/load-tree", name="load-tree")
+     * @Route("/load-tree", name="load-tree", methods="POST")
      */
     public function loadTreeAction(NewsManager $newsManager)
     {
@@ -77,7 +77,7 @@ class MainController extends Controller
     }
 
     /**
-     * @Route("/update-watch-count/{id}", name="update-watch-count")
+     * @Route("/update-watch-count/{id}", name="update-watch-count", requirements={"id": "\d+"}, methods="POST")
      */
     public function updateWatchCountAction(NewsManager $newsManager, int $id)
     {

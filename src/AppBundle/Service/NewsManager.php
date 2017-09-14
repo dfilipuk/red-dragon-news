@@ -125,7 +125,7 @@ class NewsManager
         return array_key_exists(0, $result) ? $result[0] : null;
     }
 
-    public function updateWatchCount(int $id)
+    public function updateWatchCount(int $id): void
     {
         $article = $this->findNewsById($id);
         $article->setViewsCount($article->getViewsCount() + 1);
