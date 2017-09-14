@@ -14,19 +14,25 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery(
-                'SELECT a FROM AppBundle:Article a WHERE a.categoryID IN(:categoriesID)'
+                'SELECT a FROM AppBundle:Article a WHERE a.category IN(:categoriesID)'
             )
             ->setParameter('categoriesID', $categoriesID)
             ->getResult();
     }
 
-    /*public function findNewsById(int $id)
+    public function findNewsById(int $id)
     {
         return $this->getEntityManager()
             ->createQuery(
-                'SELECT article, author, category FROM AppBundle:Article a WHERE a.categoryID IN(:categoriesID)'
+                'SELECT article, similar 
+                      FROM 
+                        AppBundle:Article article 
+                      LEFT JOIN 
+                        article.similarArticles similar
+                      WHERE 
+                        article.id = :id'
             )
-            ->setParameter('categoriesID', $categoriesID)
+            ->setParameter('id', $id)
             ->getResult();
-    }*/
+    }
 }

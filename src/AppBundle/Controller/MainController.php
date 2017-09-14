@@ -63,7 +63,6 @@ class MainController extends Controller
     {
         $generalCategories = $newsManager->findGeneralCategories();
         $oneNews = $newsManager->findNewsById($id);
-
         return $this->render("main/news.html.twig", ['news' => $oneNews, 'categories' => $generalCategories,  'title' => $oneNews->getTitle()]);
     }
 

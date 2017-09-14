@@ -44,7 +44,7 @@ class Category
     private $parent;
 
     /**
-     * @OneToMany(targetEntity="Article", mappedBy="categoryID")
+     * @OneToMany(targetEntity="Article", mappedBy="category")
      */
     private $articles;
 
