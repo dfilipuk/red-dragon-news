@@ -19,4 +19,14 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
             ->setParameter('categoriesID', $categoriesID)
             ->getResult();
     }
+
+    /*public function findNewsById(int $id)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT article, author, category FROM AppBundle:Article a WHERE a.categoryID IN(:categoriesID)'
+            )
+            ->setParameter('categoriesID', $categoriesID)
+            ->getResult();
+    }*/
 }
