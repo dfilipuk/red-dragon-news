@@ -118,4 +118,19 @@ class NewsManager
         }
         return $result;
     }
+
+    public function findNewsById(int $id): ?Article
+    {
+        $result = $this->doctrine->getManager()->getRepository(Article::class)->findNewsById($id);
+        return array_key_exists(0, $result) ? $result[0] : null;
+    }
+
+    public function updateWatchCount(int $id): void
+    {
+        $article = $this->findNewsById($id);
+        $article->setViewsCount($article->getViewsCount() + 1);
+        $manager = $this->doctrine->getManager();
+        $manager->persist($article);
+        $manager->flush();
+    }
 }

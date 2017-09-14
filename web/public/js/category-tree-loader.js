@@ -2,7 +2,7 @@ $(document).ready(function ()
 {
     startLoadingAnimation();
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "/load-tree",
         datatype: "json",
         success: function(result){
