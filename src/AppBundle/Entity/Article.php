@@ -64,13 +64,13 @@ class Article
      * @ManyToOne(targetEntity="User")
      * @JoinColumn(name="author_id", referencedColumnName="id")
      */
-    private $authorID;
+    private $author;
 
     /**
      * @ManyToOne(targetEntity="Category", inversedBy="articles")
      * @JoinColumn(name="category_id", referencedColumnName="id")
      */
-    private $categoryID;
+    private $category;
 
     /**
      * @ManyToMany(targetEntity="Article", mappedBy="similarArticles")
@@ -212,33 +212,33 @@ class Article
     /**
      * @return mixed
      */
-    public function getAuthorID()
+    public function getAuthor()
     {
-        return $this->authorID;
+        return $this->author;
     }
 
     /**
      * @param mixed $authorID
      */
-    public function setAuthorID($authorID)
+    public function setAuthor($authorID)
     {
-        $this->authorID = $authorID;
+        $this->author = $authorID;
     }
 
     /**
      * @return mixed
      */
-    public function getCategoryID()
+    public function getCategory()
     {
-        return $this->categoryID;
+        return $this->category;
     }
 
     /**
      * @param mixed $categoryID
      */
-    public function setCategoryID($categoryID)
+    public function setCategory($categoryID)
     {
-        $this->categoryID = $categoryID;
+        $this->category = $categoryID;
     }
 
     /**

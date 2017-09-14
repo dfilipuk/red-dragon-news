@@ -15,22 +15,21 @@
                     <img src="{{ asset('public/img/' ~ news.picture) }}" class="news-image">
                 {% endif %}
                 <div class="text-center margin-top-10">
-                    <p>Author: <b></b>. Date: <b>{{ news.date|date }}</b>. Number of Views: <b>{{ news.viewsCount }}</b></p>
+                    <p>Author: <b>{{ news.author.email }}</b>. Date: <b>{{ news.date|date }}</b>. Number of Views: <b>{{ news.viewsCount }}</b></p>
                 </div>
 
                 <h3>{{ news.title }}</h3>
                 <p>
                     {{ news.text }}
                 </p>
-                <h5>Similar news:</h5>
-                <ul>
-                    <li><a>Some similar news</a></li>
-                    <li><a>Some similar news</a></li>
-                    <li><a>Some similar news</a></li>
-                    <li><a>Some similar news</a></li>
-                    <li><a>Some similar news</a></li>
-                </ul>
-
+                {% if news.similarArticles|length != 0 %}
+                    <h5>Similar news:</h5>
+                    <ul>
+                        {% for one_news in news.similarArticles %}
+                            <li><a href="{{ path('news-page', {'id': one_news.id}) }}">{{ one_news.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
         </div>
     </div>
