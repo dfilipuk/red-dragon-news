@@ -27,7 +27,6 @@ class MainController extends Controller
             $request->query->getInt('page', 1),
             10
         );
-
     }
 
     /**
@@ -38,7 +37,7 @@ class MainController extends Controller
         $allNews = $newsManager->findAllNews();
         $generalCategories = $newsManager->findGeneralCategories();
         $newsOnPage = $this->paginateNews($request, $allNews);
-        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage), 'title' => 'Red Dragon news'));
+        return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => 'Red Dragon news']);
     }
 
     /**
@@ -48,22 +47,42 @@ class MainController extends Controller
     {
         $generalCategories = $newsManager->findGeneralCategories();
         if ($category === 'all-categories'){
-            return $this->render("main/all_categories.html.twig", array('categories' => $generalCategories));
+            return $this->render("main/all_categories.html.twig", ['categories' => $generalCategories]);
         }
         $currentCategoryNews = $newsManager->findNewsByCategory($category);
         $newsOnPage = $this->paginateNews($request, $currentCategoryNews);
-
-        return $this->render("main/index.html.twig", array('news' => $newsOnPage, 'categories' => $generalCategories, 'news_count' => count($newsOnPage), 'title' => $category));
+        return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => $category]);
     }
 
     /**
-     * @Route("/load-tree", name="load-tree")
+     * @Route("/main/news/{id}", name="news-page", requirements={"id": "\d+"})
+     */
+    public function showNewsAction(int $id, Request $request, NewsManager $newsManager)
+    {
+        $generalCategories = $newsManager->findGeneralCategories();
+        $oneNews = $newsManager->findNewsById($id);
+        if ($oneNews === null)
+            return $this->redirectToRoute("homepage");
+        return $this->render("main/news.html.twig", ['news' => $oneNews, 'categories' => $generalCategories]);
+    }
+
+    /**
+     * @Route("/load-tree", name="load-tree", methods="POST")
      */
     public function loadTreeAction(NewsManager $newsManager)
     {
         $response = new Response(json_encode($newsManager->getSortedCategories()));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
+    }
+
+    /**
+     * @Route("/update-watch-count/{id}", name="update-watch-count", requirements={"id": "\d+"}, methods="POST")
+     */
+    public function updateWatchCountAction(NewsManager $newsManager, int $id)
+    {
+        $newsManager->updateWatchCount($id);
+        return new Response();
     }
 
 }

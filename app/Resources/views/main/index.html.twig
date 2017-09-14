@@ -5,51 +5,58 @@
 {% endblock %}
 
 {% block body %}
-    <div class="row">
-        {% if news_count == 0 %}
-            <h3 class="text-center first-color-text margin-top-70">Nothing found</h3>
-        {% endif %}
-        {% set i = 0 %}
-        {% for one_news in news %}
-            <div class="col-sm-12">
-                <a href="#" class="news-href">
-                    <div class="row">
-                        {% if (i%2==0) %}
-                            <div class="col-sm-4 text-center margin-top-20">
-                                {% if one_news.picture is null %}
-                                    <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
+
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2 margin-top-20">
+        <div class="layout-background mdl-card mdl-shadow--2dp">
+            <div class="row">
+                {% if news|length == 0 %}
+                    <h3 class="text-center first-color-text margin-top-70">Nothing found</h3>
+                {% endif %}
+                {% set i = 0 %}
+                {% for one_news in news %}
+                    <div class="col-sm-12">
+                        <a href="{{ path('news-page', {'id': one_news.id}) }}" class="news-href">
+                            <div class="row">
+                                {% if (i%2==0) %}
+                                    <div class="col-sm-4 text-center margin-top-20">
+                                        {% if one_news.picture is null %}
+                                            <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
+                                        {% else %}
+                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <h4 class="news-title">{{ one_news.title }}</h4>
+                                        <p>{{ one_news.text|sliceAdvanced(780) }}</p>
+                                    </div>
                                 {% else %}
-                                    <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                    <div class="col-sm-7 col-sm-offset-1">
+                                        <h4 class="news-title">{{ one_news.title }}</h4>
+                                        <p>{{ one_news.text|sliceAdvanced(780) }}</p>
+                                    </div>
+                                    <div class="col-sm-4 text-center margin-top-20">
+                                        {% if one_news.picture is null %}
+                                            <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
+                                        {% else %}
+                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                        {% endif %}
+                                    </div>
                                 {% endif %}
                             </div>
-                            <div class="col-sm-7">
-                                <h4 class="news-title">{{ one_news.title }}</h4>
-                                <p>{{ one_news.text|sliceAdvanced(780) }}</p>
-                            </div>
-                        {% else %}
-                            <div class="col-sm-7 col-sm-offset-1">
-                                <h4 class="news-title">{{ one_news.title }}</h4>
-                                <p>{{ one_news.text|sliceAdvanced(780) }}</p>
-                            </div>
-                            <div class="col-sm-4 text-center margin-top-20">
-                                {% if one_news.picture is null %}
-                                    <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
-                                {% else %}
-                                    <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
-                                {% endif %}
-                            </div>
-                        {% endif %}
+                        </a>
                     </div>
-                </a>
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <hr class="news-hr" />
+                    </div>
+                    {% set i = i + 1 %}
+                {% endfor %}
+                <div class="navigation text-center">
+                    {{ knp_pagination_render(news) }}
+                </div>
             </div>
-            <div class="col-sm-10 col-sm-offset-1">
-                <hr class="news-hr" />
-            </div>
-            {% set i = i + 1 %}
-        {% endfor %}
-        <div class="navigation text-center">
-            {{ knp_pagination_render(news) }}
         </div>
     </div>
+</div>
 {% endblock %}
 

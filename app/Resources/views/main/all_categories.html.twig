@@ -5,10 +5,17 @@
 {% endblock %}
 
 {% block body %}
-    <div class="row" >
-        <div class="col-sm-6 col-sm-offset-3" id="categoryDiv"></div>
+
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2 margin-top-20">
+        <div class="layout-background mdl-card mdl-shadow--2dp">
+            <div class="row" >
+                <div class="col-sm-6 col-sm-offset-3" id="categoryDiv"></div>
+            </div>
+            <div id="loadImg" class="mdl-spinner mdl-js-spinner is-active"></div>
+        </div>
     </div>
-    <div id="loadImg" class="mdl-spinner mdl-js-spinner is-active"></div>
+</div>
 {% endblock %}
 {% block javascript %}
     <script type="text/javascript"  src="{{ asset('public/js/category-tree-loader.js') }}"></script>
