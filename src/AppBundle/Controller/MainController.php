@@ -63,7 +63,7 @@ class MainController extends Controller
     {
         $generalCategories = $newsManager->findGeneralCategories();
         $oneNews = $newsManager->findNewsById($id);
-        return $this->render("main/news.html.twig", ['news' => $oneNews, 'categories' => $generalCategories,  'title' => $oneNews->getTitle()]);
+        return $this->render("main/news.html.twig", ['news' => $oneNews, 'categories' => $generalCategories]);
     }
 
     /**
@@ -74,6 +74,15 @@ class MainController extends Controller
         $response = new Response(json_encode($newsManager->getSortedCategories()));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
+    }
+
+    /**
+     * @Route("/update-watch-count/{id}", name="update-watch-count")
+     */
+    public function updateWatchCountAction(NewsManager $newsManager, int $id)
+    {
+        $newsManager->updateWatchCount($id);
+        return new Response();
     }
 
 }
