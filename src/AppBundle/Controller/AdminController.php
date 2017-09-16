@@ -5,8 +5,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Service\AjaxRequestManager;
 use AppBundle\Service\NewsManager;
+use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class AdminController extends Controller
@@ -23,8 +25,18 @@ class AdminController extends Controller
     /**
      * @Route("/admin/ajax/users", name="ajax_users")
      */
-    public function usersAction(Request $request, AjaxRequestManager $ajaxRequestManager)
+    public function usersAction(Request $request, AjaxRequestManager $ajaxRequestManager, UserManager $userManager)
     {
-
+        if ($ajaxRequestManager->parseRequestParams($request)) {
+            $result = [
+               'success' => true,
+               'items' => $userManager->getSpecifiedUsersList($ajaxRequestManager)
+            ];
+        } else {
+            $result = [
+                'success' => false
+            ];
+        }
+        return new JsonResponse($result);
     }
 }

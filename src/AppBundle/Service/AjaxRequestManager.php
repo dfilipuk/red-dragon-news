@@ -15,6 +15,7 @@ class AjaxRequestManager
     private $isFiltered;
     private $filterColumn;
     private $filterPattern;
+    private $pagesAmo;
 
     public function __construct()
     {
@@ -26,6 +27,7 @@ class AjaxRequestManager
         $this->isFiltered = false;
         $this->filterColumn = null;
         $this->filterPattern = null;
+        $this->pagesAmo = 0;
     }
 
     public function parseRequestParams(Request $request): bool
@@ -94,5 +96,15 @@ class AjaxRequestManager
     public function getSortColumn(): int
     {
         return $this->sortColumn;
+    }
+
+    public function getPagesAmo(): int
+    {
+        return $this->pagesAmo;
+    }
+
+    public function setPagesAmo(int $pagesAmo)
+    {
+        $this->pagesAmo = $pagesAmo;
     }
 }
