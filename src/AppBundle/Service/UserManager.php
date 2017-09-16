@@ -97,6 +97,44 @@ class UserManager
         }
     }
 
+    public function getSpecifiedUsersList(AjaxRequestManager $ajaxRequestManager): array
+    {
+        $repository = $this->doctrine->getManager()->getRepository(User::class);
+        $users = $repository->getAllUsers();
+        $page = $this->getItemsFromListForSpecifiedPage($ajaxRequestManager, $users);
+        return $this->convertObjectsToArray($page);
+    }
+
+    private function getItemsFromListForSpecifiedPage(AjaxRequestManager $ajaxRequestManager, array $list): array
+    {
+        $itemsAmount = count($list);
+        if ($itemsAmount > 0) {
+            if (($itemsAmount % $ajaxRequestManager->getRowsPerPage()) === 0) {
+                $pagesAmo = intdiv($itemsAmount, $ajaxRequestManager->getRowsPerPage());
+            } else {
+                $pagesAmo = intdiv($itemsAmount, $ajaxRequestManager->getRowsPerPage()) + 1;
+            }
+            $ajaxRequestManager->setPagesAmo($pagesAmo);
+            $offset = ($ajaxRequestManager->getPage() - 1) * $ajaxRequestManager->getRowsPerPage();
+            return array_slice($list, $offset, $ajaxRequestManager->getRowsPerPage());
+        } else {
+            return [];
+        }
+    }
+
+    private function convertObjectsToArray(array $users): array
+    {
+        $result = [];
+        for ($i = 0; $i < count($users); $i++) {
+            $result[$i] = [
+                $users[$i]->getUsername(),
+                $users[$i]->getRole(),
+                $users[$i]->getIsActive() ? 'Active' : 'Disabled'
+            ];
+        }
+        return $result;
+    }
+
     private function getUserByEmail(string $userEmail):? User
     {
         $repository = $this->doctrine->getManager()->getRepository(User::class);

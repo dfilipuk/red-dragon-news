@@ -10,4 +10,12 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAllUsers()
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT u FROM AppBundle:User u'
+            )
+            ->getResult();
+    }
 }
