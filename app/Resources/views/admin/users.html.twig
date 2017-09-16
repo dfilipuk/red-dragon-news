@@ -1,0 +1,26 @@
+{% extends 'base_main.html.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2 margin-top-20">
+            <div class="layout-background mdl-card mdl-shadow--2dp">
+                <div class="row">
+                    <div class="container-fluid main-container">
+                        <div id="entities-grid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript"  src="{{ asset('public/js/ajax-grid.js') }}"></script>
+    <script>
+        $("#entities-grid").ajaxgrid({
+            columns: ["E-Mail", "Role", "Status"]
+        });
+    </script>
+{% endblock %}
