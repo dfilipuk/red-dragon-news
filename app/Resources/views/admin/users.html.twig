@@ -20,7 +20,11 @@
     <script type="text/javascript"  src="{{ asset('public/js/ajax-grid.js') }}"></script>
     <script>
         $("#entities-grid").ajaxgrid({
-            columns: ["E-Mail", "Role", "Status"]
+            columnsNames: ["E-Mail", "Role", "Status"],
+            url: "{{ url('ajax_users') }}",
+            sortColumns: ["email"],
+            filterColumns: ["email", "role", "status"],
+            rowsPerPageAmo: 3
         });
     </script>
 {% endblock %}
