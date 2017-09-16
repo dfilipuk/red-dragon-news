@@ -29,8 +29,9 @@ class AdminController extends Controller
     {
         if ($ajaxRequestManager->parseRequestParams($request)) {
             $result = [
-               'success' => true,
-               'items' => $userManager->getSpecifiedUsersList($ajaxRequestManager)
+                'success' => true,
+                'items' => $userManager->getSpecifiedUsersList($ajaxRequestManager),
+                'pagesAmo' => $ajaxRequestManager->getPagesAmo()
             ];
         } else {
             $result = [
