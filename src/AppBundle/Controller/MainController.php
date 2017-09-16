@@ -25,7 +25,7 @@ class MainController extends Controller
         return $paginator->paginate(
             $news,
             $request->query->getInt('page', 1),
-            10
+            1
         );
     }
 

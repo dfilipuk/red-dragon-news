@@ -15,6 +15,8 @@ class UserManager
     private const ACCOUNT_ACTIVATION_TOKEN_TYPE = 'ACTIVATION';
     private const PASSWORD_RESET_TOKEN_TYPE = 'PASSWORD';
     private const SECURITY_TOKEN_LENGTH = 50;
+    private const ACTIVATED_ACCOUNT_STRING = 'Activted';
+    private const DISABLED_ACCOUNT_STRING = 'Disabled';
 
     private $doctrine;
     private $encoder;
@@ -129,7 +131,7 @@ class UserManager
             $result[$i] = [
                 $users[$i]->getUsername(),
                 $users[$i]->getRole(),
-                $users[$i]->getIsActive() ? 'Active' : 'Disabled'
+                $users[$i]->getIsActive() ? self::ACTIVATED_ACCOUNT_STRING : self::DISABLED_ACCOUNT_STRING
             ];
         }
         return $result;
