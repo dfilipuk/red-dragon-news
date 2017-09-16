@@ -10,12 +10,42 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getAllUsers()
+    public function getAllUsers(): array
     {
         return $this->getEntityManager()
             ->createQuery(
                 'SELECT u FROM AppBundle:User u'
             )
+            ->getResult();
+    }
+
+    public function getSortedUsers(string $sortField, bool $isAscending): array
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT u FROM AppBundle:User u ORDER BY u.' . $sortField . ' ' . ($isAscending ? 'ASC' : 'DESC')
+            )
+            ->getResult();
+    }
+
+    public function getFilteredUsers(string $filterField, string $value): array
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT u FROM AppBundle:User u WHERE u.' . $filterField . ' = :val'
+            )
+            ->setParameter('val', $value)
+            ->getResult();
+    }
+
+    public function getSortedAndFilteredUsers(string $sortField, bool $isAscending, string $filterField, string $value)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT u FROM AppBundle:User u WHERE (u.' . $filterField . ' = :val) ' .
+                'ORDER BY u.' . $sortField . ' ' . ($isAscending ? 'ASC' : 'DESC')
+            )
+            ->setParameter('val', $value)
             ->getResult();
     }
 }

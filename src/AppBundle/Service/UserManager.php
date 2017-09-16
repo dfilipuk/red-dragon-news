@@ -15,8 +15,6 @@ class UserManager
     private const ACCOUNT_ACTIVATION_TOKEN_TYPE = 'ACTIVATION';
     private const PASSWORD_RESET_TOKEN_TYPE = 'PASSWORD';
     private const SECURITY_TOKEN_LENGTH = 50;
-    private const ACTIVATED_ACCOUNT_STRING = 'Activted';
-    private const DISABLED_ACCOUNT_STRING = 'Disabled';
 
     private $doctrine;
     private $encoder;
@@ -97,44 +95,6 @@ class UserManager
         } else {
             return true;
         }
-    }
-
-    public function getSpecifiedUsersList(AjaxRequestManager $ajaxRequestManager): array
-    {
-        $repository = $this->doctrine->getManager()->getRepository(User::class);
-        $users = $repository->getAllUsers();
-        $page = $this->getItemsFromListForSpecifiedPage($ajaxRequestManager, $users);
-        return $this->convertObjectsToArray($page);
-    }
-
-    private function getItemsFromListForSpecifiedPage(AjaxRequestManager $ajaxRequestManager, array $list): array
-    {
-        $itemsAmount = count($list);
-        if ($itemsAmount > 0) {
-            if (($itemsAmount % $ajaxRequestManager->getRowsPerPage()) === 0) {
-                $pagesAmo = intdiv($itemsAmount, $ajaxRequestManager->getRowsPerPage());
-            } else {
-                $pagesAmo = intdiv($itemsAmount, $ajaxRequestManager->getRowsPerPage()) + 1;
-            }
-            $ajaxRequestManager->setPagesAmo($pagesAmo);
-            $offset = ($ajaxRequestManager->getPage() - 1) * $ajaxRequestManager->getRowsPerPage();
-            return array_slice($list, $offset, $ajaxRequestManager->getRowsPerPage());
-        } else {
-            return [];
-        }
-    }
-
-    private function convertObjectsToArray(array $users): array
-    {
-        $result = [];
-        for ($i = 0; $i < count($users); $i++) {
-            $result[$i] = [
-                $users[$i]->getUsername(),
-                $users[$i]->getRole(),
-                $users[$i]->getIsActive() ? self::ACTIVATED_ACCOUNT_STRING : self::DISABLED_ACCOUNT_STRING
-            ];
-        }
-        return $result;
     }
 
     private function getUserByEmail(string $userEmail):? User

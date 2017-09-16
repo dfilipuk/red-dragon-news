@@ -1,4 +1,5 @@
-var dataUrl, sortableColumns, filterableColumns, rowsPerPage, currentPage, paramsString;
+var dataUrl, sortableColumns, filterableColumns, rowsPerPage;
+var currentPage;
 
 (function( $ ){
     $.fn.ajaxgrid = function({columnsNames, url, sortColumns, filterColumns, rowsPerPageAmo}) {
@@ -6,7 +7,6 @@ var dataUrl, sortableColumns, filterableColumns, rowsPerPage, currentPage, param
         sortableColumns = sortColumns;
         filterableColumns = filterColumns;
         rowsPerPage = rowsPerPageAmo;
-        paramsString = 'rowsamo=' + rowsPerPage;
         addDateContainer(columnsNames);
         getPage(1);
     };
@@ -23,8 +23,10 @@ function sendRequest(params) {
 
 function handleResponse(data) {
     if (data.success) {
-        addTableBody(data.items);
-        addPagination(data.pagesAmo);
+        if (data.items.length > 0) {
+            addTableBody(data.items);
+            addPagination(data.pagesAmo);
+        }
     }
 }
 
@@ -81,9 +83,24 @@ function addPagination(pagesAmo) {
     $("#pagination").append(pagination);
 }
 
+function getPaginationParams(pageNum) {
+    return 'rowsamo=' + rowsPerPage + '&page=' + pageNum;
+}
+
+function getSortingParams(field, isAscending) {
+    return 'sortbyfield=' + field + '&order=' + (isAscending ? 'asc' : 'desc');
+}
+
+function getFilteringParams(field, value) {
+    return 'filterbyfield=' + field + '&pattern=' + value;
+}
+
 function getPage(pageNum) {
     currentPage = pageNum;
     $("#table-body").empty();
     $("#pagination").empty();
-    sendRequest(paramsString + '&page=' + pageNum);
+    var params = getPaginationParams(pageNum) + '&';
+    params += getSortingParams(sortableColumns[0], true) + '&';
+    params += getFilteringParams(filterableColumns[0], 'ROLE_ADMIN');
+    sendRequest(params);
 }
