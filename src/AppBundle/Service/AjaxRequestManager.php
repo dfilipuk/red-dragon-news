@@ -7,6 +7,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AjaxRequestManager
 {
+    public const PAGINATION = 0;
+    public const PAGINATION_SORT = 1;
+    public const PAGINATION_FILTER = 2;
+    public const PAGINATION_SORT_FILTER = 3;
+
     private $page;
     private $rowsPerPage;
     private $isSorted;
@@ -16,9 +21,11 @@ class AjaxRequestManager
     private $filterColumn;
     private $filterPattern;
     private $pagesAmo;
+    private $queryType;
 
     public function __construct()
     {
+        $this->queryType = self::PAGINATION;
         $this->page = 0;
         $this->rowsPerPage = 0;
         $this->isSorted = false;
@@ -55,7 +62,19 @@ class AjaxRequestManager
             $this->filterColumn = $request->query->get('filterbyfield');
             $this->filterPattern = $request->query->get('pattern');
         }
+        $this->identifyQueryType();
         return true;
+    }
+
+    private function identifyQueryType()
+    {
+        if ($this->isSorted && $this->isFiltered) {
+            $this->queryType = self::PAGINATION_SORT_FILTER;
+        } elseif ($this->isSorted && !$this->isFiltered) {
+            $this->queryType = self::PAGINATION_SORT;
+        } elseif (!$this->isSorted && $this->isFiltered) {
+            $this->queryType = self::PAGINATION_FILTER;
+        }
     }
 
     public function getFilterColumn():? string
@@ -68,19 +87,9 @@ class AjaxRequestManager
         return $this->filterPattern;
     }
 
-    public function isFiltered(): bool
-    {
-        return $this->isFiltered;
-    }
-
     public function isAscendingSort(): bool
     {
         return $this->isAscendingSort;
-    }
-
-    public function isSorted(): bool
-    {
-        return $this->isSorted;
     }
 
     public function getPage(): int
@@ -93,7 +102,7 @@ class AjaxRequestManager
         return $this->rowsPerPage;
     }
 
-    public function getSortColumn(): int
+    public function getSortColumn(): string
     {
         return $this->sortColumn;
     }
@@ -106,5 +115,10 @@ class AjaxRequestManager
     public function setPagesAmo(int $pagesAmo)
     {
         $this->pagesAmo = $pagesAmo;
+    }
+
+    public function getQueryType(): int
+    {
+        return $this->queryType;
     }
 }

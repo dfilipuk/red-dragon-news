@@ -3,9 +3,9 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Service\AjaxDataManager;
 use AppBundle\Service\AjaxRequestManager;
 use AppBundle\Service\NewsManager;
-use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,12 +25,12 @@ class AdminController extends Controller
     /**
      * @Route("/admin/ajax/users", name="ajax_users")
      */
-    public function usersAction(Request $request, AjaxRequestManager $ajaxRequestManager, UserManager $userManager)
+    public function usersAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
     {
         if ($ajaxRequestManager->parseRequestParams($request)) {
             $result = [
                 'success' => true,
-                'items' => $userManager->getSpecifiedUsersList($ajaxRequestManager),
+                'items' => $dataManager->getUsersList($ajaxRequestManager),
                 'pagesAmo' => $ajaxRequestManager->getPagesAmo()
             ];
         } else {
