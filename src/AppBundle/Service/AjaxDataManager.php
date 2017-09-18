@@ -7,6 +7,10 @@ use AppBundle\Entity\User;
 
 class AjaxDataManager
 {
+    private const ACTIVE_USER = 'active';
+    private const DISABLED_USER = 'disabled';
+    private const MAGIC_CONST = 2;
+
     private $doctrine;
 
     public function __construct(ManagerRegistry $doctrine)
@@ -17,34 +21,63 @@ class AjaxDataManager
     public function getUsersList(AjaxRequestManager $ajaxRequestManager): array
     {
         $repository = $this->doctrine->getManager()->getRepository(User::class);
-        switch ($ajaxRequestManager->getQueryType()) {
-            case AjaxRequestManager::PAGINATION_SORT:
-                $users = $repository->getSortedUsers(
-                    $ajaxRequestManager->getSortColumn(),
-                    $ajaxRequestManager->isAscendingSort()
-                );
-                break;
-            case AjaxRequestManager::PAGINATION_FILTER:
-                $users = $repository->getFilteredUsers(
-                    $ajaxRequestManager->getFilterColumn(),
-                    $ajaxRequestManager->getFilterPattern()
-                );
-                break;
-            case AjaxRequestManager::PAGINATION_SORT_FILTER:
-                $users = $repository->getSortedAndFilteredUsers(
-                    $ajaxRequestManager->getSortColumn(),
-                    $ajaxRequestManager->isAscendingSort(),
-                    $ajaxRequestManager->getFilters()
-                );
-                break;
-            default:
-                $itemsAmount = $repository->getAllUserCount();
-                $ajaxRequestManager->setPagesAmo($this->getPagesAmount($ajaxRequestManager, $itemsAmount));
-
-                $offset = $this->getPageOffset($ajaxRequestManager);
-                $users = $repository->getAllUsers($offset, $ajaxRequestManager->getRowsPerPage());
-        }
+        $itemsAmount = $repository->getUsersCount(
+            $ajaxRequestManager->getSortColumn(),
+            $ajaxRequestManager->isAscendingSort(),
+            $this->prepareFiltersForUserEntity($ajaxRequestManager->getFilters())
+        );
+        $ajaxRequestManager->setPagesAmo($this->getPagesAmount($ajaxRequestManager, $itemsAmount));
+        $offset = $this->getPageOffset($ajaxRequestManager);
+        $users = $repository->getUsersList(
+            $ajaxRequestManager->getSortColumn(),
+            $ajaxRequestManager->isAscendingSort(),
+            $this->prepareFiltersForUserEntity($ajaxRequestManager->getFilters()),
+            $offset,
+            $ajaxRequestManager->getRowsPerPage()
+        );
         return $this->convertUserObjectsToArray($users);
+    }
+
+    private function prepareFiltersForUserEntity(array $filters): array
+    {
+        $result = [];
+        $key = array_search('email', array_column($filters, 0));
+        if ($key !== false) {
+            $result[] = [
+                0 => 'email',
+                1 => $filters[$key][1]
+            ];
+        }
+        $key = array_search('role', array_column($filters, 0));
+        if ($key !== false) {
+            $result[] = [
+                0 => 'role',
+                1 => 'ROLE_' . strtoupper($filters[$key][1])
+            ];
+        }
+        $key = array_search('isActive', array_column($filters, 0));
+        if ($key !== false) {
+            $isActive = strtolower($filters[$key][1]);
+            if ($isActive === self::ACTIVE_USER) {
+                $result[] = [
+                    0 => 'isActive',
+                    1 => true
+                ];
+            } elseif ($isActive === self::DISABLED_USER) {
+                $result[] = [
+                    0 => 'isActive',
+                    1 => false
+                ];
+            } else {
+                //shit code
+                $result[] = [
+                    0 => 'isActive',
+                    1 => self::MAGIC_CONST
+                ];
+
+            }
+        }
+        return $result;
     }
 
     private function convertUserObjectsToArray(array $users): array
