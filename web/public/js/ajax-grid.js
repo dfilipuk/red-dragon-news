@@ -1,4 +1,4 @@
-var dataUrl, sortableColumns, filterableColumns, rowsPerPage, sortableColumn, isAscending, filters = new Array();
+var dataUrl, sortableColumns, filterableColumns, rowsPerPage, sortableColumn, isAscending, filters;
 var currentPage;
 
 (function( $ ){
@@ -9,6 +9,7 @@ var currentPage;
         rowsPerPage = rowsPerPageAmo;
         isAscending = true;
         sortableColumn = sortableColumns[0];
+        filters = new Array();
         addDateContainer(columnsNames);
         getPage(1);
     };
@@ -97,14 +98,12 @@ function getPage(pageNum) {
     currentPage = pageNum;
     $("#table-body").empty();
     $("#pagination").empty();
-
-    isAscending = !isAscending;
-    //params += getFilteringParams(filterableColumns[0], 'ROLE_ADMIN');
     sendRequest(pageNum, (isAscending ? 'asc' : 'desc'));
 }
 
 function setSortableColumn(value) {
     sortableColumn = value;
+    isAscending = !isAscending;
     getPage(1);
 }
 
@@ -114,12 +113,13 @@ String.prototype.isEmpty = function() {
 
 function applyFilters()
 {
-
+    var currentFilterNumber = 0;
+    filters = [];
     for (var k in sortableColumns) {
         var value = $('#' + sortableColumns[k]).val();
         if (value !== undefined) {
             if (!value.isEmpty()) {
-                filters[k] = new Array(sortableColumns[k], value);
+                filters[currentFilterNumber++] = new Array(sortableColumns[k], value);
             }
         }
     }
@@ -131,7 +131,7 @@ function resetFilters()
     filters = [];
     for (var k in sortableColumns) {
         $('#' + sortableColumns[k]).val("");
-
     }
+    getPage(1);
 }
 

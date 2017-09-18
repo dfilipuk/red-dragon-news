@@ -7,11 +7,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AjaxRequestManager
 {
-    public const PAGINATION = 0;
-    public const PAGINATION_SORT = 1;
-    public const PAGINATION_FILTER = 2;
-    public const PAGINATION_SORT_FILTER = 3;
-
     private $page;
     private $rowsPerPage;
     private $isSorted;
@@ -20,19 +15,15 @@ class AjaxRequestManager
     private $isFiltered;
     private $filters;
     private $pagesAmo;
-    private $queryType;
 
     public function __construct()
     {
-        $this->queryType = self::PAGINATION;
         $this->page = 0;
         $this->rowsPerPage = 0;
         $this->isSorted = false;
         $this->isAscendingSort = false;
         $this->sortColumn = null;
         $this->isFiltered = false;
-        $this->filterColumn = null;
-        $this->filterPattern = null;
         $this->pagesAmo = 0;
     }
 
@@ -62,28 +53,14 @@ class AjaxRequestManager
             $this->filters = $filters;
         }
 
-        $f = fopen('/home/dmitry/Documents/log.txt', 'a');
-        $arr = print_r($filters,1);
-        fwrite($f, $arr);
-        fclose($f);
-
-        $this->identifyQueryType();
         return true;
-    }
-
-    private function identifyQueryType()
-    {
-        if ($this->isSorted && $this->isFiltered) {
-            $this->queryType = self::PAGINATION_SORT_FILTER;
-        } elseif ($this->isSorted && !$this->isFiltered) {
-            $this->queryType = self::PAGINATION_SORT;
-        } elseif (!$this->isSorted && $this->isFiltered) {
-            $this->queryType = self::PAGINATION_FILTER;
-        }
     }
 
     public function getFilters(): array
     {
+        if ($this->filters === null) {
+           return [];
+        }
         return $this->filters;
     }
 
@@ -115,10 +92,5 @@ class AjaxRequestManager
     public function setPagesAmo(int $pagesAmo)
     {
         $this->pagesAmo = $pagesAmo;
-    }
-
-    public function getQueryType(): int
-    {
-        return $this->queryType;
     }
 }

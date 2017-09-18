@@ -2,6 +2,9 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query;
+
 /**
  * UserRepository
  *
@@ -10,60 +13,47 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getAllUserCount(): int
+    public function getUsersList(string $sortField, bool $isAscending, array $filters, int $offset, int $itemsPerPage): array
     {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT COUNT(u) FROM AppBundle:User u'
-            )
-            ->getSingleScalarResult();
-    }
-
-    public function getAllUsers(int $offset, int $itemsPerPage): array
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT u FROM AppBundle:User u'
-            )
+        $query = 'SELECT u FROM AppBundle:User u';
+        return $this->getSortedAndFilteredUsers($query, $sortField, $isAscending, $filters)
             ->setFirstResult($offset)
             ->setMaxResults($itemsPerPage)
             ->getResult();
     }
 
-    public function getSortedUsers(string $sortField, bool $isAscending): array
+    public function getUsersCount(string $sortField, bool $isAscending, array $filters): int
     {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT u FROM AppBundle:User u ORDER BY u.' . $sortField . ' ' . ($isAscending ? 'ASC' : 'DESC')
-            )
-            ->getResult();
+        $query = 'SELECT COUNT(u) FROM AppBundle:User u';
+        return $this->getSortedAndFilteredUsers($query, $sortField, $isAscending, $filters)
+            ->getSingleScalarResult();
     }
 
-    public function getSortedAndFilteredUsers(string $sortField, bool $isAscending, array $filters)
+    private function getSortedAndFilteredUsers(string $query, string $sortField, bool $isAscending, array $filters): Query
     {
-        $request = 'SELECT u FROM AppBundle:User u WHERE (u.' . $filters[0][0] . ' = :par0';
-        for ($i = 1; $i < count($filters); $i++) {
-            $request .= ' AND u.' . $filters[$i][0] . ' = ' . ':par' . $i;
-        }
-        $request .= ') ORDER BY u.' . $sortField . ' ' . ($isAscending ? 'ASC' : 'DESC');
-        //$request = 'SELECT u FROM AppBundle:User u WHERE (u.email = \'user@example.com\' AND u.role = \'ROLE_USER\' AND u.isActive = \'true\') ORDER BY u.email DESC';
-//        $f = fopen('/home/dmitry/Documents/log.txt', 'a');
-//        fwrite($f, $request);
-//        fclose($f);
+        $query .= $this->getDQLWithFilters($filters);
+        $query .= ' ORDER BY u.' . $sortField . ' ' . ($isAscending ? 'ASC' : 'DESC');
+
         $temp = [];
         for ($i = 0; $i < count($filters); $i++) {
-            $temp['par' . $i] = $filters[$i][1];
+            $temp[$i] = $filters[$i][1];
         }
 
-        $req =  $this->getEntityManager()->createQuery($request)->setParameters($temp);
+        return $this->getEntityManager()
+            ->createQuery($query)
+            ->setParameters($temp);
+    }
 
-        $f = fopen('/home/dmitry/Documents/log.txt', 'a');
-        fwrite($f, print_r($temp, 1));
-        fwrite($f, $req->getDQL());
-        fclose($f);
-
-
-        return $req->getResult();
+    private function getDQLWithFilters(array $filters): string
+    {
+        $result = '';
+        if (key_exists(0, $filters)) {
+            $result = ' WHERE u.' . $filters[0][0] . ' = ?0';
+            for ($i = 1; $i < count($filters); $i++) {
+                $result .= ' AND u.' . $filters[$i][0] . ' = ' . '?' . $i;
+            }
+        }
+        return $result;
     }
 }
 
