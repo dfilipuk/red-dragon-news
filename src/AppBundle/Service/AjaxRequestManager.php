@@ -18,8 +18,7 @@ class AjaxRequestManager
     private $isAscendingSort;
     private $sortColumn;
     private $isFiltered;
-    private $filterColumn;
-    private $filterPattern;
+    private $filters;
     private $pagesAmo;
     private $queryType;
 
@@ -39,29 +38,35 @@ class AjaxRequestManager
 
     public function parseRequestParams(Request $request): bool
     {
-        if (!$request->query->has('rowsamo')) {
+        if (!$request->request->has('rowsamo')) {
             return false;
         }
-        $this->rowsPerPage = $request->query->get('rowsamo');
-        if ($request->query->has('page')) {
-            $this->page = $request->query->get('page');
+        $this->rowsPerPage = $request->request->get('rowsamo');
+        if ($request->request->has('page')) {
+            $this->page = $request->request->get('page');
         } else {
             $this->page = 1;
         }
-        if ($request->query->has('sortbyfield') && $request->query->has('order')) {
+        if ($request->request->has('sortbyfield') && $request->request->has('order')) {
             $this->isSorted = true;
-            $this->sortColumn = $request->query->get('sortbyfield');
-            if ($request->query->get('order') === 'asc') {
+            $this->sortColumn = $request->request->get('sortbyfield');
+            if ($request->request->get('order') === 'asc') {
                 $this->isAscendingSort = true;
             } else {
                 $this->isAscendingSort = false;
             }
         }
-        if ($request->query->has('filterbyfield') && $request->query->has('pattern')) {
+        $filters = $request->request->get('filters');
+        if (count($filters) > 0) {
             $this->isFiltered = true;
-            $this->filterColumn = $request->query->get('filterbyfield');
-            $this->filterPattern = $request->query->get('pattern');
+            $this->filters = $filters;
         }
+
+        $f = fopen('/home/dmitry/Documents/log.txt', 'a');
+        $arr = print_r($filters,1);
+        fwrite($f, $arr);
+        fclose($f);
+
         $this->identifyQueryType();
         return true;
     }
@@ -77,14 +82,9 @@ class AjaxRequestManager
         }
     }
 
-    public function getFilterColumn():? string
+    public function getFilters(): array
     {
-        return $this->filterColumn;
-    }
-
-    public function getFilterPattern():? string
-    {
-        return $this->filterPattern;
+        return $this->filters;
     }
 
     public function isAscendingSort(): bool

@@ -10,12 +10,23 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getAllUsers(): array
+    public function getAllUserCount(): int
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT COUNT(u) FROM AppBundle:User u'
+            )
+            ->getSingleScalarResult();
+    }
+
+    public function getAllUsers(int $offset, int $itemsPerPage): array
     {
         return $this->getEntityManager()
             ->createQuery(
                 'SELECT u FROM AppBundle:User u'
             )
+            ->setFirstResult($offset)
+            ->setMaxResults($itemsPerPage)
             ->getResult();
     }
 
@@ -28,24 +39,32 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getFilteredUsers(string $filterField, string $value): array
+    public function getSortedAndFilteredUsers(string $sortField, bool $isAscending, array $filters)
     {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT u FROM AppBundle:User u WHERE u.' . $filterField . ' = :val'
-            )
-            ->setParameter('val', $value)
-            ->getResult();
-    }
+        $request = 'SELECT u FROM AppBundle:User u WHERE (u.' . $filters[0][0] . ' = :par0';
+        for ($i = 1; $i < count($filters); $i++) {
+            $request .= ' AND u.' . $filters[$i][0] . ' = ' . ':par' . $i;
+        }
+        $request .= ') ORDER BY u.' . $sortField . ' ' . ($isAscending ? 'ASC' : 'DESC');
+        //$request = 'SELECT u FROM AppBundle:User u WHERE (u.email = \'user@example.com\' AND u.role = \'ROLE_USER\' AND u.isActive = \'true\') ORDER BY u.email DESC';
+//        $f = fopen('/home/dmitry/Documents/log.txt', 'a');
+//        fwrite($f, $request);
+//        fclose($f);
+        $temp = [];
+        for ($i = 0; $i < count($filters); $i++) {
+            $temp['par' . $i] = $filters[$i][1];
+        }
 
-    public function getSortedAndFilteredUsers(string $sortField, bool $isAscending, string $filterField, string $value)
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT u FROM AppBundle:User u WHERE (u.' . $filterField . ' = :val) ' .
-                'ORDER BY u.' . $sortField . ' ' . ($isAscending ? 'ASC' : 'DESC')
-            )
-            ->setParameter('val', $value)
-            ->getResult();
+        $req =  $this->getEntityManager()->createQuery($request)->setParameters($temp);
+
+        $f = fopen('/home/dmitry/Documents/log.txt', 'a');
+        fwrite($f, print_r($temp, 1));
+        fwrite($f, $req->getDQL());
+        fclose($f);
+
+
+        return $req->getResult();
     }
 }
+
+
