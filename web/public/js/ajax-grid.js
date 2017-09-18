@@ -1,4 +1,4 @@
-var dataUrl, sortableColumns, filterableColumns, rowsPerPage;
+var dataUrl, sortableColumns, filterableColumns, rowsPerPage, sortableColumn, isAscending, filters = new Array();
 var currentPage;
 
 (function( $ ){
@@ -7,16 +7,24 @@ var currentPage;
         sortableColumns = sortColumns;
         filterableColumns = filterColumns;
         rowsPerPage = rowsPerPageAmo;
+        isAscending = true;
+        sortableColumn = sortableColumns[0];
         addDateContainer(columnsNames);
         getPage(1);
     };
 })( jQuery );
 
-function sendRequest(params) {
-    $.get(
+function sendRequest(pageNum, isAscending) {
+    $.post(
         dataUrl,
-        params,
-        function(data, textStatus, jqXHR) {
+        {
+            rowsamo: rowsPerPage,
+            page: pageNum,
+            sortbyfield : sortableColumn,
+            order: isAscending,
+            filters: filters,
+        },
+        function(data) {
             handleResponse(data);
         });
 }
@@ -31,9 +39,10 @@ function handleResponse(data) {
 }
 
 function addDateContainer(columns) {
-    var table = '<table class="table"><thead><tr>';
+    var buttons = '<button onClick="resetFilters()">Reset filters</button> <button onClick="applyFilters()">Apply filters</button>'
+    var table = buttons + '<table class="table"><thead><tr>';
     for (var k in columns) {
-        table += '<td>' + columns[k] + '</td>';
+        table += '<td><a name="' + sortableColumns[k] + '" onClick="setSortableColumn(\'' + sortableColumns[k] + '\')">' + columns[k] + '</a><br><input id="' + sortableColumns[k] + '"></td>';
     }
     table += '</tr></thead><tbody id="table-body"></tbody></table>';
     $("#entities-grid").append(table);
@@ -83,24 +92,46 @@ function addPagination(pagesAmo) {
     $("#pagination").append(pagination);
 }
 
-function getPaginationParams(pageNum) {
-    return 'rowsamo=' + rowsPerPage + '&page=' + pageNum;
-}
-
-function getSortingParams(field, isAscending) {
-    return 'sortbyfield=' + field + '&order=' + (isAscending ? 'asc' : 'desc');
-}
-
-function getFilteringParams(field, value) {
-    return 'filterbyfield=' + field + '&pattern=' + value;
-}
 
 function getPage(pageNum) {
     currentPage = pageNum;
     $("#table-body").empty();
     $("#pagination").empty();
-    var params = getPaginationParams(pageNum) + '&';
-    params += getSortingParams(sortableColumns[0], true) + '&';
-    params += getFilteringParams(filterableColumns[0], 'ROLE_ADMIN');
-    sendRequest(params);
+
+    isAscending = !isAscending;
+    //params += getFilteringParams(filterableColumns[0], 'ROLE_ADMIN');
+    sendRequest(pageNum, (isAscending ? 'asc' : 'desc'));
 }
+
+function setSortableColumn(value) {
+    sortableColumn = value;
+    getPage(1);
+}
+
+String.prototype.isEmpty = function() {
+    return (this.length === 0 || !this.trim());
+};
+
+function applyFilters()
+{
+
+    for (var k in sortableColumns) {
+        var value = $('#' + sortableColumns[k]).val();
+        if (value !== undefined) {
+            if (!value.isEmpty()) {
+                filters[k] = new Array(sortableColumns[k], value);
+            }
+        }
+    }
+    getPage(1);
+}
+
+function resetFilters()
+{
+    filters = [];
+    for (var k in sortableColumns) {
+        $('#' + sortableColumns[k]).val("");
+
+    }
+}
+

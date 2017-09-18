@@ -22,9 +22,9 @@
         $("#entities-grid").ajaxgrid({
             columnsNames: ["E-Mail", "Role", "Activated"],
             url: "{{ url('ajax_users') }}",
-            sortColumns: ["email"],
+            sortColumns: ["email", "role", "isActive"],
             filterColumns: ["role", "isActive"],
-            rowsPerPageAmo: 10
+            rowsPerPageAmo: 2
         });
     </script>
 {% endblock %}

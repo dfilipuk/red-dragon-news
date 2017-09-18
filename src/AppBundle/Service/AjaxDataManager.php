@@ -34,15 +34,17 @@ class AjaxDataManager
                 $users = $repository->getSortedAndFilteredUsers(
                     $ajaxRequestManager->getSortColumn(),
                     $ajaxRequestManager->isAscendingSort(),
-                    $ajaxRequestManager->getFilterColumn(),
-                    $ajaxRequestManager->getFilterPattern()
+                    $ajaxRequestManager->getFilters()
                 );
                 break;
             default:
-                $users = $repository->getAllUsers();
+                $itemsAmount = $repository->getAllUserCount();
+                $ajaxRequestManager->setPagesAmo($this->getPagesAmount($ajaxRequestManager, $itemsAmount));
+
+                $offset = $this->getPageOffset($ajaxRequestManager);
+                $users = $repository->getAllUsers($offset, $ajaxRequestManager->getRowsPerPage());
         }
-        $page = $this->paginateList($ajaxRequestManager, $users);
-        return $this->convertUserObjectsToArray($page);
+        return $this->convertUserObjectsToArray($users);
     }
 
     private function convertUserObjectsToArray(array $users): array
@@ -58,22 +60,17 @@ class AjaxDataManager
         return $result;
     }
 
-    private function paginateList(AjaxRequestManager $ajaxRequestManager, array $list): array
+    private function getPageOffset(AjaxRequestManager $ajaxRequestManager): int
     {
-        $itemsAmount = count($list);
-        if ($itemsAmount > 0) {
-            if (($itemsAmount % $ajaxRequestManager->getRowsPerPage()) === 0) {
-                $pagesAmo = intdiv($itemsAmount, $ajaxRequestManager->getRowsPerPage());
-            } else {
-                $pagesAmo = intdiv($itemsAmount, $ajaxRequestManager->getRowsPerPage()) + 1;
-            }
-            $ajaxRequestManager->setPagesAmo($pagesAmo);
-            $offset = ($ajaxRequestManager->getPage() - 1) * $ajaxRequestManager->getRowsPerPage();
-            return array_slice($list, $offset, $ajaxRequestManager->getRowsPerPage());
-        } else {
-            return [];
-        }
+        return ($ajaxRequestManager->getPage() - 1) * $ajaxRequestManager->getRowsPerPage();
     }
 
-
+    private function getPagesAmount(AjaxRequestManager $ajaxRequestManager, int $itemsAmount): int
+    {
+        if (($itemsAmount % $ajaxRequestManager->getRowsPerPage()) === 0) {
+            return intdiv($itemsAmount, $ajaxRequestManager->getRowsPerPage());
+        } else {
+            return intdiv($itemsAmount, $ajaxRequestManager->getRowsPerPage()) + 1;
+        }
+    }
 }
