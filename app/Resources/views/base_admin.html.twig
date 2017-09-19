@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="{{ asset('public/bootstrap/css/bootstrap.min.css') }}" >
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.cyan-light_blue.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="{{ asset('public/css/style.css') }}">
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+
+    <div class="layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+        <header class="header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+            <div class="mdl-layout__header-row">
+                <span class="mdl-layout-title">{% block admin_title %}{% endblock %}</span>
+            </div>
+        </header>
+        <div class="drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+            <header class="drawer-header">
+                <img src="{{ asset('public/img/manager.png') }}" class="avatar">
+                <div class="avatar-dropdown">
+                    <span>{{ app.user.email }}</span>
+                    <div class="mdl-layout-spacer"></div>
+                    <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                        <i class="material-icons" role="presentation">arrow_drop_down</i>
+                        <span class="visuallyhidden">Accounts</span>
+                    </button>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                        <a class="news-href" href="{{ path('home') }}"><li class="mdl-menu__item">Back to the site</li></a>
+                        <a class="news-href" href="{{ path('sign_out') }}" ><li class="mdl-menu__item"><i class="material-icons">close</i>Logout</li></a>
+                    </ul>
+                </div>
+            </header>
+            <nav class="navigation mdl-navigation mdl-color--blue-grey-800">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">add</i>Add user</a>
+                    <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">reorder</i>Show users</a>
+                    <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">add</i>Add category</a>
+                    <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">reorder</i>Show categories</a>
+                    <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">message</i>Subscription's management</a>
+
+                {% endif %}
+                <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">add</i>Add article</a>
+                <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">reorder</i>Show articles</a>
+                <div class="mdl-layout-spacer"></div>
+            </nav>
+        </div>
+            {% block body %}{% endblock %}
+    </div>
+
+
+    <script src="{{ asset('public/js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('public/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('public/mdl/material.min.js') }}"></script>
+    {% block javascript %}{% endblock %}
+    </body>
+</html>

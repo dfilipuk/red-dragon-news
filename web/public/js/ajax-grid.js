@@ -40,10 +40,10 @@ function handleResponse(data) {
 }
 
 function addDateContainer(columns) {
-    var buttons = '<button onClick="resetFilters()">Reset filters</button> <button onClick="applyFilters()">Apply filters</button>'
-    var table = buttons + '<table class="table"><thead><tr>';
+    var buttons = '<div class="text-right"><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onClick="resetFilters()">Reset filters</button> <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick="applyFilters()">Apply filters</button></div>'
+    var table = buttons + '<table class="mdl-data-table mdl-js-data-table  mdl-cell mdl-cell--12-col"><thead><tr>';
     for (var k in columns) {
-        table += '<td><a name="' + sortableColumns[k] + '" onClick="setSortableColumn(\'' + sortableColumns[k] + '\')">' + columns[k] + '</a><br><input id="' + sortableColumns[k] + '"></td>';
+        table += '<th class="mdl-data-table__cell--non-numeric"><a class="active-href text-14" name="' + sortableColumns[k] + '" onClick="setSortableColumn(\'' + sortableColumns[k] + '\')">' + columns[k] + '</a><br><div class="mdl-textfield mdl-js-textfield"><input class="mdl-textfield__input" type="text" id="' + sortableColumns[k] + '" ><label class="mdl-textfield__label" for="' + sortableColumns[k] + '">' + columns[k] + '</label> </div></th>';
     }
     table += '</tr></thead><tbody id="table-body"></tbody></table>';
     $("#entities-grid").append(table);
@@ -56,7 +56,7 @@ function addTableBody(items) {
     for (var i = 0; i < items.length; i++) {
         tableBody += '<tr>';
         for (var j = 0; j < items[i].length; j++) {
-            tableBody += '<td>' + items[i][j] + '</td>';
+            tableBody += '<td class="mdl-data-table__cell--non-numeric">' + items[i][j] + '</td>';
         }
         tableBody += '</tr>';
     }
@@ -134,4 +134,6 @@ function resetFilters()
     }
     getPage(1);
 }
+
+
 

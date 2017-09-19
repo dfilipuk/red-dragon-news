@@ -84,10 +84,16 @@ class AjaxDataManager
     {
         $result = [];
         for ($i = 0; $i < count($users); $i++) {
+            if ($users[$i]->getIsActive())
+            {
+                $isActive = self::ACTIVE_USER;
+            } else{
+                $isActive = self::DISABLED_USER;
+            }
             $result[$i] = [
                 $users[$i]->getUsername(),
-                $users[$i]->getRole(),
-                $users[$i]->getIsActive()
+                strtolower(substr($users[$i]->getRole(), 5)),
+                $isActive
             ];
         }
         return $result;
