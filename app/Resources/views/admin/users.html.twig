@@ -1,20 +1,19 @@
-{% extends 'base_main.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
 {% block title %}Users{% endblock %}
 
+{% block admin_title %}Users{% endblock %}
+
 {% block body %}
-    <div class="row">
-        <div class="col-sm-8 col-sm-offset-2 margin-top-20">
-            <div class="layout-background mdl-card mdl-shadow--2dp">
-                <div class="row">
-                    <div class="container-fluid main-container">
-                        <div id="entities-grid">
-                        </div>
-                    </div>
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <div class="mdl-grid admin-content">
+            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+                <div id="entities-grid" class="mdl-cell mdl-cell--12-col">
                 </div>
             </div>
+
         </div>
-    </div>
+    </main>
 {% endblock %}
 {% block javascript %}
     <script type="text/javascript"  src="{{ asset('public/js/ajax-grid.js') }}"></script>
