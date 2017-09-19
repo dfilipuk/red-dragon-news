@@ -386,3 +386,31 @@ footer{
 .margin-top-10{
   margin-top: 10px;
 }
+
+.admin-content {
+  max-width: 1300px;
+}
+
+.text-14{
+  font-size: 14px;
+}
+
+.active-href{
+  color: rgb(0,188,212);
+}
+
+.active-href:visited {
+  color: rgb(0,188,212);
+}
+.active-href:active {
+  color: rgb(0,188,212);
+}
+
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover{
+  background-color: rgb(0,188,212) !important;
+  border-color: rgb(0,188,212) !important;
+}
+
+.mdl-data-table{
+  border: 0 !important;
+}
