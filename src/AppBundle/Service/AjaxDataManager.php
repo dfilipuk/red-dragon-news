@@ -91,6 +91,7 @@ class AjaxDataManager
                 $isActive = self::DISABLED_USER;
             }
             $result[$i] = [
+                $users[$i]->getId(),
                 $users[$i]->getUsername(),
                 strtolower(substr($users[$i]->getRole(), 5)),
                 $isActive

@@ -414,3 +414,11 @@ footer{
 .mdl-data-table{
   border: 0 !important;
 }
+
+.admin-border-color{
+  border-color: rgb(0,188,212) !important;
+}
+
+.admin-color{
+  color : rgb(0,188,212) !important;
+}
