@@ -1,0 +1,32 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block admin_title %}Home{% endblock %}
+
+
+{% block body %}
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <div class="mdl-grid admin-content">
+            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+                <div  class="mdl-cell mdl-cell--6-col mdl-cell--3-offset">
+                    <h1 class="date font-52">Do not waste yours time</h1>
+                    <div class="clock">
+                        <div class="date" id="Date"></div>
+                        <br>
+                        <ul class="clock-ul">
+                            <li class="clock-li" id="hours"> </li>
+                            <li class="clock-li" id="point">:</li>
+                            <li class="clock-li" id="min"> </li>
+                            <li class="clock-li" id="point">:</li>
+                            <li class="clock-li" id="sec"> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript" src="{{ asset('public/js/clock.js') }}"></script>
+{% endblock %}

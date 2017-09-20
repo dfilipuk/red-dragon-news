@@ -29,9 +29,9 @@ class User implements AdvancedUserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Assert\NotBlank(groups={"registration", "checkEmail"})
-     * @Assert\Email(groups={"registration", "checkEmail"})
-     * @Assert\Length(max=255, maxMessage="Email address too long", groups={"registration", "checkEmail"})
+     * @Assert\NotBlank(groups={"registration", "checkEmail", "editUser"})
+     * @Assert\Email(groups={"registration", "checkEmail", "editUser"})
+     * @Assert\Length(max=255, maxMessage="Email address too long", groups={"registration", "checkEmail", "editUser"})
      */
     private $email;
 
@@ -40,7 +40,7 @@ class User implements AdvancedUserInterface, \Serializable
      * @Assert\Length(max=4096, min=4,
      *     minMessage="Password should be 4 and more characters",
      *     maxMessage="Password should be less than 4096 characters",
-     *     groups={"registration", "passwordReset"})
+     *     groups={"registration", "passwordReset", "editUser"})
      */
     private $plainPassword;
 
