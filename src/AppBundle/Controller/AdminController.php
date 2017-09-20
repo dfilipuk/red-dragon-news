@@ -3,9 +3,11 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Form\UserEditType;
 use AppBundle\Service\AjaxDataManager;
 use AppBundle\Service\AjaxRequestManager;
 use AppBundle\Service\NewsManager;
+use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,14 +15,53 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AdminController extends Controller
 {
+
+    /**
+     * @Route("/admin/", name="admin-main")
+     */
+    public function indexAction()
+    {
+        return $this->render('base_admin.html.twig');
+    }
+
     /**
      * @Route("/admin/users", name="users_page")
      */
-    public function usersPageAction(NewsManager $newsManager)
+    public function usersPageAction()
     {
-        $categories = $newsManager->findGeneralCategories();
-        return $this->render('admin/users.html.twig', ['categories' => $categories]);
+        return $this->render('admin/users.html.twig');
     }
+
+     /**
+     * @Route("/admin/users/{id}/edit", name="edit-user", requirements={"id": "\d+"})
+     */
+    public function editUserAction(int $id, UserManager $userManager, Request $request)
+    {
+        $user = $userManager->getUserById($id);
+        $originalPassword = $user->getPassword();
+        $form = $this->createForm(UserEditType::class, $user, ['validation_groups' => 'editUser']);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $userManager->editUser($user, $form, $originalPassword);
+            return $this->render('admin/users.html.twig');
+        }
+        return $this->render('admin/edit_user.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+            'errors' => $form->getErrors(true, true)
+        ]);
+    }
+
+    /**
+     * @Route("/admin/users/{id}/delete", name="delete-user", requirements={"id": "\d+"})
+     */
+    public function deleteUserAction(int $id, UserManager $userManager)
+    {
+        $userManager->deleteUserById($id);
+        return $this->render('admin/users.html.twig');
+    }
+
 
     /**
      * @Route("/admin/ajax/users", name="ajax_users")

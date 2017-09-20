@@ -103,6 +103,12 @@ class UserManager
         return $repository->findOneBy(['email' => $userEmail]);
     }
 
+    public function getUserById(int $id):? User
+    {
+        $repository = $this->doctrine->getManager()->getRepository(User::class);
+        return $repository->findOneBy(['id' => $id]);
+    }
+
     private function prepareEntitiesForSavingInDatabase(User $user, Token $token)
     {
         $this->encodeUserPassword($user, $user->getPlainPassword());
@@ -193,6 +199,29 @@ class UserManager
     {
         $manager = $this->doctrine->getManager();
         $manager->remove($token);
+        $manager->flush();
+    }
+
+    public function editUser(User $user,  \Symfony\Component\Form\Form $form, string $originalPass)
+    {
+        $manager = $this->doctrine->getManager();
+        $plainPassword = $form->get('plainPassword')->getData();
+        if (!empty($plainPassword))  {
+            $encodedPassword = $this->encoder->encodePassword($user, $plainPassword);
+            $user->setPassword($encodedPassword);
+        }
+        else {
+            $user->setPassword($originalPass);
+        }
+        $manager->persist($user);
+        $manager->flush();
+    }
+
+    public function deleteUserById(int $id)
+    {
+        $manager = $this->doctrine->getManager();
+        $user = $this->getUserById($id);
+        $manager->remove($user);
         $manager->flush();
     }
 }

@@ -54,8 +54,9 @@ function addDateContainer(columns) {
 function addTableBody(items) {
     var tableBody = '';
     for (var i = 0; i < items.length; i++) {
-        tableBody += '<tr>';
-        for (var j = 0; j < items[i].length; j++) {
+        var href = '/admin/users/' + items[i][0] + '/edit' ;
+        tableBody += '<tr onclick="window.location.href=\'' + href + '\'; return false">';
+        for (var j = 1; j < items[i].length; j++) {
             tableBody += '<td class="mdl-data-table__cell--non-numeric">' + items[i][j] + '</td>';
         }
         tableBody += '</tr>';
