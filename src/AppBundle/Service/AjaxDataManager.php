@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Article;
 use AppBundle\Entity\Category;
 use \Doctrine\Common\Persistence\ManagerRegistry;
 use AppBundle\Entity\User;
@@ -49,14 +50,39 @@ class AjaxDataManager
         );
         $ajaxRequestManager->setPagesAmo($this->getPagesAmount($ajaxRequestManager, $itemsAmount));
         $offset = $this->getPageOffset($ajaxRequestManager);
-        $users = $repository->getCategoriesList(
+        $categories = $repository->getCategoriesList(
             $ajaxRequestManager->getSortColumn(),
             $ajaxRequestManager->isAscendingSort(),
             $ajaxRequestManager->getFilters(),
             $offset,
             $ajaxRequestManager->getRowsPerPage()
         );
-        return $this->convertCategoriesObjectsToArray($users);
+        return $this->convertCategoriesObjectsToArray($categories);
+    }
+
+    public function getArticlesList(AjaxRequestManager $ajaxRequestManager): array
+    {
+        $repository = $this->doctrine->getManager()->getRepository(Article::class);
+
+        $sortedColumn = $this->prepareArticleSortColumn($ajaxRequestManager->getSortColumn());
+        $itemsAmount = $repository->getArticlesCount(
+            $sortedColumn,
+            $ajaxRequestManager->isAscendingSort(),
+            $ajaxRequestManager->getFilters()
+        );
+        $ajaxRequestManager->setPagesAmo($this->getPagesAmount($ajaxRequestManager, $itemsAmount));
+        $offset = $this->getPageOffset($ajaxRequestManager);
+
+
+
+        $articles = $repository->getArticlesList(
+            $sortedColumn,
+            $ajaxRequestManager->isAscendingSort(),
+            $ajaxRequestManager->getFilters(),
+            $offset,
+            $ajaxRequestManager->getRowsPerPage()
+        );
+        return $this->convertArticlesObjectsToArray($articles);
     }
 
     private function prepareFiltersForUserEntity(array $filters): array
@@ -101,6 +127,16 @@ class AjaxDataManager
         return $result;
     }
 
+    private function prepareArticleSortColumn(string $sortColumn): string
+    {
+        $result = 'a.'.$sortColumn;
+        if ($sortColumn == 'author')
+            $result = 'author.email';
+        if ($sortColumn == 'category')
+            $result = 'category.name';
+        return $result;
+    }
+
     private function convertUserObjectsToArray(array $users): array
     {
         $result = [];
@@ -121,13 +157,39 @@ class AjaxDataManager
         return $result;
     }
 
-    private function convertCategoriesObjectsToArray(array $users): array
+    private function convertArticlesObjectsToArray(array $articles): array
     {
         $result = [];
-        for ($i = 0; $i < count($users); $i++) {
+        $sliceCount = 100;
+        for ($i = 0; $i < count($articles); $i++) {
+            $title = $articles[$i]->getTitle();
+            if (strlen($title) < $sliceCount){
+                $title = substr($title, 0, strlen($title));
+            } else{
+                $title = substr($title, 0, $sliceCount);
+                $title = rtrim($title, "!,.-");
+                $title = substr($title, 0, strrpos($title, ' '));
+                $title .= '...';
+            }
             $result[$i] = [
-                $users[$i]->getId(),
-                $users[$i]->getName(),
+                $articles[$i]->getId(),
+                $articles[$i]->getAuthor()->getEmail(),
+                $articles[$i]->getCategory()->getName(),
+                $title,
+                $articles[$i]->getDate()->format('d-m-Y H:i:s'),
+                $articles[$i]->getViewsCount(),
+            ];
+        }
+        return $result;
+    }
+
+    private function convertCategoriesObjectsToArray(array $catefories): array
+    {
+        $result = [];
+        for ($i = 0; $i < count($catefories); $i++) {
+            $result[$i] = [
+                $catefories[$i]->getId(),
+                $catefories[$i]->getName(),
             ];
         }
         return $result;
