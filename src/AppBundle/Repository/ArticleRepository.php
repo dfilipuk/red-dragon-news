@@ -71,9 +71,6 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
         for ($i = 0; $i < count($filters); $i++) {
             $temp[$i] = $filters[$i][1];
         }
-        $f = fopen("E:\log.txt", "a");
-        fwrite($f, $query);
-        fclose($f);
         return $this->getEntityManager()
             ->createQuery($query)
             ->setParameters($temp);
