@@ -1,16 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dmitry
- * Date: 21.9.17
- * Time: 11.45
- */
 
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Category;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

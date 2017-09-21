@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Category;
 use AppBundle\Form\CategoryEditType;
+use AppBundle\Form\CategoryNewType;
 use AppBundle\Form\UserEditType;
 use AppBundle\Service\AjaxDataManager;
 use AppBundle\Service\AjaxRequestManager;
@@ -11,6 +13,8 @@ use AppBundle\Service\NewsManager;
 use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -121,6 +125,26 @@ class AdminController extends Controller
     }
 
     /**
+     * @Route("/admin/categories/create", name="create-category", requirements={"id": "\d+"})
+     */
+    public function createCategoryAction(Request $request, CategoryManager $categoryManager)
+    {
+        $newCategory = new Category();
+        $parentCategory = null;
+        $form = $this->createForm(CategoryNewType::class, $newCategory);
+        $form->handleRequest($request);
+        if ($this->validateNewCategoryForm($categoryManager, $form, $newCategory, $parentCategory)) {
+            $categoryManager->addCategory($newCategory, $parentCategory);
+            return $this->redirectToRoute('categories_page');
+        } else {
+            return $this->render('admin/new_category.html.twig', [
+                'form' => $form->createView(),
+                'errors' => $form->getErrors(true, true)
+            ]);
+        }
+    }
+
+    /**
      * @Route("/admin/ajax/categories", name="ajax_categories")
      */
     public function categoriesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
@@ -137,5 +161,27 @@ class AdminController extends Controller
             ];
         }
         return new JsonResponse($result);
+    }
+
+    private function validateNewCategoryForm(CategoryManager $categoryManager, Form $form, Category $newCategory,
+                                             ?Category &$parentCategory)
+    {
+        if (!($form->isSubmitted() && $form->isValid())) {
+            return false;
+        }
+        if ($newCategory->getIsRootCategory()) {
+            return true;
+        }
+        $parentCategory = $categoryManager->getCategoryByName($newCategory->getParentName());
+        if ($parentCategory === null) {
+            $form->addError(new FormError('No such parent directory'));
+            return false;
+        }
+        if ($parentCategory->isLeafOfTree()) {
+            $form->addError(new FormError('Specified parent category can\'t have children'));
+            return false;
+        } else {
+            return true;
+        }
     }
 }
