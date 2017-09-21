@@ -4,6 +4,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Article;
 use AppBundle\Entity\Category;
+use DateTime;
 use \Doctrine\Common\Persistence\ManagerRegistry;
 use AppBundle\Entity\User;
 
@@ -63,22 +64,19 @@ class AjaxDataManager
     public function getArticlesList(AjaxRequestManager $ajaxRequestManager): array
     {
         $repository = $this->doctrine->getManager()->getRepository(Article::class);
-
+        $filters = $this->prepareFiltersForArticleEntity($ajaxRequestManager->getFilters());
         $sortedColumn = $this->prepareArticleSortColumn($ajaxRequestManager->getSortColumn());
         $itemsAmount = $repository->getArticlesCount(
             $sortedColumn,
             $ajaxRequestManager->isAscendingSort(),
-            $ajaxRequestManager->getFilters()
+            $filters
         );
         $ajaxRequestManager->setPagesAmo($this->getPagesAmount($ajaxRequestManager, $itemsAmount));
         $offset = $this->getPageOffset($ajaxRequestManager);
-
-
-
         $articles = $repository->getArticlesList(
             $sortedColumn,
             $ajaxRequestManager->isAscendingSort(),
-            $ajaxRequestManager->getFilters(),
+            $filters,
             $offset,
             $ajaxRequestManager->getRowsPerPage()
         );
@@ -124,6 +122,54 @@ class AjaxDataManager
 
             }
         }
+        return $result;
+    }
+
+    private function prepareFiltersForArticleEntity(array $filters): array
+    {
+        $result = [];
+        $key = array_search('author', array_column($filters, 0));
+        if ($key !== false) {
+            $result[] = [
+                0 => 'author.email',
+                1 => '%'.$filters[$key][1].'%'
+            ];
+        }
+
+        $key = array_search('category', array_column($filters, 0));
+        if ($key !== false) {
+            $result[] = [
+                0 => 'category.name',
+                1 => '%'.$filters[$key][1].'%'
+            ];
+        }
+
+        $key = array_search('title', array_column($filters, 0));
+        if ($key !== false) {
+            $result[] = [
+                0 => 'a.title',
+                1 => '%'.$filters[$key][1].'%'
+            ];
+        }
+
+        $key = array_search('date', array_column($filters, 0));
+        if ($key !== false) {
+            $date = DateTime::createFromFormat('d-m-Y', $filters[$key][1]);
+            $date = $date->format('Y-m-d');
+            $result[] = [
+                0 => 'a.date',
+                1 => $date
+            ];
+        }
+
+        $key = array_search('viewsCount', array_column($filters, 0));
+        if ($key !== false) {
+            $result[] = [
+                0 => 'a.viewsCount',
+                1 => $filters[$key][1]
+            ];
+        }
+
         return $result;
     }
 
@@ -176,7 +222,7 @@ class AjaxDataManager
                 $articles[$i]->getAuthor()->getEmail(),
                 $articles[$i]->getCategory()->getName(),
                 $title,
-                $articles[$i]->getDate()->format('d-m-Y H:i:s'),
+                $articles[$i]->getDate()->format('d-m-Y'),
                 $articles[$i]->getViewsCount(),
             ];
         }

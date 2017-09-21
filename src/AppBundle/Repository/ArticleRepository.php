@@ -83,9 +83,9 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
     {
         $result = '';
         if (key_exists(0, $filters)) {
-            $result = ' WHERE a.' . $filters[0][0] . ' = ?0';
+            $result = ' WHERE ' . $filters[0][0] . ' LIKE ?0';
             for ($i = 1; $i < count($filters); $i++) {
-                $result .= ' AND a.' . $filters[$i][0] . ' = ' . '?' . $i;
+                $result .= ' AND ' . $filters[$i][0] . ' LIKE ' . '?' . $i;
             }
         }
 
