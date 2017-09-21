@@ -21,6 +21,7 @@
         $("#entities-grid").ajaxgrid({
             columnsNames: ["E-Mail", "Role", "Activated"],
             url: "{{ url('ajax_users') }}",
+            editUrl: "users",
             sortColumns: ["email", "role", "isActive"],
             filterColumns: ["role", "isActive"],
             rowsPerPageAmo: 2

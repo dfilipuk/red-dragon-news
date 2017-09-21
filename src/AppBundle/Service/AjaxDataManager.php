@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Category;
 use \Doctrine\Common\Persistence\ManagerRegistry;
 use AppBundle\Entity\User;
 
@@ -36,6 +37,26 @@ class AjaxDataManager
             $ajaxRequestManager->getRowsPerPage()
         );
         return $this->convertUserObjectsToArray($users);
+    }
+
+    public function getCategoriesList(AjaxRequestManager $ajaxRequestManager): array
+    {
+        $repository = $this->doctrine->getManager()->getRepository(Category::class);
+        $itemsAmount = $repository->getCategoriesCount(
+            $ajaxRequestManager->getSortColumn(),
+            $ajaxRequestManager->isAscendingSort(),
+            $ajaxRequestManager->getFilters()
+        );
+        $ajaxRequestManager->setPagesAmo($this->getPagesAmount($ajaxRequestManager, $itemsAmount));
+        $offset = $this->getPageOffset($ajaxRequestManager);
+        $users = $repository->getCategoriesList(
+            $ajaxRequestManager->getSortColumn(),
+            $ajaxRequestManager->isAscendingSort(),
+            $ajaxRequestManager->getFilters(),
+            $offset,
+            $ajaxRequestManager->getRowsPerPage()
+        );
+        return $this->convertCategoriesObjectsToArray($users);
     }
 
     private function prepareFiltersForUserEntity(array $filters): array
@@ -95,6 +116,18 @@ class AjaxDataManager
                 $users[$i]->getUsername(),
                 strtolower(substr($users[$i]->getRole(), 5)),
                 $isActive
+            ];
+        }
+        return $result;
+    }
+
+    private function convertCategoriesObjectsToArray(array $users): array
+    {
+        $result = [];
+        for ($i = 0; $i < count($users); $i++) {
+            $result[$i] = [
+                $users[$i]->getId(),
+                $users[$i]->getName(),
             ];
         }
         return $result;
