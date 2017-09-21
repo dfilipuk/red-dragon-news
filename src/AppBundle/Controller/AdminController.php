@@ -119,4 +119,32 @@ class AdminController extends Controller
         }
         return new JsonResponse($result);
     }
+
+    /**
+     * @Route("/admin/articles", name="articles_page")
+     */
+    public function articlesPageAction()
+    {
+        return $this->render('admin/articles.html.twig');
+    }
+
+    /**
+     * @Route("/admin/ajax/articles", name="ajax_articles")
+     */
+    public function articlesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
+    {
+        if ($ajaxRequestManager->parseRequestParams($request)) {
+            $result = [
+                'success' => true,
+                'items' => $dataManager->getArticlesList($ajaxRequestManager),
+                'pagesAmo' => $ajaxRequestManager->getPagesAmo()
+            ];
+        } else {
+            $result = [
+                'success' => false
+            ];
+        }
+        return new JsonResponse($result);
+    }
+
 }
