@@ -45,9 +45,14 @@ class SecurityController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $userManager->registerNewUser($user);
-            return $this->renderRegistrationFinishedMessage($user);
+            return $this->renderMessage(
+                'auth/message.twig',
+                ['email' => $user->getEmail()],
+                'auth/messages/registration_finished.html.twig',
+                'Registration continue'
+            );
         }
-        return $this->renderRegistrationFormErrors($form);
+        return $this->renderFormErrors($form, 'auth/register.html.twig');
     }
 
     /**
@@ -63,9 +68,14 @@ class SecurityController extends Controller
         $form->handleRequest($request);
         if ($this->isEmailCheckFormValid($form, $user, $userManager)) {
             $userManager->setResetPasswordTokenForUser($user);
-            return $this->renderResetPasswordContinueMessage($user);
+            return $this->renderMessage(
+                'auth/message.twig',
+                ['email' => $user->getEmail()],
+                'auth/messages/reset_password_continue.html.twig',
+                'Reset password continue'
+            );
         }
-        return $this->renderEmailCheckFormErrors($form);
+        return $this->renderFormErrors($form, 'auth/email_check.html.twig');
     }
 
     /**
@@ -76,7 +86,12 @@ class SecurityController extends Controller
         if ($userManager->isResetPasswordTokenValid($id, $token)) {
             return $this->workWithNewPasswordForm($request, $id, $userManager);
         } else {
-            return $this->renderResetPasswordAccessDeniedMessage();
+            return $this->renderMessage(
+                'auth/message.twig',
+                [],
+                'auth/messages/password_changed.html.twig',
+                'Access denied'
+            );
         }
     }
 
@@ -86,9 +101,19 @@ class SecurityController extends Controller
     public function accountActivationAction(int $id, string $token, UserManager $userManager)
     {
         if ($userManager->isUserAccountActivationSucceed($id, $token)) {
-            return $this->renderActivationSuccessMessage();
+            return $this->renderMessage(
+                'auth/message.twig',
+                [],
+                'auth/messages/activation_success.html.twig',
+                'Account activation success'
+            );
         } else {
-            return $this->renderActivationFailMessage();
+            return $this->renderMessage(
+                'auth/message.twig',
+                [],
+                'auth/messages/activation_fail.html.twig',
+                'Account activation fail'
+            );
         }
     }
 
@@ -99,9 +124,14 @@ class SecurityController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $userManager->resetPasswordForUser($tokenId, $user);
-            return $this->renderPasswordChangedMessage();
+            return $this->renderMessage(
+                'auth/message.twig',
+                [],
+                'auth/messages/password_changed.html.twig',
+                'Password changed'
+            );
         }
-        return $this->renderNewPasswordFormErrors($form);
+        return $this->renderFormErrors($form, 'auth/new_password.html.twig');
     }
 
     private function isEmailCheckFormValid(Form $form, User $user, UserManager $userManager): bool
@@ -118,83 +148,18 @@ class SecurityController extends Controller
         }
     }
 
-    private function renderActivationSuccessMessage()
+    private function renderMessage(string $baseTemplate, array $params, string $messageTemplate, string $title)
     {
-        return $this->render('auth/message.twig', [
-            'params' => [],
-            'message_template' => 'auth/messages/activation_success.html.twig',
-            'title' => 'Account activation success'
+        return $this->render($baseTemplate, [
+            'params' => $params,
+            'message_template' => $messageTemplate,
+            'title' => $title
         ]);
     }
 
-    private function renderActivationFailMessage()
+    private function renderFormErrors(Form $form, string $template)
     {
-        return $this->render('auth/message.twig', [
-            'params' => [],
-            'message_template' => 'auth/messages/activation_fail.html.twig',
-            'title' => 'Account activation fail'
-        ]);
-    }
-
-    private function renderRegistrationFinishedMessage(User $user)
-    {
-        return $this->render('auth/message.twig', [
-            'params' => [
-                'email' => $user->getEmail()
-            ],
-            'message_template' => 'auth/messages/registration_finished.html.twig',
-            'title' => 'Registration continue'
-        ]);
-    }
-
-    private function renderResetPasswordContinueMessage(User $user)
-    {
-        return $this->render('auth/message.twig', [
-            'params' => [
-                'email' => $user->getEmail()
-            ],
-            'message_template' => 'auth/messages/reset_password_continue.html.twig',
-            'title' => 'Reset password continue'
-        ]);
-    }
-
-    private function renderResetPasswordAccessDeniedMessage()
-    {
-        return $this->render('auth/message.twig', [
-            'params' => [],
-            'message_template' => 'auth/messages/bad_reset_password_link.html.twig',
-            'title' => 'Access denied'
-        ]);
-    }
-
-    private function renderPasswordChangedMessage()
-    {
-        return $this->render('auth/message.twig', [
-            'params' => [],
-            'message_template' => 'auth/messages/password_changed.html.twig',
-            'title' => 'Password changed'
-        ]);
-    }
-
-    private function renderEmailCheckFormErrors(Form $form)
-    {
-        return $this->render('auth/email_check.html.twig', [
-            'form' => $form->createView(),
-            'errors' => $form->getErrors(true, true)
-        ]);
-    }
-
-    private function renderRegistrationFormErrors(Form $form)
-    {
-        return $this->render('auth/register.html.twig', [
-            'form' => $form->createView(),
-            'errors' => $form->getErrors(true, true)
-        ]);
-    }
-
-    private function renderNewPasswordFormErrors(Form $form)
-    {
-        return $this->render(':auth:new_password.html.twig', [
+        return $this->render($template, [
             'form' => $form->createView(),
             'errors' => $form->getErrors(true, true)
         ]);
