@@ -3,18 +3,24 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Category
  *
  * @ORM\Table(name="categories")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CategoryRepository")
+ * @UniqueEntity(fields="name", message="Category with same name is already exists",
+ *     groups={"editCategory", "newCategory", "newRootCategory"})
  */
 class Category
 {
+    private const MAX_NESTING_LEVEL = 2;
+
     /**
      * @var int
      *
@@ -28,8 +34,15 @@ class Category
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Assert\NotBlank(groups={"editCategory", "newCategory", "newRootCategory"})
+     * @Assert\Length(max=255, maxMessage="Name too long", groups={"editCategory", "newCategory", "newRootCategory"})
      */
     private $name;
+
+    /**
+     * @ORM\Column(name="level", type="integer")
+     */
+    private $level;
 
     /**
      * @OneToMany(targetEntity="Category", mappedBy="parent")
@@ -48,13 +61,20 @@ class Category
      */
     private $articles;
 
+    private $isRootCategory;
+
+    /**
+     * @Assert\NotBlank(groups={"newCategory"}, message="Parent category name should not be blank")
+     * @Assert\Blank(groups={"newRootCategory"}, message="Parent category name should be blank")
+     */
+    private $parentName;
 
     /**
      * Get id
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -66,7 +86,7 @@ class Category
      *
      * @return Category
      */
-    public function setName($name)
+    public function setName(string $name): Category
     {
         $this->name = $name;
 
@@ -78,7 +98,7 @@ class Category
      *
      * @return string
      */
-    public function getName()
+    public function getName():? string
     {
         return $this->name;
     }
@@ -102,7 +122,7 @@ class Category
     /**
      * @return mixed
      */
-    public function getParent()
+    public function getParent():? Category
     {
         return $this->parent;
     }
@@ -110,7 +130,7 @@ class Category
     /**
      * @param mixed $parent
      */
-    public function setParent($parent)
+    public function setParent(Category $parent)
     {
         $this->parent = $parent;
     }
@@ -131,10 +151,63 @@ class Category
         $this->children = $children;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    /**
+     * @param mixed $level
+     */
+    public function setLevel(int $level)
+    {
+        $this->level = $level;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsRootCategory(): bool
+    {
+        return $this->isRootCategory;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParentName():? string
+    {
+        return $this->parentName;
+    }
+
+    /**
+     * @param mixed $isRootCategory
+     */
+    public function setIsRootCategory(bool $isRootCategory)
+    {
+        $this->isRootCategory = $isRootCategory;
+    }
+
+    /**
+     * @param mixed $parentName
+     */
+    public function setParentName(string $parentName)
+    {
+        $this->parentName = $parentName;
+    }
+
     public function __construct() {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
         $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->isRootCategory = true;
     }
 
+    public function isLeafOfTree(): bool
+    {
+        return $this->level === self::MAX_NESTING_LEVEL;
+    }
 }
 
