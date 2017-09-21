@@ -20,6 +20,12 @@ class CategoryManager
         return $repository->findOneBy(['id' => $id]);
     }
 
+    public function getCategoryByName(string $name):? Category
+    {
+        $repository = $this->doctrine->getManager()->getRepository(Category::class);
+        return $repository->findOneBy(['name' => $name]);
+    }
+
     public function editCategory(Category $category)
     {
         $manager = $this->doctrine->getManager();
@@ -35,5 +41,18 @@ class CategoryManager
             $manager->remove($category);
             $manager->flush();
         }
+    }
+
+    public function addCategory(Category $newCategory, ?Category $parentCategory)
+    {
+        $repository = $this->doctrine->getManager();
+        if ($parentCategory !== null) {
+            $newCategory->setLevel($parentCategory->getLevel() + 1);
+            $newCategory->setParent($parentCategory);
+        } else {
+            $newCategory->setLevel(0);
+        }
+        $repository->persist($newCategory);
+        $repository->flush();
     }
 }
