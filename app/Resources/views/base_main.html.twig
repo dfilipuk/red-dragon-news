@@ -24,7 +24,7 @@
                     </button>
                     <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
                         {% if is_granted('ROLE_MANAGER') %}
-                            <a class="news-href" href="{{ path('admin-main') }}"><li class="mdl-menu__item">Admin panel</li></a>
+                            <a class="news-href" href="{{ path('admin-home') }}"><li class="mdl-menu__item">Admin panel</li></a>
                         {% endif %}
                         <a class="news-href" href="{{ path('sign_out') }}" ><li class="mdl-menu__item" >Logout</li></a>
                     </ul>
