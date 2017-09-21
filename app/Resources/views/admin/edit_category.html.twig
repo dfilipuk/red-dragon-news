@@ -1,0 +1,48 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Edit category{% endblock %}
+
+{% block admin_title %}Edit category #{{ category.id }} {% endblock %}
+
+{% block delete_button_block %}
+    <div class="mdl-layout-spacer"></div>
+    <a class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent news-href" href="{{ path('delete-category', {'id': category.id}) }}">Delete category</a>
+{% endblock %}
+
+{% block body %}
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <div class="mdl-grid admin-content">
+            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+                <div  class="mdl-cell mdl-cell--12-col">
+                    {% for error in errors %}
+                        <h6 class="text-center alert alert-danger mdl-cell mdl-cell--6-col mdl-cell--3-offset">{{ error.getMessage() }}</h6>
+                    {% endfor%}
+                    {{ form_start(form) }}
+                    <div class="row auth-inputs margin-escape">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                {{
+                                form_widget(form.name, {'attr': {
+                                    'class': 'mdl-textfield__input',
+                                    'id': 'new-name'
+                                }})
+                                }}
+                                <label class="mdl-textfield__label " for="new-name">New category name</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mdl-card__actions row margin-escape">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20">Update category</button>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+{% endblock %}

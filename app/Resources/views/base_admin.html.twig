@@ -40,7 +40,7 @@
                 {% if is_granted('ROLE_ADMIN') %}
                     <a class="mdl-navigation__link" href="{{ path('admin-home') }}"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>Home</a>
                     <a class="mdl-navigation__link" href="{{ path('users_page') }}"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" >reorder</i>Show users</a>
-                    <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">add</i>Add category</a>
+                    <a class="mdl-navigation__link" href="{{ path('create-category') }}"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">add</i>Add category</a>
                     <a class="mdl-navigation__link" href="{{ path('categories_page') }}"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">reorder</i>Show categories</a>
                     <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">message</i>Subscription's management</a>
 

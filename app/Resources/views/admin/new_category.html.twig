@@ -1,0 +1,83 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}New category{% endblock %}
+
+{% block admin_title %}New category{% endblock %}
+
+{% block body %}
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <div class="mdl-grid admin-content">
+            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+                <div  class="mdl-cell mdl-cell--12-col">
+                    {% for error in errors %}
+                        <h6 class="text-center alert alert-danger mdl-cell mdl-cell--6-col mdl-cell--3-offset">{{ error.getMessage() }}</h6>
+                    {% endfor%}
+                    {{ form_start(form) }}
+                    <div class="row auth-inputs margin-escape">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                {{
+                                form_widget(form.name, {'attr': {
+                                    'class': 'mdl-textfield__input',
+                                    'id': 'name'
+                                }})
+                                }}
+                                <label class="mdl-textfield__label " for="name">Category name</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row auth-inputs margin-escape">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <div id="parent-name-input">
+                                {{
+                                form_widget(form.parentName, {'attr': {
+                                    'class': 'mdl-textfield__input',
+                                    'id': 'parent-name'
+                                }})
+                                }}
+                                </div>
+                                <label class="mdl-textfield__label " for="parent-name">Parent category name</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <ul id="similar-categories">
+
+                        </ul>
+                    </div>
+
+                    <div class="row auth-inputs margin-escape">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <div class="mdl-checkbox">
+                                {{
+                                form_widget(form.isRootCategory, {'attr': {
+                                    'class': 'mdl-checkbox__input',
+                                    'id': 'root-category'
+                                }})
+                                }}
+                                <label class="mdl-checkbox__label" for="root-category">Root category</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mdl-card__actions row margin-escape">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20">Create category</button>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+{% endblock %}
+{% block javascript %}
+    <script>var dataUrl = '{{ path('ajax_similar_categories') }}'</script>
+    <script type="text/javascript"  src="{{ asset('public/js/ajax-category-loader.js') }}"></script>
+{% endblock %}
