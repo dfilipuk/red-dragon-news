@@ -81,4 +81,39 @@ class AdminController extends Controller
         }
         return new JsonResponse($result);
     }
+
+    /**
+     * @Route("/admin/categories", name="categories_page")
+     */
+    public function categoriesPageAction()
+    {
+        return $this->render('admin/categories.html.twig');
+    }
+
+    /**
+     * @Route("/admin/categories/{id}/edit", name="edit-category", requirements={"id": "\d+"})
+     */
+    public function editCategoryAction(int $id, UserManager $userManager, Request $request)
+    {
+        return $this->redirectToRoute('admin-home');
+    }
+
+    /**
+     * @Route("/admin/ajax/categories", name="ajax_categories")
+     */
+    public function categoriesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
+    {
+        if ($ajaxRequestManager->parseRequestParams($request)) {
+            $result = [
+                'success' => true,
+                'items' => $dataManager->getCategoriesList($ajaxRequestManager),
+                'pagesAmo' => $ajaxRequestManager->getPagesAmo()
+            ];
+        } else {
+            $result = [
+                'success' => false
+            ];
+        }
+        return new JsonResponse($result);
+    }
 }
