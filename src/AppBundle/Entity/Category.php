@@ -37,6 +37,11 @@ class Category
     private $name;
 
     /**
+     * @ORM\Column(name="level", type="integer")
+     */
+    private $level;
+
+    /**
      * @OneToMany(targetEntity="Category", mappedBy="parent")
      */
     private $children;
@@ -58,7 +63,7 @@ class Category
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -70,7 +75,7 @@ class Category
      *
      * @return Category
      */
-    public function setName($name)
+    public function setName(string $name): Category
     {
         $this->name = $name;
 
@@ -82,7 +87,7 @@ class Category
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -106,7 +111,7 @@ class Category
     /**
      * @return mixed
      */
-    public function getParent()
+    public function getParent():? Category
     {
         return $this->parent;
     }
@@ -114,7 +119,7 @@ class Category
     /**
      * @param mixed $parent
      */
-    public function setParent($parent)
+    public function setParent(Category $parent)
     {
         $this->parent = $parent;
     }
@@ -133,6 +138,22 @@ class Category
     public function setChildren($children)
     {
         $this->children = $children;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    /**
+     * @param mixed $level
+     */
+    public function setLevel(int $level)
+    {
+        $this->level = $level;
     }
 
     public function __construct() {
