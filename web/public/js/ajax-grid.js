@@ -1,9 +1,10 @@
-var dataUrl, sortableColumns, filterableColumns, rowsPerPage, sortableColumn, isAscending, filters;
+var dataUrl, editPageUrl, sortableColumns, filterableColumns, rowsPerPage, sortableColumn, isAscending, filters;
 var currentPage;
 
 (function( $ ){
-    $.fn.ajaxgrid = function({columnsNames, url, sortColumns, filterColumns, rowsPerPageAmo}) {
+    $.fn.ajaxgrid = function({columnsNames, url, editUrl, sortColumns, filterColumns, rowsPerPageAmo}) {
         dataUrl = url;
+        editPageUrl = editUrl;
         sortableColumns = sortColumns;
         filterableColumns = filterColumns;
         rowsPerPage = rowsPerPageAmo;
@@ -54,7 +55,7 @@ function addDateContainer(columns) {
 function addTableBody(items) {
     var tableBody = '';
     for (var i = 0; i < items.length; i++) {
-        var href = '/admin/users/' + items[i][0] + '/edit' ;
+        var href = '/admin/' + editPageUrl + '/' + items[i][0] + '/edit' ;
         tableBody += '<tr onclick="window.location.href=\'' + href + '\'; return false">';
         for (var j = 1; j < items[i].length; j++) {
             tableBody += '<td class="mdl-data-table__cell--non-numeric">' + items[i][j] + '</td>';

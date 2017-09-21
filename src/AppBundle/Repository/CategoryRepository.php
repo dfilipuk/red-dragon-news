@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\ORM\Query;
+
 /**
  * CategoryRepository
  *
@@ -17,5 +19,48 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
                 'SELECT c FROM AppBundle:Category c WHERE c.parent is null'
             )
             ->getResult();
+    }
+
+    public function getCategoriesList(string $sortField, bool $isAscending, array $filters, int $offset, int $itemsPerPage): array
+    {
+        $query = 'SELECT c FROM AppBundle:Category c';
+        return $this->getSortedAndFilteredCategories($query, $sortField, $isAscending, $filters)
+            ->setFirstResult($offset)
+            ->setMaxResults($itemsPerPage)
+            ->getResult();
+    }
+
+    public function getCategoriesCount(string $sortField, bool $isAscending, array $filters): int
+    {
+        $query = 'SELECT COUNT(c) FROM AppBundle:Category c';
+        return $this->getSortedAndFilteredCategories($query, $sortField, $isAscending, $filters)
+            ->getSingleScalarResult();
+    }
+
+    private function getSortedAndFilteredCategories(string $query, string $sortField, bool $isAscending, array $filters): Query
+    {
+        $query .= $this->getDQLWithFilters($filters);
+        $query .= ' ORDER BY c.' . $sortField . ' ' . ($isAscending ? 'ASC' : 'DESC');
+
+        $temp = [];
+        for ($i = 0; $i < count($filters); $i++) {
+            $temp[$i] = $filters[$i][1];
+        }
+
+        return $this->getEntityManager()
+            ->createQuery($query)
+            ->setParameters($temp);
+    }
+
+    private function getDQLWithFilters(array $filters): string
+    {
+        $result = '';
+        if (key_exists(0, $filters)) {
+            $result = ' WHERE c.' . $filters[0][0] . ' = ?0';
+            for ($i = 1; $i < count($filters); $i++) {
+                $result .= ' AND c.' . $filters[$i][0] . ' = ' . '?' . $i;
+            }
+        }
+        return $result;
     }
 }
