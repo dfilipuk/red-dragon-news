@@ -38,6 +38,9 @@ class AdminController extends Controller
     public function editUserAction(int $id, UserManager $userManager, Request $request)
     {
         $user = $userManager->getUserById($id);
+        if ($user === null){
+            return $this->render('404.html.twig');
+        }
         $originalPassword = $user->getPassword();
         $form = $this->createForm(UserEditType::class, $user, ['validation_groups' => 'editUser']);
         $form->handleRequest($request);
