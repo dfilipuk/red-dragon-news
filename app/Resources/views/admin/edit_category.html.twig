@@ -18,12 +18,11 @@
                         <h6 class="text-center alert alert-danger mdl-cell mdl-cell--6-col mdl-cell--3-offset">{{ error.getMessage() }}</h6>
                     {% endfor%}
                     {{ form_start(form) }}
-                    {{ form_widget(form.editCategoryId) }}
                     <div class="row auth-inputs margin-escape">
                         <div class="col-sm-6 col-sm-offset-3">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 {{
-                                form_widget(form.categoryNewName, {'attr': {
+                                form_widget(form.name, {'attr': {
                                     'class': 'mdl-textfield__input',
                                     'id': 'new-name'
                                 }})

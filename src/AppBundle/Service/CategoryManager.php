@@ -19,4 +19,11 @@ class CategoryManager
         $repository = $this->doctrine->getManager()->getRepository(Category::class);
         return $repository->findOneBy(['id' => $id]);
     }
+
+    public function editCategory(Category $category)
+    {
+        $manager = $this->doctrine->getManager();
+        $manager->persist($category);
+        $manager->flush();
+    }
 }

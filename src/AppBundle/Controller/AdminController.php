@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-
 use AppBundle\Form\CategoryEditType;
 use AppBundle\Form\UserEditType;
 use AppBundle\Service\AjaxDataManager;
@@ -98,11 +97,10 @@ class AdminController extends Controller
     public function editCategoryAction(int $id, CategoryManager $categoryManager, Request $request)
     {
         $category = $categoryManager->getCategoryById($id);
-        $category->setEditCategoryId($category->getId());
-        $category->setCategoryNewName($category->getName());
         $form = $this->createForm(CategoryEditType::class, $category, ['validation_groups' => 'editCategory']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $categoryManager->editCategory($category);
             return $this->redirectToRoute('categories_page');
         } else {
             return $this->render('admin/edit_category.html.twig', [
