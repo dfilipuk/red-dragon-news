@@ -7,12 +7,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Category
  *
  * @ORM\Table(name="categories")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CategoryRepository")
+ * @UniqueEntity(fields="name", message="Category with same name is already exists", groups={"editCategory"})
  */
 class Category
 {
@@ -29,6 +31,8 @@ class Category
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Assert\NotBlank(groups={"editCategory"})
+     * @Assert\Length(max=255, maxMessage="Name too long", groups={"editCategory"})
      */
     private $name;
 
@@ -48,17 +52,6 @@ class Category
      * @OneToMany(targetEntity="Article", mappedBy="category")
      */
     private $articles;
-
-    /**
-     * @Assert\NotBlank(groups={"editCategory"})
-     */
-    private $editCategoryId;
-
-    /**
-     * @Assert\NotBlank(groups={"editCategory"})
-     * @Assert\Length(max=255, maxMessage="Name too long", groups={"editCategory"})
-     */
-    private $categoryNewName;
 
     /**
      * Get id
@@ -145,26 +138,6 @@ class Category
     public function __construct() {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
         $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    public function getCategoryNewName(): string
-    {
-        return $this->categoryNewName;
-    }
-
-    public function getEditCategoryId(): int
-    {
-        return $this->editCategoryId;
-    }
-
-    public function setCategoryNewName(string $categoryNewName)
-    {
-        $this->categoryNewName = $categoryNewName;
-    }
-
-    public function setEditCategoryId(int $editCategoryId)
-    {
-        $this->editCategoryId = $editCategoryId;
     }
 }
 

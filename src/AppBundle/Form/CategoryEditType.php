@@ -20,8 +20,7 @@ class CategoryEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('editCategoryId', HiddenType::class, [])
-            ->add('categoryNewName', TextType::class, [])
+            ->add('name', TextType::class, [])
         ;
     }
 
