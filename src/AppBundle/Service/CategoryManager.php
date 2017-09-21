@@ -26,4 +26,14 @@ class CategoryManager
         $manager->persist($category);
         $manager->flush();
     }
+
+    public function deleteCategoryById(int $id)
+    {
+        $manager = $this->doctrine->getManager();
+        $category = $this->getCategoryById($id);
+        if ($category !== null) {
+            $manager->remove($category);
+            $manager->flush();
+        }
+    }
 }

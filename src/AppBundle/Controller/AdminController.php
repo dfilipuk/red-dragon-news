@@ -112,6 +112,15 @@ class AdminController extends Controller
     }
 
     /**
+     * @Route("/admin/categories/{id}/delete", name="delete-category", requirements={"id": "\d+"})
+     */
+    public function deleteCategoryAction(int $id, CategoryManager $categoryManager)
+    {
+        $categoryManager->deleteCategoryById($id);
+        return $this->redirectToRoute('categories_page');
+    }
+
+    /**
      * @Route("/admin/ajax/categories", name="ajax_categories")
      */
     public function categoriesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
