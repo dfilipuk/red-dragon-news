@@ -43,6 +43,9 @@ class AdminController extends Controller
     public function editUserAction(int $id, UserManager $userManager, Request $request)
     {
         $user = $userManager->getUserById($id);
+        if ($user === null){
+            return $this->render('404.html.twig');
+        }
         $originalPassword = $user->getPassword();
         $form = $this->createForm(UserEditType::class, $user, ['validation_groups' => 'editUser']);
         $form->handleRequest($request);
@@ -197,5 +200,32 @@ class AdminController extends Controller
         } else {
             return true;
         }
+    }
+
+    /**
+     * @Route("/admin/articles", name="articles_page")
+     */
+    public function articlesPageAction()
+    {
+        return $this->render('admin/articles.html.twig');
+    }
+
+    /**
+     * @Route("/admin/ajax/articles", name="ajax_articles")
+     */
+    public function articlesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
+    {
+        if ($ajaxRequestManager->parseRequestParams($request)) {
+            $result = [
+                'success' => true,
+                'items' => $dataManager->getArticlesList($ajaxRequestManager),
+                'pagesAmo' => $ajaxRequestManager->getPagesAmo()
+            ];
+        } else {
+            $result = [
+                'success' => false
+            ];
+        }
+        return new JsonResponse($result);
     }
 }
