@@ -3,9 +3,11 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Form\CategoryEditType;
 use AppBundle\Form\UserEditType;
 use AppBundle\Service\AjaxDataManager;
 use AppBundle\Service\AjaxRequestManager;
+use AppBundle\Service\CategoryManager;
 use AppBundle\Service\NewsManager;
 use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -93,9 +95,22 @@ class AdminController extends Controller
     /**
      * @Route("/admin/categories/{id}/edit", name="edit-category", requirements={"id": "\d+"})
      */
-    public function editCategoryAction(int $id, UserManager $userManager, Request $request)
+    public function editCategoryAction(int $id, CategoryManager $categoryManager, Request $request)
     {
-        return $this->redirectToRoute('admin-home');
+        $category = $categoryManager->getCategoryById($id);
+        $category->setEditCategoryId($category->getId());
+        $category->setCategoryNewName($category->getName());
+        $form = $this->createForm(CategoryEditType::class, $category, ['validation_groups' => 'editCategory']);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->redirectToRoute('categories_page');
+        } else {
+            return $this->render('admin/edit_category.html.twig', [
+                'category' => $category,
+                'form' => $form->createView(),
+                'errors' => $form->getErrors(true, true)
+            ]);
+        }
     }
 
     /**
