@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
@@ -48,6 +49,16 @@ class Category
      */
     private $articles;
 
+    /**
+     * @Assert\NotBlank(groups={"editCategory"})
+     */
+    private $editCategoryId;
+
+    /**
+     * @Assert\NotBlank(groups={"editCategory"})
+     * @Assert\Length(max=255, maxMessage="Name too long", groups={"editCategory"})
+     */
+    private $categoryNewName;
 
     /**
      * Get id
@@ -136,5 +147,24 @@ class Category
         $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public function getCategoryNewName(): string
+    {
+        return $this->categoryNewName;
+    }
+
+    public function getEditCategoryId(): int
+    {
+        return $this->editCategoryId;
+    }
+
+    public function setCategoryNewName(string $categoryNewName)
+    {
+        $this->categoryNewName = $categoryNewName;
+    }
+
+    public function setEditCategoryId(int $editCategoryId)
+    {
+        $this->editCategoryId = $editCategoryId;
+    }
 }
 
