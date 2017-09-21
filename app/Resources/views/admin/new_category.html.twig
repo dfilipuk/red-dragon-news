@@ -30,15 +30,23 @@
                     <div class="row auth-inputs margin-escape">
                         <div class="col-sm-6 col-sm-offset-3">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <div id="parent-name-input">
                                 {{
                                 form_widget(form.parentName, {'attr': {
                                     'class': 'mdl-textfield__input',
                                     'id': 'parent-name'
                                 }})
                                 }}
+                                </div>
                                 <label class="mdl-textfield__label " for="parent-name">Parent category name</label>
                             </div>
                         </div>
+                    </div>
+
+                    <div>
+                        <ul id="similar-categories">
+
+                        </ul>
                     </div>
 
                     <div class="row auth-inputs margin-escape">
@@ -68,4 +76,8 @@
 
         </div>
     </main>
+{% endblock %}
+{% block javascript %}
+    <script>var dataUrl = '{{ path('ajax_similar_categories') }}'</script>
+    <script type="text/javascript"  src="{{ asset('public/js/ajax-category-loader.js') }}"></script>
 {% endblock %}

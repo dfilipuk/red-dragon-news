@@ -21,6 +21,18 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    public function getSimilarCategories(string $similar)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT c FROM AppBundle:Category c WHERE c.level != :lev AND c.name LIKE :similar'
+            )
+            ->setParameter('lev', 2)
+            ->setParameter('similar', '%' . $similar . '%')
+            ->setMaxResults(5)
+            ->getResult();
+    }
+
     public function getCategoriesList(string $sortField, bool $isAscending, array $filters, int $offset, int $itemsPerPage): array
     {
         $query = 'SELECT c FROM AppBundle:Category c';

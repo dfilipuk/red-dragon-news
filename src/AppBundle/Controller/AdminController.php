@@ -145,6 +145,20 @@ class AdminController extends Controller
     }
 
     /**
+     * @Route("/admin/ajax/similar-categories", name="ajax_similar_categories")
+     */
+    public function similarCategoriesAction(Request $request, CategoryManager $categoryManager)
+    {
+        $similar = $request->request->get('similar');
+        if ($similar !== null) {
+            $categories = $categoryManager->getSimilarCategoriesForAjax($similar);
+            return new JsonResponse($categories);
+        } else {
+            return new JsonResponse([]);
+        }
+    }
+
+    /**
      * @Route("/admin/ajax/categories", name="ajax_categories")
      */
     public function categoriesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
