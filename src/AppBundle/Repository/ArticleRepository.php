@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\ORM\Query;
+
 /**
  * ArticleRepository
  *
@@ -34,5 +36,56 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
             )
             ->setParameter('id', $id)
             ->getResult();
+    }
+
+    public function getArticlesList(string $sortField, bool $isAscending, array $filters, int $offset, int $itemsPerPage): array
+    {
+        $query = 'SELECT a, author, category FROM AppBundle:Article a
+                    LEFT JOIN 
+                        a.author author
+                    LEFT JOIN 
+                        a.category category';
+        return $this->getSortedAndFilteredArticles($query, $sortField, $isAscending, $filters)
+            ->setFirstResult($offset)
+            ->setMaxResults($itemsPerPage)
+            ->getResult();
+    }
+
+    public function getArticlesCount(string $sortField, bool $isAscending, array $filters): int
+    {
+        $query = 'SELECT COUNT(a) FROM AppBundle:Article a
+                    LEFT JOIN 
+                        a.author author
+                    LEFT JOIN 
+                        a.category category';
+        return $this->getSortedAndFilteredArticles($query, $sortField, $isAscending, $filters)
+            ->getSingleScalarResult();
+    }
+
+    private function getSortedAndFilteredArticles(string $query, string $sortField, bool $isAscending, array $filters): Query
+    {
+        $query .= $this->getDQLWithFilters($filters);
+        $query .= ' ORDER BY ' . $sortField . ' ' . ($isAscending ? 'ASC' : 'DESC');
+
+        $temp = [];
+        for ($i = 0; $i < count($filters); $i++) {
+            $temp[$i] = $filters[$i][1];
+        }
+        return $this->getEntityManager()
+            ->createQuery($query)
+            ->setParameters($temp);
+    }
+
+    private function getDQLWithFilters(array $filters): string
+    {
+        $result = '';
+        if (key_exists(0, $filters)) {
+            $result = ' WHERE ' . $filters[0][0] . ' LIKE ?0';
+            for ($i = 1; $i < count($filters); $i++) {
+                $result .= ' AND ' . $filters[$i][0] . ' LIKE ' . '?' . $i;
+            }
+        }
+
+        return $result;
     }
 }
