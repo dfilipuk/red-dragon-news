@@ -55,4 +55,20 @@ class CategoryManager
         $repository->persist($newCategory);
         $repository->flush();
     }
+
+    public function getSimilarCategoriesForAjax(string $similar): array
+    {
+        $repository = $this->doctrine->getRepository(Category::class);
+        $categories = $repository->getSimilarCategories($similar);
+        return $this->converteCategoryiesEntitiesToArray($categories);
+    }
+
+    private function converteCategoryiesEntitiesToArray(array $categories): array
+    {
+        $result = [];
+        for ($i = 0; $i < count($categories); $i++) {
+            $result[] = $categories[$i]->getName();
+        }
+        return $result;
+    }
 }
