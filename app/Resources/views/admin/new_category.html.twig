@@ -78,6 +78,6 @@
     </main>
 {% endblock %}
 {% block javascript %}
-    <script>var dataUrl = '{{ path('ajax_similar_categories') }}'</script>
+    <script>var dataUrl = '{{ path('ajax_similar_categories', {'level': 2}) }}'</script>
     <script type="text/javascript"  src="{{ asset('public/js/ajax-category-loader.js') }}"></script>
 {% endblock %}

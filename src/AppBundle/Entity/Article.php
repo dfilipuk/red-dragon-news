@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Article
@@ -43,6 +44,7 @@ class Article
      * @var string
      *
      * @ORM\Column(name="picture", type="string", length=255, nullable=true)
+     * @Assert\Image()
      */
     private $picture;
 
