@@ -37,3 +37,8 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+
+    subscription_manager:
+        class: AppBundle\Service\SubscriptionManager
+        autowire: true
+        public: true
