@@ -12,6 +12,7 @@ use AppBundle\Entity\Article;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\User;
 use \Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\Filesystem\Filesystem;
 
 class NewsManager
 {
@@ -157,6 +158,42 @@ class NewsManager
         $article->setCategory($category);
         $article->setViewsCount(0);
         $manager->persist($article);
+        $manager->flush();
+    }
+
+
+    public function editArticle(Article $article,  \Symfony\Component\Form\Form $form, Category $category, string $savePath, string $oldPicture)
+    {
+        $manager = $this->doctrine->getManager();
+        $file = $article->getPicture();
+
+        if ($file !== null){
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $file->move(
+                $savePath,
+                $fileName
+            );
+            $article->setPicture($fileName);
+        } else{
+            $article->setPicture($oldPicture);
+        }
+
+        $article->setCategory($category);
+        $manager->persist($article);
+        $manager->flush();
+    }
+
+    public function deleteArticleById(int $id, string $savePath)
+    {
+        $manager = $this->doctrine->getManager();
+        $article = $this->findNewsById($id);
+        $picturePath = $article->getPicture();
+        $fs = new Filesystem();
+        $path = $savePath.'/'.$picturePath;
+        if($fs->exists($path)){
+            $fs->remove($path);
+        }
+        $manager->remove($article);
         $manager->flush();
     }
 }

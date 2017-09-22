@@ -248,8 +248,49 @@ class AdminController extends Controller
             return $this->render('admin/articles.html.twig');
         }
         return $this->render('admin/create_article.html.twig', [
+            'delete_class' => 'none',
+            'article' => '0',
+            'title' => 'Create article',
+            'action' => 'Create',
             'form' => $form->createView(),
             'errors' => $form->getErrors(true, true)
         ]);
+    }
+
+    /**
+     * @Route("/admin/articles/{id}/edit", name="edit-article", requirements={"id": "\d+"})
+     */
+    public function editArticleAction(int $id, Request $request, NewsManager $newsManager, CategoryManager $categoryManager)
+    {
+        $article = $newsManager->findNewsById($id);
+        $article->setCategory($article->getCategory()->getName());
+        $oldPicture = $article->getPicture();
+        $article->setPicture(null);
+        $form = $this->createForm(ArticleNewType::class, $article);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $savePath = $this->getParameter('pictures_directory');
+            $category = $categoryManager->getCategoryByName($article->getCategory());
+            $newsManager->editArticle($article, $form, $category, $savePath, $oldPicture);
+            return $this->render('admin/articles.html.twig');
+        }
+        return $this->render('admin/create_article.html.twig', [
+            'delete_class' => '',
+            'article' => $article->getId(),
+            'title' => 'Edit article #',
+            'action' => 'Edit',
+            'form' => $form->createView(),
+            'errors' => $form->getErrors(true, true)
+        ]);
+    }
+
+    /**
+     * @Route("/admin/articles/{id}/delete", name="delete-article", requirements={"id": "\d+"})
+     */
+    public function deleteArticleAction(int $id, NewsManager $newsManager)
+    {
+        $savePath = $this->getParameter('pictures_directory');
+        $newsManager->deleteArticleById($id, $savePath);
+        return $this->render('admin/articles.html.twig');
     }
 }

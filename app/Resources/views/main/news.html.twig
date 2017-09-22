@@ -22,7 +22,7 @@
 
                 <h3>{{ news.title }}</h3>
                 <p>
-                    {{ news.text }}
+                    {{ news.text|raw }}
                 </p>
                 {% if news.similarArticles|length != 0 %}
                     <h5>Similar news:</h5>
