@@ -1,0 +1,95 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Create article{% endblock %}
+
+{% block admin_title %}Create article{% endblock %}
+
+{% block body %}
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <div class="mdl-grid admin-content">
+            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+                <div  class="mdl-cell mdl-cell--12-col">
+                    {% for error in errors %}
+                        <h6 class="text-center alert alert-danger mdl-cell mdl-cell--6-col mdl-cell--3-offset">{{ error.getMessage() }}</h6>
+                    {% endfor%}
+                    {{ form_start(form) }}
+                    <div class="row auth-inputs margin-escape">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                {{
+                                form_widget(form.title, {'attr': {
+                                    'class': 'mdl-textfield__input',
+                                    'id': 'title'
+                                }})
+                                }}
+                                <label class="mdl-textfield__label " for="new-name">Article title</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row auth-inputs margin-escape">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <div id="parent-name-input">
+                                    {{
+                                    form_widget(form.category, {'attr': {
+                                        'class': 'mdl-textfield__input',
+                                        'id': 'category'
+                                    }})
+                                    }}
+                                </div>
+                                <label class="mdl-textfield__label " for="parent-name">Category name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <ul id="similar-categories">
+
+                        </ul>
+                    </div>
+
+                    <div class="row auth-inputs margin-escape file-input">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <div class="file_input_div">
+                                <div class="file_input">
+                                    <label class="image_input_button mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored">
+                                        <i class="material-icons">file_upload</i>
+                                        {{ form_widget(form.picture)  }}
+                                    </label>
+                                </div>
+                                <div id="file_input_text_div" class="mdl-textfield mdl-js-textfield  mdl-textfield--floating-label">
+                                    <input class="file_input_text mdl-textfield__input" type="text" disabled readonly id="file_input_text" />
+                                    <label class="mdl-textfield__label" for="file_input_text">Load picture</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row auth-inputs margin-escape">
+                        <div class="col-sm-12">
+                            {{  form_widget(form.text)  }}
+                        </div>
+                    </div>
+
+
+
+                    <div class="mdl-card__actions row margin-escape">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20">Create article</button>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ asset('public/js/file-loader.js') }}"></script>
+    <script>var dataUrl = '{{ path('ajax_similar_categories', {'level': 3}) }}'</script>
+    <script type="text/javascript"  src="{{ asset('public/js/ajax-category-loader.js') }}"></script>
+{% endblock %}

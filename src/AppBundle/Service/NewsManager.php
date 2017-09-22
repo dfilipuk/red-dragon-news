@@ -10,6 +10,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Article;
 use AppBundle\Entity\Category;
+use AppBundle\Entity\User;
 use \Doctrine\Common\Persistence\ManagerRegistry;
 
 class NewsManager
@@ -130,6 +131,31 @@ class NewsManager
         $article = $this->findNewsById($id);
         $article->setViewsCount($article->getViewsCount() + 1);
         $manager = $this->doctrine->getManager();
+        $manager->persist($article);
+        $manager->flush();
+    }
+
+
+
+    public function createArticle(Article $article,  \Symfony\Component\Form\Form $form,User $user, Category $category, string $savePath)
+    {
+        $manager = $this->doctrine->getManager();
+        $file = $article->getPicture();
+
+        if ($file !== null){
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $file->move(
+                $savePath,
+                $fileName
+            );
+            $article->setPicture($fileName);
+        }
+
+        $time = new \DateTime();
+        $article->setDate($time);
+        $article->setAuthor($user);
+        $article->setCategory($category);
+        $article->setViewsCount(0);
         $manager->persist($article);
         $manager->flush();
     }
