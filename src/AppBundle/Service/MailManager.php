@@ -4,12 +4,15 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Token;
 use AppBundle\Entity\User;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Templating\EngineInterface;
 
 class MailManager
 {
     private const WELCOME_HEADER = 'Welcome to Red Dragon!';
     private const RESET_PASSWORD_HEADER = 'Red Dragon - Reset password';
+    private const SUBSCRIPTION_HEADER = 'Red Dragon - news';
+    private const HOST_NAME = 'localhost:8000';
 
     private $twigEngine;
     private $mailer;
@@ -59,4 +62,28 @@ class MailManager
             'token' => $token
         ]);
     }
+
+    public function sendSubscriptionEmail(User $user, string $mailBody)
+    {
+        $message = (new \Swift_Message(self::SUBSCRIPTION_HEADER))
+            ->setFrom($this->mailerUser)
+            ->setTo($user->getEmail())
+            ->setBody(
+                $mailBody,
+                'text/html'
+            );
+        $this->mailer->send($message);
+    }
+
+    public function generateSubscriptionMailBody(array $posts, string $type)
+    {
+
+        return $this->twigEngine->render('subscription/mail.html.twig', [
+            'posts' => $posts,
+            'type' => $type,
+            'host' => self::HOST_NAME
+        ]);
+    }
+
+
 }

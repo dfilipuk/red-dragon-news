@@ -88,4 +88,14 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
 
         return $result;
     }
+
+    public function getArticlesAfterTime(\DateTime $dateFrom): ?array
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT p FROM AppBundle:Article p 
+                                WHERE p.date >= :dateFrom'
+            )
+            ->setParameter('dateFrom', $dateFrom)
+            ->getResult();
+    }
 }

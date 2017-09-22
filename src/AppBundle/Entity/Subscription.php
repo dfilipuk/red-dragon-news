@@ -23,12 +23,6 @@ class Subscription
      */
     private $id;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_notified", type="boolean")
-     */
-    private $isNotified;
 
     /**
      * @var string
@@ -54,29 +48,6 @@ class Subscription
         return $this->id;
     }
 
-    /**
-     * Set isNotified
-     *
-     * @param boolean $isNotified
-     *
-     * @return Subscription
-     */
-    public function setIsNotified($isNotified)
-    {
-        $this->isNotified = $isNotified;
-
-        return $this;
-    }
-
-    /**
-     * Get isNotified
-     *
-     * @return bool
-     */
-    public function getIsNotified()
-    {
-        return $this->isNotified;
-    }
 
     /**
      * Set type

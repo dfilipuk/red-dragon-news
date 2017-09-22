@@ -10,4 +10,33 @@ namespace AppBundle\Repository;
  */
 class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getSubscribedUsersCount(string $type): int
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT COUNT(s) FROM AppBundle:Subscription s
+                          WHERE s.type = :type'
+            )
+            ->setParameter('type', $type)
+            ->getSingleScalarResult();
+    }
+
+    public function getSubscribedUsers(string $type, int $offset, int $rowsPerRequest): array
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT subscr, user 
+                      FROM 
+                        AppBundle:Subscription subscr
+                      LEFT JOIN
+                        subscr.userID user
+                      WHERE 
+                        subscr.type = :type'
+            )
+            ->setParameter('type', $type)
+            ->setFirstResult($offset)
+            ->setMaxResults($rowsPerRequest)
+            ->getResult();
+    }
+
 }
