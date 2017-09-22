@@ -23,7 +23,7 @@
                                         {% if one_news.picture is null %}
                                             <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
                                         {% else %}
-                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                            <img src="{{ asset('uploads/user_images/' ~ one_news.picture) }}" class="news-small-picture">
                                         {% endif %}
                                     </div>
                                     <div class="col-sm-7">
@@ -39,7 +39,7 @@
                                         {% if one_news.picture is null %}
                                             <img src="{{ asset('public/img/no-photo.png') }}" class="news-small-picture">
                                         {% else %}
-                                            <img src="{{ asset('public/img/' ~ one_news.picture) }}" class="news-small-picture">
+                                            <img src="{{ asset('uploads/user_images/' ~ one_news.picture) }}" class="news-small-picture">
                                         {% endif %}
                                     </div>
                                 {% endif %}
