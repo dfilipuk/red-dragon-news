@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Article;
 use AppBundle\Entity\Category;
+use AppBundle\Form\ArticleNewType;
 use AppBundle\Form\CategoryEditType;
 use AppBundle\Form\CategoryNewType;
 use AppBundle\Form\UserEditType;
@@ -128,7 +130,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/categories/create", name="create-category", requirements={"id": "\d+"})
+     * @Route("/admin/categories/create", name="create-category")
      */
     public function createCategoryAction(Request $request, CategoryManager $categoryManager)
     {
@@ -148,13 +150,14 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/ajax/similar-categories", name="ajax_similar_categories")
+     * @Route("/admin/ajax/similar-categories/{level}", name="ajax_similar_categories")
      */
-    public function similarCategoriesAction(Request $request, CategoryManager $categoryManager)
+    public function similarCategoriesAction(Request $request, CategoryManager $categoryManager, int $level)
     {
         $similar = $request->request->get('similar');
+
         if ($similar !== null) {
-            $categories = $categoryManager->getSimilarCategoriesForAjax($similar);
+            $categories = $categoryManager->getSimilarCategoriesForAjax($similar, $level);
             return new JsonResponse($categories);
         } else {
             return new JsonResponse([]);
@@ -227,5 +230,67 @@ class AdminController extends Controller
             ];
         }
         return new JsonResponse($result);
+    }
+
+    /**
+     * @Route("/admin/articles/create", name="create-article")
+     */
+    public function createArticleAction(Request $request, NewsManager $newsManager, CategoryManager $categoryManager)
+    {
+        $newArticle = new Article();
+        $form = $this->createForm(ArticleNewType::class, $newArticle);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $savePath = $this->getParameter('pictures_directory');
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $category = $categoryManager->getCategoryByName($newArticle->getCategory());
+            $newsManager->createArticle($newArticle, $form, $user, $category, $savePath);
+            return $this->render('admin/articles.html.twig');
+        }
+        return $this->render('admin/create_article.html.twig', [
+            'delete_class' => 'none',
+            'article' => '0',
+            'title' => 'Create article',
+            'action' => 'Create',
+            'form' => $form->createView(),
+            'errors' => $form->getErrors(true, true)
+        ]);
+    }
+
+    /**
+     * @Route("/admin/articles/{id}/edit", name="edit-article", requirements={"id": "\d+"})
+     */
+    public function editArticleAction(int $id, Request $request, NewsManager $newsManager, CategoryManager $categoryManager)
+    {
+        $article = $newsManager->findNewsById($id);
+        $article->setCategory($article->getCategory()->getName());
+        $oldPicture = $article->getPicture();
+        $article->setPicture(null);
+        $form = $this->createForm(ArticleNewType::class, $article);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $savePath = $this->getParameter('pictures_directory');
+            $category = $categoryManager->getCategoryByName($article->getCategory());
+            $newsManager->editArticle($article, $form, $category, $savePath, $oldPicture);
+            return $this->render('admin/articles.html.twig');
+        }
+        return $this->render('admin/create_article.html.twig', [
+            'delete_class' => '',
+            'article' => $article->getId(),
+            'title' => 'Edit article #',
+            'action' => 'Edit',
+            'form' => $form->createView(),
+            'errors' => $form->getErrors(true, true)
+        ]);
+    }
+
+    /**
+     * @Route("/admin/articles/{id}/delete", name="delete-article", requirements={"id": "\d+"})
+     */
+    public function deleteArticleAction(int $id, NewsManager $newsManager)
+    {
+        $savePath = $this->getParameter('pictures_directory');
+        $newsManager->deleteArticleById($id, $savePath);
+        return $this->render('admin/articles.html.twig');
     }
 }

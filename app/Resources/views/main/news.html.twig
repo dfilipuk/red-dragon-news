@@ -14,7 +14,7 @@
                 {% if news.picture is null %}
                     <img src="{{ asset('public/img/no-photo.png') }}" class="news-image">
                 {% else %}
-                    <img src="{{ asset('public/img/' ~ news.picture) }}" class="news-image">
+                    <img src="{{ asset('uploads/user_images/' ~ news.picture) }}" class="news-image">
                 {% endif %}
                 <div class="text-center margin-top-10">
                     <p>Author: <b>{{ news.author.email }}</b>. Date: <b>{{ news.date|date }}</b>. Number of Views: <b>{{ news.viewsCount }}</b></p>
@@ -22,7 +22,7 @@
 
                 <h3>{{ news.title }}</h3>
                 <p>
-                    {{ news.text }}
+                    {{ news.text|raw }}
                 </p>
                 {% if news.similarArticles|length != 0 %}
                     <h5>Similar news:</h5>

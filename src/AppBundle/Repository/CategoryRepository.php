@@ -21,13 +21,13 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getSimilarCategories(string $similar)
+    public function getSimilarCategories(string $similar,int $maxLevel)
     {
         return $this->getEntityManager()
             ->createQuery(
                 'SELECT c FROM AppBundle:Category c WHERE c.level != :lev AND c.name LIKE :similar'
             )
-            ->setParameter('lev', 2)
+            ->setParameter('lev', $maxLevel)
             ->setParameter('similar', '%' . $similar . '%')
             ->setMaxResults(5)
             ->getResult();
