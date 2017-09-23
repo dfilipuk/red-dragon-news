@@ -202,7 +202,7 @@ class Category
     public function __construct() {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
         $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->isRootCategory = true;
+        $this->isRootCategory = false;
     }
 
     public function isLeafOfTree(): bool
