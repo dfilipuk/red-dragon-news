@@ -29,6 +29,7 @@ class NewsManager
         $categoryArray = [];
         foreach ($categories as $category){
             $temp = [];
+
             $temp['id'] = $category->getId();
             $temp['name'] = $category->getName();
             if ($category->getParent() === null){
@@ -36,7 +37,7 @@ class NewsManager
             } else {
                 $temp['parent_id'] = $category->getParent()->getId();
             }
-            array_push($categoryArray, $temp);
+            $categoryArray[$temp['id']] = $temp;
         }
         return $categoryArray;
     }
@@ -44,7 +45,7 @@ class NewsManager
     private function makeCategoriesTree(array $items, int $root = self::TREE_ROOT): array
     {
         $tree = [];
-        foreach($items as $item) {;
+        foreach($items as $item) {
             if($item['parent_id'] == $root && $item['id'] != $item['parent_id']) {
                 unset($items[$item['id']]);
                 $tree[$item['id']] = array(
@@ -77,6 +78,8 @@ class NewsManager
     {
         $categories = $this->findAllCategories();
         $categories = $this->transformToTree($categories);
+
+
         return $categories;
     }
 
