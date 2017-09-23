@@ -189,9 +189,11 @@ class NewsManager
         $article = $this->findNewsById($id);
         $picturePath = $article->getPicture();
         $fs = new Filesystem();
-        $path = $savePath.'/'.$picturePath;
-        if($fs->exists($path)){
-            $fs->remove($path);
+        if ($picturePath !== null){
+            $path = $savePath.'/'.$picturePath;
+            if($fs->exists($path)){
+                $fs->remove($path);
+            }
         }
         $manager->remove($article);
         $manager->flush();
