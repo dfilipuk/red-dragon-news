@@ -11,6 +11,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Article;
 use AppBundle\Entity\Subscription;
+use AppBundle\Entity\User;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 class SubscriptionManager
@@ -72,6 +73,16 @@ class SubscriptionManager
                 $manager->clear();
             }
         }
+    }
+
+    public function subscribeUser(User $user, string $type)
+    {
+        $manager = $this->doctrine->getManager();
+        $subscription = new Subscription();
+        $subscription->setUserID($user);
+        $subscription->setType($type);
+        $manager->persist($subscription);
+        $manager->flush();
     }
 
 
