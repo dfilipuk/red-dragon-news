@@ -162,7 +162,7 @@ class NewsManager
     }
 
 
-    public function editArticle(Article $article,  \Symfony\Component\Form\Form $form, Category $category, string $savePath, string $oldPicture)
+    public function editArticle(Article $article,  \Symfony\Component\Form\Form $form, Category $category, string $savePath, ?string $oldPicture)
     {
         $manager = $this->doctrine->getManager();
         $file = $article->getPicture();

@@ -66,6 +66,14 @@ class User implements AdvancedUserInterface, \Serializable
     private $role;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="is_subscribe", type="boolean")
+     */
+    private $isSubscribe;
+
+
+    /**
      * Get id
      *
      * @return int
@@ -239,6 +247,27 @@ class User implements AdvancedUserInterface, \Serializable
             $this->password,
             $this->isActive
             ) = unserialize($serialized);
+    }
+
+    public function __construct()
+    {
+        $this->isSubscribe = false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getisSubscribe(): string
+    {
+        return $this->isSubscribe;
+    }
+
+    /**
+     * @param string $isSubscribe
+     */
+    public function setIsSubscribe(string $isSubscribe)
+    {
+        $this->isSubscribe = $isSubscribe;
     }
 }
 
