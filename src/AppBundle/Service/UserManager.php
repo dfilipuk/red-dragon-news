@@ -221,8 +221,10 @@ class UserManager
     {
         $manager = $this->doctrine->getManager();
         $user = $this->getUserById($id);
-        $manager->remove($user);
-        $manager->flush();
+        if ($user !== null) {
+            $manager->remove($user);
+            $manager->flush();
+        }
     }
 
     public function updateSubscribe($subscribe, User $user)
