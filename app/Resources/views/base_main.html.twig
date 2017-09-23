@@ -54,8 +54,8 @@
                                 <a href="{{ path("homepage") }}"><img src="{{ asset('public/img/logo.png') }}" class="logo"></a>
                             </div>
                             <div class="col-sm-8 margin-top-15">
-                                <form class="search-input">
-                                    <input type="text">
+                                <form class="search-input" action="{{ path('search') }}" method="get">
+                                    <input type="text" name="search">
                                     <span class="highlight"></span>
                                     <span class="bar"></span>
                                     <label>Search something...</label>
