@@ -187,15 +187,17 @@ class NewsManager
     {
         $manager = $this->doctrine->getManager();
         $article = $this->findNewsById($id);
-        $picturePath = $article->getPicture();
-        $fs = new Filesystem();
-        if ($picturePath !== null){
-            $path = $savePath.'/'.$picturePath;
-            if($fs->exists($path)){
-                $fs->remove($path);
+        if ($article !== null) {
+            $picturePath = $article->getPicture();
+            $fs = new Filesystem();
+            if ($picturePath !== null){
+                $path = $savePath.'/'.$picturePath;
+                if($fs->exists($path)){
+                    $fs->remove($path);
+                }
             }
+            $manager->remove($article);
+            $manager->flush();
         }
-        $manager->remove($article);
-        $manager->flush();
     }
 }

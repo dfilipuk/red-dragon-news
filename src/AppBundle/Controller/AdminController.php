@@ -14,6 +14,7 @@ use AppBundle\Service\CategoryManager;
 use AppBundle\Service\NewsManager;
 use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -40,13 +41,14 @@ class AdminController extends Controller
     }
 
      /**
-     * @Route("/admin/users/{id}/edit", name="edit-user", requirements={"id": "\d+"})
+      *@Security("has_role('ROLE_ADMIN')")
+     * @Route("/admin/users/{id}/edit", name="edit-user", requirements={"id": "\d{0,9}"})
      */
     public function editUserAction(int $id, UserManager $userManager, Request $request)
     {
         $user = $userManager->getUserById($id);
         if ($user === null){
-            return $this->render('404.html.twig');
+            throw $this->createNotFoundException();
         }
         $originalPassword = $user->getPassword();
         $form = $this->createForm(UserEditType::class, $user, ['validation_groups' => 'editUser']);
@@ -64,7 +66,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/users/{id}/delete", name="delete-user", requirements={"id": "\d+"})
+     * @Route("/admin/users/{id}/delete", name="delete-user", requirements={"id": "\d{0,9}"})
      */
     public function deleteUserAction(int $id, UserManager $userManager)
     {
@@ -93,6 +95,7 @@ class AdminController extends Controller
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/admin/categories", name="categories_page")
      */
     public function categoriesPageAction()
@@ -101,11 +104,15 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/categories/{id}/edit", name="edit-category", requirements={"id": "\d+"})
+     * @Security("has_role('ROLE_ADMIN')")
+     * @Route("/admin/categories/{id}/edit", name="edit-category", requirements={"id": "\d{0,9}"})
      */
     public function editCategoryAction(int $id, CategoryManager $categoryManager, Request $request)
     {
         $category = $categoryManager->getCategoryById($id);
+        if ($category === null){
+            throw $this->createNotFoundException();
+        }
         $form = $this->createForm(CategoryEditType::class, $category, ['validation_groups' => 'editCategory']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -121,7 +128,8 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/categories/{id}/delete", name="delete-category", requirements={"id": "\d+"})
+     * @Security("has_role('ROLE_ADMIN')")
+     * @Route("/admin/categories/{id}/delete", name="delete-category", requirements={"id": "\d{0,9}"})
      */
     public function deleteCategoryAction(int $id, CategoryManager $categoryManager)
     {
@@ -130,6 +138,7 @@ class AdminController extends Controller
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/admin/categories/create", name="create-category")
      */
     public function createCategoryAction(Request $request, CategoryManager $categoryManager)
@@ -258,11 +267,14 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/articles/{id}/edit", name="edit-article", requirements={"id": "\d+"})
+     * @Route("/admin/articles/{id}/edit", name="edit-article", requirements={"id": "\d{0,9}"})
      */
     public function editArticleAction(int $id, Request $request, NewsManager $newsManager, CategoryManager $categoryManager)
     {
         $article = $newsManager->findNewsById($id);
+        if ($article === null){
+            throw $this->createNotFoundException();
+        }
         $article->setCategory($article->getCategory()->getName());
         $oldPicture = $article->getPicture();
         $article->setPicture(null);
@@ -285,7 +297,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/articles/{id}/delete", name="delete-article", requirements={"id": "\d+"})
+     * @Route("/admin/articles/{id}/delete", name="delete-article", requirements={"id": "\d{0,9}"})
      */
     public function deleteArticleAction(int $id, NewsManager $newsManager)
     {
