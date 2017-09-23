@@ -61,6 +61,23 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        search:
+            client: default
+            types:
+                posts:
+                    mappings:
+                        title: ~
+                    persistence:
+                        driver: orm
+                        model: AppBundle\Entity\Article
+                        provider: ~
+                        listener: ~
+                        finder: ~
+
 # Swiftmailer Configuration
 swiftmailer:
     transport: '%mailer_transport%'

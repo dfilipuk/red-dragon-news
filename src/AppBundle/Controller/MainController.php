@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncode;
 class MainController extends Controller
 {
 
-    private function paginateNews(Request $request, array $news)
+    private function paginateNews(Request $request, $news)
     {
         $paginator  = $this->get('knp_paginator');
         return $paginator->paginate(
@@ -104,5 +104,20 @@ class MainController extends Controller
         $subscriptionManager->subscribeUser($user, $type);
         return new Response();
     }
+
+    /**
+     * @Route("/search", name="search")
+     */
+    public function seacrhAction(Request $request, NewsManager $newsManager)
+    {
+        $finder = $this->container->get('fos_elastica.finder.search.posts');
+        $searchRequest = $request->query->get('search');
+        $searchedNews = $finder->createPaginatorAdapter('*'.$searchRequest . '*');
+        $generalCategories = $newsManager->findGeneralCategories();
+        $newsOnPage = $this->paginateNews($request, $searchedNews);
+        return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => 'Red Dragon news']);
+    }
+
+
 
 }
