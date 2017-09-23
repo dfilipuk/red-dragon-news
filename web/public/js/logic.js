@@ -30,24 +30,45 @@ var buttonOpen = document.querySelector('#show-dialog');
 var buttonClose = document.querySelector('.close');
 var buttonSubscribe = document.querySelector('#subscribe');
 var dialog = document.querySelector('dialog');
+var buttonUnsubscribe = document.querySelector('#unsubscribe');
 
-buttonOpen.addEventListener('click', function() {
-    dialog.showModal();
-});
 
-buttonClose.addEventListener('click', function() {
-    dialog.close();
-});
-
-buttonSubscribe.addEventListener('click', function() {
-    $.post({
-        url: "/subscribe-user",
-        data:
-            {
-              type: $('#subscription').val()
-            },
-        success: function(){
-            dialog.close();
-        }
+if (buttonOpen !== null) {
+    buttonOpen.addEventListener('click', function () {
+        dialog.showModal();
     });
-});
+
+    buttonClose.addEventListener('click', function () {
+        dialog.close();
+    });
+
+    buttonSubscribe.addEventListener('click', function () {
+        $.post({
+            url: "/subscribe-user",
+            data:
+                {
+                    type: $('#subscription').val(),
+                    subscribe: 1
+                },
+            success: function () {
+                dialog.close();
+                location.reload();
+            }
+        });
+    });
+}
+
+if (buttonUnsubscribe !== null) {
+    buttonUnsubscribe.addEventListener('click', function () {
+        $.post({
+            url: "/subscribe-user",
+            data:
+                {
+                    subscribe: 0
+                },
+            success: function () {
+                location.reload();
+            }
+        });
+    });
+}

@@ -75,14 +75,22 @@ class SubscriptionManager
         }
     }
 
-    public function subscribeUser(User $user, string $type)
+    public function subscribeUser(User $user, ?string $type)
     {
         $manager = $this->doctrine->getManager();
-        $subscription = new Subscription();
-        $subscription->setUserID($user);
-        $subscription->setType($type);
-        $manager->persist($subscription);
-        $manager->flush();
+        $repository = $manager->getRepository(Subscription::class);
+        if ($type === null){
+            $subscription = $repository->findOneBy(['userID' => $user->getId()]);
+            $manager->remove($subscription);
+            $manager->flush();
+
+        } else {
+            $subscription = new Subscription();
+            $subscription->setUserID($user);
+            $subscription->setType($type);
+            $manager->persist($subscription);
+            $manager->flush();
+        }
     }
 
 

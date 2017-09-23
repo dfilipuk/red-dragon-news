@@ -90,10 +90,17 @@ class MainController extends Controller
     /**
      * @Route("/subscribe-user", name="subscribe-user", methods={"POST"})
      */
-    public function subscribeUserAction(Request $request, SubscriptionManager $subscriptionManager)
+    public function subscribeUserAction(Request $request, SubscriptionManager $subscriptionManager, UserManager $userManager)
     {
-        $type = $request->request->get('type');
+        $subscribe = $request->request->get('subscribe');
+        if ($subscribe){
+            $type = $request->request->get('type');
+        } else{
+            $type = null;
+        }
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $userManager->updateSubscribe($subscribe, $user);
         $subscriptionManager->subscribeUser($user, $type);
         return new Response();
     }
