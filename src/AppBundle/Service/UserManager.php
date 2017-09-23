@@ -224,4 +224,13 @@ class UserManager
         $manager->remove($user);
         $manager->flush();
     }
+
+    public function updateSubscribe($subscribe, User $user)
+    {
+        $manager = $this->doctrine->getManager();
+        $user->setIsSubscribe($subscribe);
+        $manager->persist($user);
+        $manager->flush();
+
+    }
 }

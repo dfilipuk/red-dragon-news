@@ -10,6 +10,8 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Service\NewsManager;
+use AppBundle\Service\SubscriptionManager;
+use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -82,6 +84,24 @@ class MainController extends Controller
     public function updateWatchCountAction(NewsManager $newsManager, int $id)
     {
         $newsManager->updateWatchCount($id);
+        return new Response();
+    }
+
+    /**
+     * @Route("/subscribe-user", name="subscribe-user", methods={"POST"})
+     */
+    public function subscribeUserAction(Request $request, SubscriptionManager $subscriptionManager, UserManager $userManager)
+    {
+        $subscribe = $request->request->get('subscribe');
+        if ($subscribe){
+            $type = $request->request->get('type');
+        } else{
+            $type = null;
+        }
+
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $userManager->updateSubscribe($subscribe, $user);
+        $subscriptionManager->subscribeUser($user, $type);
         return new Response();
     }
 

@@ -1,0 +1,10 @@
+<html>
+    <body>
+    <h3>Hello, take your {{ type }} news</h3>
+        <ul>
+            {% for one_post in posts %}
+                    <li><a href="http://{{ host }}{{ path('news-page', {'id': one_post.id}) }}">{{ one_post.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
