@@ -139,9 +139,16 @@ class NewsManager
         $manager->flush();
     }
 
+    private function getSimilarNewsById(array $similars): array
+    {
+        $similars = array_unique($similars);
+        $manager = $this->doctrine->getManager();
+        $repository = $manager->getRepository(Article::class);
+        return $repository->getSimilarArticles($similars);
 
+    }
 
-    public function createArticle(Article $article,  \Symfony\Component\Form\Form $form,User $user, Category $category, string $savePath)
+    public function createArticle(Article $article,  \Symfony\Component\Form\Form $form,User $user, Category $category, string $savePath, ?array $similars)
     {
         $manager = $this->doctrine->getManager();
         $file = $article->getPicture();
@@ -155,6 +162,12 @@ class NewsManager
             $article->setPicture($fileName);
         }
 
+        if($similars !== null){
+            $article->setSimilarArticles($this->getSimilarNewsById($similars));
+        } else{
+            $article->setSimilarArticles([]);
+        }
+
         $time = new \DateTime();
         $article->setDate($time);
         $article->setAuthor($user);
@@ -165,7 +178,7 @@ class NewsManager
     }
 
 
-    public function editArticle(Article $article,  \Symfony\Component\Form\Form $form, Category $category, string $savePath, ?string $oldPicture)
+    public function editArticle(Article $article,  \Symfony\Component\Form\Form $form, Category $category, string $savePath, ?string $oldPicture, ?array $similars)
     {
         $manager = $this->doctrine->getManager();
         $file = $article->getPicture();
@@ -180,6 +193,13 @@ class NewsManager
         } else{
             $article->setPicture($oldPicture);
         }
+
+        if($similars !== null){
+            $article->setSimilarArticles($this->getSimilarNewsById($similars));
+        } else{
+            $article->setSimilarArticles([]);
+        }
+
 
         $article->setCategory($category);
         $manager->persist($article);
