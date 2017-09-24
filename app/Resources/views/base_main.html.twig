@@ -67,10 +67,10 @@
                             <div class="col-sm-2 col-sm-offset-1 margin-top-15">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <select id="sorting" name="sorting" onchange="onSelectChange()" class="mdl-textfield__input">
-                                        <option>Date (asc)</option>
-                                        <option>Date (desc)</option>
-                                        <option>Views count (asc)</option>
-                                        <option>Views count (desc)</option>
+                                        <option {{ 'selected'|styleSelector(isAscending, isOrderByDate) }}>Date (asc)</option>
+                                        <option {{ 'selected'|styleSelector(not isAscending, isOrderByDate) }}>Date (desc)</option>
+                                        <option {{ 'selected'|styleSelector(isAscending, not isOrderByDate) }}>Views count (asc)</option>
+                                        <option {{ 'selected'|styleSelector(not isAscending, not isOrderByDate) }}>Views count (desc)</option>
                                     </select>
                                     <label class="mdl-textfield__label" for="sorting">Sort by</label>
                                 </div>
