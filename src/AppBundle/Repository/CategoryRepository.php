@@ -49,6 +49,24 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleScalarResult();
     }
 
+    public function findCategoryById(int $id): array
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT category, articles, children 
+                      FROM 
+                        AppBundle:Category category 
+                      LEFT JOIN 
+                        category.articles articles
+                      LEFT JOIN 
+                        category.children children
+                      WHERE 
+                        category.id = :id'
+            )
+            ->setParameter('id', $id)
+            ->getResult();
+    }
+
     private function getSortedAndFilteredCategories(string $query, string $sortField, bool $isAscending, array $filters): Query
     {
         $query .= $this->getDQLWithFilters($filters);
