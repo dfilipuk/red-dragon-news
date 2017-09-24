@@ -1,41 +1,40 @@
-var responseReceived = true;
+//var responseReceived = true;
 
 $("#parent-name-input").keyup(onKeyUp);
 
-String.prototype.isEmpty = function() {
-    return (this.length === 0 || !this.trim());
-};
+var similar = "";
 
 function onKeyUp() {
-    if (responseReceived) {
-        var val = $("#parent-name-input").children().first().val();
-        val.trim();
-        if (!val.isEmpty()) {
-            val = $.trim(val);
-            sendRequest(val);
-        }
-    }
+    similar = $("#parent-name-input").children().first().val();
+
 }
 
-function sendRequest(similar) {
-    $.post(
-        dataUrl,
-        {
-            similar: similar
-        },
-        function(data) {
-            handleResponse(data);
+$(document).ready(function () {
+    $(function () {
+        $("#article_new_category").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    method: "POST",
+                    url: dataUrl,
+                    data: {
+                        similar: similar
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        response($.map(data, function (item) {
+                            return {
+                                label: item,
+                                value: item
+                            };
+
+                        }))
+                    }
+                });
+
+            },
+            selectFirst: false
+
         });
-}
+    })
+});
 
-function handleResponse(data) {
-    $("#similar-categories").empty();
-    if (data.length > 0) {
-        var list = '';
-        for (var i = 0; i < data.length; i++) {
-            list += '<li>' + data[i] + '</li>'
-        }
-        $("#similar-categories").append(list);
-        responseReceived = true;
-    }
-}

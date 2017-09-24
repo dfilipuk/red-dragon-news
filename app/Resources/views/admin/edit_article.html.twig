@@ -123,9 +123,9 @@
 {% endblock %}
 
 {% block javascript %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="{{ asset('public/js/file-loader.js') }}"></script>
     <script>var dataUrl = '{{ path('ajax_similar_categories', {'level': 3}) }}'</script>
     <script type="text/javascript"  src="{{ asset('public/js/ajax-category-loader.js') }}"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="{{ asset('public/js/similar-news.js') }}"></script>
 {% endblock %}

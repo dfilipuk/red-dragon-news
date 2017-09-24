@@ -165,13 +165,17 @@ class AdminController extends Controller
     public function similarCategoriesAction(Request $request, CategoryManager $categoryManager, int $level)
     {
         $similar = $request->request->get('similar');
-
+        $categories = [];
         if ($similar !== null) {
             $categories = $categoryManager->getSimilarCategoriesForAjax($similar, $level);
-            return new JsonResponse($categories);
-        } else {
-            return new JsonResponse([]);
         }
+
+        $response = new Response(json_encode($categories));
+        $response->headers->set('Content-Type', 'application/json');
+        $f = fopen("E:\log.txt", "w+");
+        fwrite($f, print_r($response, 1));
+        fclose($f);
+        return $response;
     }
 
     /**
@@ -260,8 +264,13 @@ class AdminController extends Controller
             $savePath = $this->getParameter('pictures_directory');
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $category = $categoryManager->getCategoryByName($newArticle->getCategory());
-            $newsManager->createArticle($newArticle, $form, $user, $category, $savePath, $similars);
-            return $this->render('admin/articles.html.twig');
+            if ($category === null){
+                $form->addError(new FormError("Bad category"));
+            } else{
+                $newsManager->createArticle($newArticle, $form, $user, $category, $savePath, $similars);
+                return $this->render('admin/articles.html.twig');
+            }
+
         }
         return $this->render('admin/create_article.html.twig', [
             'form' => $form->createView(),
