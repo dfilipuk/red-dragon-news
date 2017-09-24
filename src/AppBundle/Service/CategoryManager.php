@@ -16,8 +16,8 @@ class CategoryManager
 
     public function getCategoryById(int $id):? Category
     {
-        $repository = $this->doctrine->getManager()->getRepository(Category::class);
-        return $repository->findOneBy(['id' => $id]);
+        $result = $this->doctrine->getManager()->getRepository(Category::class)->findCategoryById($id);
+        return array_key_exists(0, $result) ? $result[0] : null;
     }
 
     public function getCategoryByName(string $name):? Category
@@ -37,7 +37,7 @@ class CategoryManager
     {
         $manager = $this->doctrine->getManager();
         $category = $this->getCategoryById($id);
-        if ($category !== null) {
+        if (($category !== null) && ($category->isPossibleToDelete())) {
             $manager->remove($category);
             $manager->flush();
         }
