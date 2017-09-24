@@ -1,9 +1,13 @@
 {% extends 'base_admin.html.twig' %}
 
-{% block title %}Create article{% endblock %}
+{% block title %}Edit article{% endblock %}
 
-{% block admin_title %}Create article{% endblock %}
+{% block admin_title %}Edit article #{{ article }}{% endblock %}
 
+{% block delete_button_block %}
+    <div class="mdl-layout-spacer"></div>
+    <a class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent news-href" href="{{ path('delete-article', {'id': article}) }}">Delete article</a>
+{% endblock %}
 
 {% block body %}
     <main class="mdl-layout__content mdl-color--grey-100">
@@ -76,8 +80,14 @@
                     <div class="row auth-inputs margin-escape">
                         <div class="col-sm-6 col-sm-offset-3">
                             <h5 class="text-center">Similar news: <a class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" id="open-add-similar"><i class="material-icons">add</i></a></h5>
-                            <input type="hidden" name="similarNews" id="similarNews">
+                            <input type="hidden" name="similarNews" id="similarNews" >
                             <div id="chips">
+                                {% for similar in similars %}
+                                    <div class="mdl-chip mdl-chip--deletable" id="similar-{{ similar.id }}">
+                                        <span class="mdl-chip__text">{{ similar.title }}</span>
+                                        <button type="button" class="mdl-chip__action"  onClick="deleteChip()"><i class="material-icons">cancel</i></button>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -85,7 +95,7 @@
 
                     <div class="mdl-card__actions row margin-escape">
                         <div class="col-sm-4 col-sm-offset-4">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20 margin-top-40" onclick="addSimilarIds()">Create article</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20 margin-top-40" onclick="addSimilarIds()">Edit article</button>
                         </div>
                     </div>
                     {{ form_end(form) }}
