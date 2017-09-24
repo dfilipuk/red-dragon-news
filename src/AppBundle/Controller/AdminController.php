@@ -20,6 +20,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminController extends Controller
 {
@@ -246,21 +247,23 @@ class AdminController extends Controller
      */
     public function createArticleAction(Request $request, NewsManager $newsManager, CategoryManager $categoryManager)
     {
+
         $newArticle = new Article();
         $form = $this->createForm(ArticleNewType::class, $newArticle);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $similar = $request->request->get('similarNews');
+            $similars = explode(",", $similar);
+            if($similars[0] === ""){
+                $similars = null;
+            }
             $savePath = $this->getParameter('pictures_directory');
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $category = $categoryManager->getCategoryByName($newArticle->getCategory());
-            $newsManager->createArticle($newArticle, $form, $user, $category, $savePath);
+            $newsManager->createArticle($newArticle, $form, $user, $category, $savePath, $similars);
             return $this->render('admin/articles.html.twig');
         }
         return $this->render('admin/create_article.html.twig', [
-            'delete_class' => 'none',
-            'article' => '0',
-            'title' => 'Create article',
-            'action' => 'Create',
             'form' => $form->createView(),
             'errors' => $form->getErrors(true, true)
         ]);
@@ -275,22 +278,26 @@ class AdminController extends Controller
         if ($article === null){
             throw $this->createNotFoundException();
         }
+        $similars = $article->getSimilarArticles();
         $article->setCategory($article->getCategory()->getName());
         $oldPicture = $article->getPicture();
         $article->setPicture(null);
         $form = $this->createForm(ArticleNewType::class, $article);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $similar = $request->request->get('similarNews');
+            $similars = explode(",", $similar);
+            if($similars[0] === ""){
+                $similars = null;
+            }
             $savePath = $this->getParameter('pictures_directory');
             $category = $categoryManager->getCategoryByName($article->getCategory());
-            $newsManager->editArticle($article, $form, $category, $savePath, $oldPicture);
+            $newsManager->editArticle($article, $form, $category, $savePath, $oldPicture, $similars);
             return $this->render('admin/articles.html.twig');
         }
-        return $this->render('admin/create_article.html.twig', [
-            'delete_class' => '',
+        return $this->render('admin/edit_article.html.twig', [
+            'similars' => $similars,
             'article' => $article->getId(),
-            'title' => 'Edit article #',
-            'action' => 'Edit',
             'form' => $form->createView(),
             'errors' => $form->getErrors(true, true)
         ]);
@@ -304,5 +311,23 @@ class AdminController extends Controller
         $savePath = $this->getParameter('pictures_directory');
         $newsManager->deleteArticleById($id, $savePath);
         return $this->render('admin/articles.html.twig');
+    }
+
+
+    /**
+     * @Route("/admin/ajax/search", name="ajax_search")
+     */
+    public function seacrhAction(Request $request)
+    {
+        $finder = $this->container->get('fos_elastica.finder.search.posts');
+        $searchRequest = urldecode($request->query->get('term'));
+        $searchedNews = $finder->find('*'.$searchRequest . '*');
+        $responseArray = [];
+        foreach ($searchedNews as $searchedNewOne){
+            array_push($responseArray, [$searchedNewOne->getId(), $searchedNewOne->getTitle()]);
+        }
+        $response = new Response(json_encode($responseArray));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 }

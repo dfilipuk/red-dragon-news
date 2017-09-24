@@ -92,10 +92,20 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
     public function getArticlesAfterTime(\DateTime $dateFrom): ?array
     {
         return $this->getEntityManager()
-            ->createQuery('SELECT p FROM AppBundle:Article p 
-                                WHERE p.date >= :dateFrom'
+            ->createQuery('SELECT a FROM AppBundle:Article a 
+                                WHERE a.date >= :dateFrom'
             )
             ->setParameter('dateFrom', $dateFrom)
+            ->getResult();
+    }
+
+    public function getSimilarArticles(array $similars): ?array
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT a FROM AppBundle:Article a
+                                WHERE a.id IN(:similars)'
+            )
+            ->setParameter('similars', $similars)
             ->getResult();
     }
 }

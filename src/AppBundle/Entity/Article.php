@@ -254,9 +254,9 @@ class Article
     /**
      * @param mixed $similarArticles
      */
-    public function setSimilarArticles($similarArticles)
+    public function setSimilarArticles(array $similarArticles)
     {
-        $this->similarArticles = $similarArticles;
+        $this->similarArticles = new \Doctrine\Common\Collections\ArrayCollection($similarArticles);
     }
 
     /**
