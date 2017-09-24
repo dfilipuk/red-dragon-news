@@ -1,7 +1,7 @@
 {% extends 'base_auth.html.twig' %}
 
 {% block title %}
-    Info
+    {{ 'auth.message.title'|trans }}
 {% endblock %}
 
 {% block body %}
@@ -19,7 +19,7 @@
                         </div>
                         <div class="col-sm-3">
                             <a href={{ path('sign_in') }}>
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect col-sm-12">Sign in</button>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect col-sm-12">{{ 'auth.login.sugnin.button'|trans }}</button>
                             </a>
                         </div>
                     </div>

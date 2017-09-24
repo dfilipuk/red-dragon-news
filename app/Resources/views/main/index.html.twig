@@ -11,7 +11,7 @@
         <div class="layout-background mdl-card mdl-shadow--2dp">
             <div class="row">
                 {% if news|length == 0 %}
-                    <h3 class="text-center first-color-text margin-top-70">Nothing found</h3>
+                    <h3 class="text-center first-color-text margin-top-70">{{ 'main.index.nothing.found'|trans }}</h3>
                 {% endif %}
                 {% set i = 0 %}
                 {% for one_news in news %}
