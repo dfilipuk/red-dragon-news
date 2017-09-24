@@ -37,10 +37,18 @@ class MainController extends Controller
      */
     public function indexAction(Request $request, NewsManager $newsManager, SessionManager $sessionManager)
     {
-        $allNews = $newsManager->findAllNews($sessionManager->getIsOrderByDate(), $sessionManager->getIsAscending());
+        $isAscending = $sessionManager->getIsAscending();
+        $isOrderByDate = $sessionManager->getIsOrderByDate();
+        $allNews = $newsManager->findAllNews($isOrderByDate, $isAscending);
         $generalCategories = $newsManager->findGeneralCategories();
         $newsOnPage = $this->paginateNews($request, $allNews);
-        return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => 'Red Dragon news']);
+        return $this->render("main/index.html.twig", [
+            'news' => $newsOnPage,
+            'categories' => $generalCategories,
+            'title' => 'Red Dragon news',
+            'isAscending' => $isAscending,
+            'isOrderByDate' => $isOrderByDate
+        ]);
     }
 
     /**
@@ -48,25 +56,44 @@ class MainController extends Controller
      */
     public function showCategoryNewsAction(string $category, Request $request, NewsManager $newsManager, SessionManager $sessionManager)
     {
+        $isAscending = $sessionManager->getIsAscending();
+        $isOrderByDate = $sessionManager->getIsOrderByDate();
         $generalCategories = $newsManager->findGeneralCategories();
         if ($category === 'all-categories'){
-            return $this->render("main/all_categories.html.twig", ['categories' => $generalCategories]);
+            return $this->render("main/all_categories.html.twig", [
+                'categories' => $generalCategories,
+                'isAscending' => $isAscending,
+                'isOrderByDate' => $isOrderByDate
+            ]);
         }
         $currentCategoryNews = $newsManager->findNewsByCategory($category, $sessionManager->getIsOrderByDate(), $sessionManager->getIsAscending());
         $newsOnPage = $this->paginateNews($request, $currentCategoryNews);
-        return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => $category]);
+        return $this->render("main/index.html.twig", [
+            'news' => $newsOnPage,
+            'categories' => $generalCategories,
+            'title' => $category,
+            'isAscending' => $isAscending,
+            'isOrderByDate' => $isOrderByDate
+        ]);
     }
 
     /**
      * @Route("/main/news/{id}", name="news-page", requirements={"id": "\d+"})
      */
-    public function showNewsAction(int $id, Request $request, NewsManager $newsManager)
+    public function showNewsAction(int $id, Request $request, NewsManager $newsManager, SessionManager $sessionManager)
     {
+        $isAscending = $sessionManager->getIsAscending();
+        $isOrderByDate = $sessionManager->getIsOrderByDate();
         $generalCategories = $newsManager->findGeneralCategories();
         $oneNews = $newsManager->findNewsById($id);
         if ($oneNews === null)
             return $this->redirectToRoute("homepage");
-        return $this->render("main/news.html.twig", ['news' => $oneNews, 'categories' => $generalCategories]);
+        return $this->render("main/news.html.twig", [
+            'news' => $oneNews,
+            'categories' => $generalCategories,
+            'isAscending' => $isAscending,
+            'isOrderByDate' => $isOrderByDate
+        ]);
     }
 
     /**
@@ -109,18 +136,28 @@ class MainController extends Controller
     /**
      * @Route("/search", name="search")
      */
-    public function seacrhAction(Request $request, NewsManager $newsManager)
+    public function searchAction(Request $request, NewsManager $newsManager, SessionManager $sessionManager)
     {
+        $isAscending = $sessionManager->getIsAscending();
+        $isOrderByDate = $sessionManager->getIsOrderByDate();
         $finder = $this->container->get('fos_elastica.finder.search.posts');
         $searchRequest = $request->query->get('search');
         $searchedNews = $finder->createPaginatorAdapter('*'.$searchRequest . '*');
         $generalCategories = $newsManager->findGeneralCategories();
         $newsOnPage = $this->paginateNews($request, $searchedNews);
-        return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => 'Red Dragon news']);
+        return $this->render("main/index.html.twig", [
+            'news' => $newsOnPage,
+            'categories' => $generalCategories,
+            'title' => 'Red Dragon news',
+            'isAscending' => $isAscending,
+            'isOrderByDate' => $isOrderByDate
+        ]);
     }
 
     /**
-     * @Route("/sorting-params/{isAscending}/{isOrderByDate}", name="sorting-params", requirements={"id": "\d+"})
+     * @Route("/sorting-params/{isAscending}/{isOrderByDate}",
+     *     name="sorting-params",
+     *     requirements={"isAscending": "0|1", "isOrderByDate": "0|1"})
      */
     public function setSortingParams(int $isAscending, int $isOrderByDate, SessionManager $sessionManager)
     {
