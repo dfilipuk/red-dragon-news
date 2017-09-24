@@ -83,9 +83,11 @@ class NewsManager
         return $categories;
     }
 
-    public function findAllNews(): array
+    public function findAllNews(bool $isOrderByDate, bool $isAscending): array
     {
-        return $this->doctrine->getManager()->getRepository(Article::class)->findAll();
+        return $this->doctrine->getManager()
+            ->getRepository(Article::class)
+            ->findAllNewsWithSorting($isOrderByDate, $isAscending);
     }
 
     public function findAllCategories(): array
@@ -114,12 +116,14 @@ class NewsManager
         return $categoryWithChildrensID;
     }
 
-    public function findNewsByCategory(string $category): ?array
+    public function findNewsByCategory(string $category, bool $isOrderByDate, bool $isAscending): ?array
     {
         $categoriesID = $this->getCategoryAndChildrenID($category);
         $result = [];
         if (array_key_exists(0, $categoriesID)){
-            $result = $this->doctrine->getManager()->getRepository(Article::class)->findNewsByCategory($categoriesID);
+            $result = $this->doctrine->getManager()
+                ->getRepository(Article::class)
+                ->findNewsByCategoryWithSort($categoriesID, $isOrderByDate, $isAscending);
         }
         return $result;
     }
