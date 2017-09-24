@@ -1,13 +1,13 @@
 {% extends 'base_admin.html.twig' %}
 
-{% block title %}Edit category{% endblock %}
+{% block title %}{{ 'admin.category.edit.title'|trans }}{% endblock %}
 
-{% block admin_title %}Edit category #{{ category.id }} {% endblock %}
+{% block admin_title %}{{ 'admin.category.edit.title'|trans }} #{{ category.id }} {% endblock %}
 
 {% block delete_button_block %}
     {% if category.possibleToDelete %}
         <div class="mdl-layout-spacer"></div>
-        <a class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent news-href" href="{{ path('delete-category', {'id': category.id}) }}">Delete category</a>
+        <a class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent news-href" href="{{ path('delete-category', {'id': category.id}) }}">{{ 'admin.category.delete.label'|trans }}</a>
     {% endif %}
 {% endblock %}
 
@@ -29,14 +29,14 @@
                                     'id': 'new-name'
                                 }})
                                 }}
-                                <label class="mdl-textfield__label " for="new-name">New category name</label>
+                                <label class="mdl-textfield__label " for="new-name">{{ 'admin.category.new.category.name.label'|trans }}</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="mdl-card__actions row margin-escape">
                         <div class="col-sm-4 col-sm-offset-4">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20">Update category</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20">{{ 'admin.category.edit.title'|trans }}</button>
                         </div>
                     </div>
                     {{ form_end(form) }}

@@ -1,7 +1,7 @@
 {% extends 'base_auth.html.twig' %}
 
 {% block title %}
-    Sign In
+    {{ 'auth.login.title'|trans }}
 {% endblock %}
 
 {% block body %}
@@ -15,11 +15,11 @@
                 <div class="card-square mdl-card mdl-shadow--2dp">
                     <div class="mdl-card__title mdl-card--expand mdl-card--border row first-color">
                         <div class="col-sm-9">
-                            <h2 class="mdl-card__title-text">Welcome back</h2>
+                            <h2 class="mdl-card__title-text">{{ 'auth.login.header.text'|trans }}</h2>
                         </div>
                         <div class="col-sm-3">
                             <a href={{ path('sign_up') }}>
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect col-sm-12">Sign up</button>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect col-sm-12">{{ 'auth.login.sugnup.a'|trans }}</button>
                             </a>
                         </div>
 
@@ -30,24 +30,24 @@
                             <div class="col-sm-6 col-sm-offset-3">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input class="mdl-textfield__input" type="email" required id="email" name="_username" value="{{ last_username }}">
-                                    <label class="mdl-textfield__label" for="email">E-mail</label>
+                                    <label class="mdl-textfield__label" for="email">{{ 'auth.login.email.label'|trans }}</label>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-sm-offset-3">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input class="mdl-textfield__input" type="password" required id="password" name="_password">
-                                    <label class="mdl-textfield__label" for="password">Password</label>
+                                    <label class="mdl-textfield__label" for="password">{{ 'auth.login.password.label'|trans }}</label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mdl-card__actions row margin-escape">
                             <div class="col-sm-4 col-sm-offset-4">
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12">Sign in</button>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12">{{ 'auth.login.sugnin.button'|trans }}</button>
                             </div>
                         </div>
                     </form>
-                    <h6 class="text-center">Forgot your password? <a href="{{ path('reset_password') }}">Reset password</a></h6>
+                    <h6 class="text-center">{{ 'auth.login.forgot.password.text'|trans }} <a href="{{ path('reset_password') }}">{{ 'auth.login.reset.pass.a'|trans }}</a></h6>
                 </div>
                 {% if error %}
                     <h6 class="text-center alert alert-danger">

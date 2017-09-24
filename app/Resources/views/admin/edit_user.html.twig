@@ -1,12 +1,12 @@
 {% extends 'base_admin.html.twig' %}
 
-{% block title %}Edit user{% endblock %}
+{% block title %}{{ 'admin.user.edit.title'|trans }}{% endblock %}
 
-{% block admin_title %}Edit user #{{ user.id }} {% endblock %}
+{% block admin_title %}{{ 'admin.user.edit.title'|trans }} #{{ user.id }} {% endblock %}
 
 {% block delete_button_block %}
     <div class="mdl-layout-spacer"></div>
-    <a class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent news-href" href="{{ path('delete-user', {'id': user.id}) }}">Delete user</a>
+    <a class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent news-href" href="{{ path('delete-user', {'id': user.id}) }}">{{ 'admin.user.delete.user.a'|trans }}</a>
 {% endblock %}
 
 {% block body %}
@@ -27,7 +27,7 @@
                                     'id': 'e-mail'
                                 }})
                                 }}
-                                <label class="mdl-textfield__label " for="e-mail">E-mail</label>
+                                <label class="mdl-textfield__label " for="e-mail">{{ 'admin.user.email.label'|trans }}</label>
                             </div>
                         </div>
                         <div class="col-sm-6 col-sm-offset-3">
@@ -38,7 +38,7 @@
                                     'id': 'password'
                                 }})
                                 }}
-                                <label class="mdl-textfield__label" for="password">Password</label>
+                                <label class="mdl-textfield__label" for="password">{{ 'admin.user.password.label'|trans }}</label>
                             </div>
                         </div>
                         <div class="col-sm-6 col-sm-offset-3">
@@ -49,7 +49,7 @@
                                     'id': 'password-rep'
                                 }})
                                 }}
-                                <label class="mdl-textfield__label" for="password-rep">Repeat password</label>
+                                <label class="mdl-textfield__label" for="password-rep">{{ 'admin.user.password.repeat.label'|trans }}</label>
                             </div>
                         </div>
                         <div class="col-sm-6 col-sm-offset-3">
@@ -60,14 +60,14 @@
                                     'id': 'role'
                                 }})
                                 }}
-                                <label class="mdl-textfield__label" for="role">Role</label>
+                                <label class="mdl-textfield__label" for="role">{{ 'admin.user.role.label'|trans }}</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="mdl-card__actions row margin-escape">
                         <div class="col-sm-4 col-sm-offset-4">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20">Update user</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20">{{ 'admin.user.edit.title'|trans }}</button>
                         </div>
                     </div>
                     {{ form_end(form) }}

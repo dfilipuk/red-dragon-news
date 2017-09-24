@@ -1,0 +1,132 @@
+base.accounts.label: Accounts
+base.logout.a: Logout
+
+# base_main.html.twig
+main.base.subscribe.button: Subscribe
+main.base.unsubscribe.button: Unsubscribe
+main.base.admin.panel.a: Admin panel
+main.base.all.categories.a: All categories
+main.base.search.something.label: Search something...
+main.dialog.choose.type.label: Choose type
+main.dialog.select.daily: Daily
+main.dialog.select.weekly: Weekly
+main.dialog.select.monthly: Monthly
+main.dialog.subscription.type.label: Subscription type
+main.dialog.button.close: Close
+main.dialog.button.subscribe: Subscribe!
+
+# base_admin.html.twig
+admin.base.back.to.site.a: Back to the site
+admin.base.home.a: Home
+admin.base.show.users.a: Show users
+admin.base.add.category.a: Add category
+admin.base.show.categories: Show categories
+admin.base.add.article: Add article
+admin.base.show.articles: Show articles
+
+#mail.html.twig
+mail.head.part.1: Hello, take your
+mail.head.part.2: news
+
+# main/index.html.twig
+main.index.nothing.found: Nothing found
+
+# main/news.html.twig
+main.news.author.text: Author
+main.news.date.text: Date
+main.news.number.views.text: Number of Views
+main.news.similar.news: Similar news
+
+# main/all_categories.html.twig
+main.all.categories.title: All categories
+
+# admin/articles.html.twig
+admin.articles.title: Articles
+
+# admin/categories.html.twig
+admin.categories.title: Categories
+
+# admin/users.html.twig
+admin.users.title: Users
+
+# admin/home.html.twig
+admin.home.title: Home
+admin.clock.top.phrase: Do not waste your time
+
+# admin/create_article.html.twig and edit_article.html.twig
+admin.article.create.title: Create article
+admin.article.title.label: Article title
+admin.article.category.label: Category name
+admin.article.load.picture.label: Load picture
+admin.dialog.choose.type: Choose type
+admin.article.edit.title: Edit article
+admin.article.delete.article: Delete article
+
+# admin/new_category.html.twig and edit_category.html.twig
+admin.category.edit.title: Edit category
+admin.category.delete.label: Delete category
+admin.category.new.category.name.label: New category name
+admin.category.new.title: Add category
+admin.category.new.categoty.name.label: Category name
+admin.category.new.parent.category.label: Parent category name
+admin.category.new.root.category.label: Root category
+admin.category.new.create.label: Create category
+
+# admin/edit_user.html.twig
+admin.user.edit.title: Edit user
+admin.user.delete.user.a: Delete user
+admin.user.email.label: E-mail
+admin.user.password.label: Password
+admin.user.password.repeat.label: Repeat password
+admin.user.role.label: Role
+
+# auth/activation_email.html.twig
+auth.activation.email.header.text: Thank you for choosing Red Dragon News!
+auth.activation.email.main.text: To activate your account
+auth.activation.email.a.text: Click here
+
+# auth/email_check.html.twig
+auth.email.check.title: Reset password
+auth.email.check.enter.text: Enter your email
+auth.email.check.signin.button: Sign in
+auth.email.check.email.label: E-mail
+auth.email.check.button: Check email
+
+# auth/login/html.twig
+auth.login.title: Sign In
+auth.login.header.text: Welcome back
+auth.login.sugnup.a: Sign up
+auth.login.email.label: E-mail
+auth.login.password.label: Password
+auth.login.sugnin.button: Sign in
+auth.login.forgot.password.text: Forgot your password?
+auth.login.reset.pass.a: Reset password
+
+# auth/message.html.twig
+auth.message.title: Info
+
+# auth/new_password/html.twig
+auth.new.pass.title: Reset password
+auth.new.pass.header.text: Enter new password
+auth.new.pass.button: Change
+
+# auth/register.html.twig
+auth.register.title: Sign Up
+auth.register.header.text: Hello, stranger
+auth.register.pass.repeat.label: Repeat password
+
+# auth/reset_password_email.html.twig
+auth.reset.pass.email.header: Security message
+auth.reset.pass.email.text: To reset your password
+
+# auth/messages
+auth.messages.activation.fail.first.string: An error occurred during activation of your account
+auth.messages.activation.fail.second.string: or it has been successfully activated yet
+auth.messages.activation.success.string: Your account has been activated successfully!
+auth.messages.bad.reset.pass.string: Unable to access reset password page
+auth.messages.password.changed: Your password has been successfully changed!
+auth.messages.registration.finish.first.string: Registration is almost completed!
+auth.messages.registration.finish.second.string: Check your mail
+auth.messages.registration.finish.third.string: and follow instructions.
+auth.messages.reset.pass.continue.first.string: To reset your password check mail
+auth.messages.reset.pass.continue.second.string: and follow instructions
