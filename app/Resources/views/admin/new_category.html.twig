@@ -30,7 +30,7 @@
                     <div class="row auth-inputs margin-escape">
                         <div class="col-sm-6 col-sm-offset-3">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <div id="parent-name-input">
+                                <div id="parent-name-input" class="search">
                                 {{
                                 form_widget(form.parentName, {'attr': {
                                     'class': 'mdl-textfield__input',
@@ -78,6 +78,10 @@
     </main>
 {% endblock %}
 {% block javascript %}
-    <script>var dataUrl = '{{ path('ajax_similar_categories', {'level': 2}) }}'</script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        var dataUrl = '{{ path('ajax_similar_categories', {'level': 2}) }}';
+        var searchInput = $('.search').children("input").attr("id");
+    </script>
     <script type="text/javascript"  src="{{ asset('public/js/ajax-category-loader.js') }}"></script>
 {% endblock %}

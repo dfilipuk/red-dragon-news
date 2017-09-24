@@ -332,22 +332,6 @@ border-color: rgb(244,67,54);
   margin-bottom: 50px;
 }
 
-
-footer{
-  background-color: rgb(83,109,254) !important;
-  max-height: 80px;
-}
-
-.footer-row{
-  width: 100%;
-  color: white;
-}
-
-.footer-h4{
-  margin: 0;
-  padding: 0;
-}
-
 .news-title{
   color: rgb(244,67,54);
 }
@@ -517,4 +501,9 @@ footer{
 
 .margin-top-40{
   margin-top: 40px;
+}
+
+.general-container{
+  position: relative;
+  padding-bottom: 90px;
 }

@@ -11,7 +11,7 @@ function onKeyUp() {
 
 $(document).ready(function () {
     $(function () {
-        $("#article_new_category").autocomplete({
+        $("#" + searchInput).autocomplete({
             source: function (request, response) {
                 $.ajax({
                     method: "POST",
@@ -20,7 +20,6 @@ $(document).ready(function () {
                         similar: similar
                     },
                     success: function (data) {
-                        console.log(data);
                         response($.map(data, function (item) {
                             return {
                                 label: item,

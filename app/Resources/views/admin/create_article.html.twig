@@ -31,7 +31,7 @@
                     <div class="row auth-inputs margin-escape">
                         <div class="col-sm-6 col-sm-offset-3">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <div id="parent-name-input">
+                                <div id="parent-name-input" class="search">
                                     {{
                                     form_widget(form.category, {'attr': {
                                         'class': 'mdl-textfield__input',
@@ -42,11 +42,6 @@
                                 <label class="mdl-textfield__label " for="parent-name">Category name</label>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <ul id="similar-categories">
-
-                        </ul>
                     </div>
 
                     <div class="row auth-inputs margin-escape file-input">
@@ -115,7 +110,10 @@
 {% block javascript %}
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="{{ asset('public/js/file-loader.js') }}"></script>
-    <script>var dataUrl = '{{ path('ajax_similar_categories', {'level': 3}) }}'</script>
+    <script>
+        var dataUrl = '{{ path('ajax_similar_categories', {'level': 3}) }}';
+        var searchInput = $('.search').children("input").attr("id");
+    </script>
     <script type="text/javascript"  src="{{ asset('public/js/ajax-category-loader.js') }}"></script>
 
     <script src="{{ asset('public/js/similar-news.js') }}"></script>
