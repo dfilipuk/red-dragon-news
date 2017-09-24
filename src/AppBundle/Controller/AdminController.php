@@ -172,9 +172,6 @@ class AdminController extends Controller
 
         $response = new Response(json_encode($categories));
         $response->headers->set('Content-Type', 'application/json');
-        $f = fopen("E:\log.txt", "w+");
-        fwrite($f, print_r($response, 1));
-        fclose($f);
         return $response;
     }
 
