@@ -71,6 +71,8 @@ fos_elastica:
                 posts:
                     mappings:
                         title: ~
+                        viewsCount: { type: integer }
+                        date: { type: date }
                     persistence:
                         driver: orm
                         model: AppBundle\Entity\Article
