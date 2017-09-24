@@ -12,13 +12,24 @@ use Doctrine\ORM\Query;
  */
 class ArticleRepository extends \Doctrine\ORM\  EntityRepository
 {
-    public function findNewsByCategory(array $categoriesID)
+    public function findNewsByCategoryWithSort(array $categoriesID, bool $isOrderByDate, bool $isAscending)
     {
         return $this->getEntityManager()
             ->createQuery(
-                'SELECT a FROM AppBundle:Article a WHERE a.category IN(:categoriesID)'
+                'SELECT a FROM AppBundle:Article a WHERE a.category IN(:categoriesID)' .
+                ' ORDER BY a.' . ($isOrderByDate ? 'date' : 'viewsCount') . ' ' . ($isAscending ? 'ASC' : 'DESC')
             )
             ->setParameter('categoriesID', $categoriesID)
+            ->getResult();
+    }
+
+    public function findAllNewsWithSorting(bool $isOrderByDate, bool $isAscending)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT a FROM AppBundle:Article a' .
+                ' ORDER BY a.' . ($isOrderByDate ? 'date' : 'viewsCount') . ' ' . ($isAscending ? 'ASC' : 'DESC')
+            )
             ->getResult();
     }
 

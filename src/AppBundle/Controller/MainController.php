@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Service\NewsManager;
+use AppBundle\Service\SessionManager;
 use AppBundle\Service\SubscriptionManager;
 use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -34,9 +35,9 @@ class MainController extends Controller
     /**
      * @Route("/main/", name="homepage")
      */
-    public function indexAction(Request $request, NewsManager $newsManager)
+    public function indexAction(Request $request, NewsManager $newsManager, SessionManager $sessionManager)
     {
-        $allNews = $newsManager->findAllNews();
+        $allNews = $newsManager->findAllNews($sessionManager->getIsOrderByDate(), $sessionManager->getIsAscending());
         $generalCategories = $newsManager->findGeneralCategories();
         $newsOnPage = $this->paginateNews($request, $allNews);
         return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => 'Red Dragon news']);
@@ -45,13 +46,13 @@ class MainController extends Controller
     /**
      * @Route("/main/{category}", name="category")
      */
-    public function showCategoryNewsAction(string $category, Request $request, NewsManager $newsManager)
+    public function showCategoryNewsAction(string $category, Request $request, NewsManager $newsManager, SessionManager $sessionManager)
     {
         $generalCategories = $newsManager->findGeneralCategories();
         if ($category === 'all-categories'){
             return $this->render("main/all_categories.html.twig", ['categories' => $generalCategories]);
         }
-        $currentCategoryNews = $newsManager->findNewsByCategory($category);
+        $currentCategoryNews = $newsManager->findNewsByCategory($category, $sessionManager->getIsOrderByDate(), $sessionManager->getIsAscending());
         $newsOnPage = $this->paginateNews($request, $currentCategoryNews);
         return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => $category]);
     }
@@ -118,6 +119,13 @@ class MainController extends Controller
         return $this->render("main/index.html.twig", ['news' => $newsOnPage, 'categories' => $generalCategories, 'title' => 'Red Dragon news']);
     }
 
-
-
+    /**
+     * @Route("/sorting-params/{isAscending}/{isOrderByDate}", name="sorting-params", requirements={"id": "\d+"})
+     */
+    public function setSortingParams(int $isAscending, int $isOrderByDate, SessionManager $sessionManager)
+    {
+        $sessionManager->setIsAscending($isAscending == 1);
+        $sessionManager->setIsOrderByDate($isOrderByDate == 1);
+        return $this->redirectToRoute('homepage');
+    }
 }
