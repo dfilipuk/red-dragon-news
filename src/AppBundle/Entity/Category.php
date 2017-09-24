@@ -209,5 +209,20 @@ class Category
     {
         return $this->level === self::MAX_NESTING_LEVEL;
     }
+
+    public function isPossibleToDelete(): bool
+    {
+        return (!$this->hasAssignedArticles() && !$this->hasChildren());
+    }
+
+    private function hasChildren(): bool
+    {
+        return $this->children->count() !== 0;
+    }
+
+    private function hasAssignedArticles(): bool
+    {
+        return $this->articles->count() !== 0;
+    }
 }
 

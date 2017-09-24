@@ -5,8 +5,10 @@
 {% block admin_title %}Edit category #{{ category.id }} {% endblock %}
 
 {% block delete_button_block %}
-    <div class="mdl-layout-spacer"></div>
-    <a class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent news-href" href="{{ path('delete-category', {'id': category.id}) }}">Delete category</a>
+    {% if category.possibleToDelete %}
+        <div class="mdl-layout-spacer"></div>
+        <a class="button-right-margin mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent news-href" href="{{ path('delete-category', {'id': category.id}) }}">Delete category</a>
+    {% endif %}
 {% endblock %}
 
 {% block body %}
