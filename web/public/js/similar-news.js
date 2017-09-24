@@ -41,7 +41,6 @@ buttonClose.addEventListener('click', function () {
 $(document).ready(function () {
     $(function () {
         getSimilar();
-        console.log(similarNewsIds);
         if (similarCount >= 5){
             buttonOpenAddSimilar.style.display = 'none';
         }
@@ -50,6 +49,7 @@ $(document).ready(function () {
                 $.ajax({
                     url: "/admin/ajax/search",
                     data: request,
+
                     success: function (data) {
                         response($.map(data, function (item) {
                             return {
