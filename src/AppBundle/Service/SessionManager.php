@@ -22,12 +22,12 @@ class SessionManager
 
     public function getIsAscending(): bool
     {
-        return $this->getValue(self::IS_ASCENDING_KEY);
+        return $this->getValue(self::IS_ASCENDING_KEY, false);
     }
 
     public function getIsOrderByDate(): bool
     {
-        return $this->getValue(self::IS_ORDER_BY_DATE_KEY);
+        return $this->getValue(self::IS_ORDER_BY_DATE_KEY, true);
     }
 
     public function setIsAscending(bool $value)
@@ -45,13 +45,13 @@ class SessionManager
         $this->session->set($keyName, $value);
     }
 
-    private function getValue(string $keyName): bool
+    private function getValue(string $keyName, bool $defaultValue): bool
     {
         if ($this->session->has($keyName)) {
             return $this->session->get($keyName);
         } else {
-            $this->session->set($keyName, false);
-            return false;
+            $this->session->set($keyName, $defaultValue);
+            return $defaultValue;
         }
     }
 }

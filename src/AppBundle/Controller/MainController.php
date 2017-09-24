@@ -8,11 +8,12 @@
 
 namespace AppBundle\Controller;
 
-
 use AppBundle\Service\NewsManager;
 use AppBundle\Service\SessionManager;
 use AppBundle\Service\SubscriptionManager;
 use AppBundle\Service\UserManager;
+use Elastica\Query;
+use Elastica\Query\QueryString;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -142,7 +143,17 @@ class MainController extends Controller
         $isOrderByDate = $sessionManager->getIsOrderByDate();
         $finder = $this->container->get('fos_elastica.finder.search.posts');
         $searchRequest = $request->query->get('search');
-        $searchedNews = $finder->createPaginatorAdapter('*'.$searchRequest . '*');
+
+        $keywordQuery = new QueryString();
+        $keywordQuery->setQuery('*'.$searchRequest . '*');
+        $query = new Query();
+        $query->setQuery($keywordQuery);
+        $query->setSort([
+            ($isOrderByDate ? 'date' : 'viewsCount') => ($isAscending ? 'asc' : 'desc')
+        ]);
+        
+        $searchedNews = $finder->createPaginatorAdapter($query);
+
         $generalCategories = $newsManager->findGeneralCategories();
         $newsOnPage = $this->paginateNews($request, $searchedNews);
         return $this->render("main/index.html.twig", [
