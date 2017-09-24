@@ -101,7 +101,7 @@ class NewsManager
     public function getCategoryAndChildrenID(string $category): ?array
     {
         $categories = $this->findAllCategories();
-        $transformedArray = $this->categoriesToArray($categories);
+        $transformedArray = array_values($this->categoriesToArray($categories));
         $category = array_search($category, array_column($transformedArray, 'name'));
         $categoryWithChildrensID = [];
         if ($category === false){
