@@ -67,10 +67,10 @@
                             <div class="col-sm-2 col-sm-offset-1 margin-top-15">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <select id="sorting" name="sorting" onchange="onSelectChange()" class="mdl-textfield__input">
-                                        <option {{ 'selected'|styleSelector(isAscending, isOrderByDate) }}>Date (asc)</option>
-                                        <option {{ 'selected'|styleSelector(not isAscending, isOrderByDate) }}>Date (desc)</option>
-                                        <option {{ 'selected'|styleSelector(isAscending, not isOrderByDate) }}>Views count (asc)</option>
-                                        <option {{ 'selected'|styleSelector(not isAscending, not isOrderByDate) }}>Views count (desc)</option>
+                                        <option {{ 'selected'|styleSelector(isAscending, isOrderByDate) }}>Date &uarr;</option>
+                                        <option {{ 'selected'|styleSelector(not isAscending, isOrderByDate) }}>Date &darr;</option>
+                                        <option {{ 'selected'|styleSelector(isAscending, not isOrderByDate) }}>Views count &uarr;</option>
+                                        <option {{ 'selected'|styleSelector(not isAscending, not isOrderByDate) }}>Views count &darr;</option>
                                     </select>
                                     <label class="mdl-textfield__label" for="sorting">Sort by</label>
                                 </div>
@@ -114,7 +114,7 @@
             var ind = document.getElementById('sorting').options.selectedIndex;
             switch (ind) {
                 case 0:
-                    window.location.href = "{{ path('sorting-params', {'isAscending': 1, 'isOrderByDate':1}) }}";
+                    window.location.href = "{{ path('sorting-params', {'isAscending': 1, 'isOrderByDate': 1}) }}";
                     break;
                 case 1:
                     window.location.href = "{{ path('sorting-params', {'isAscending': 0, 'isOrderByDate':1}) }}";
