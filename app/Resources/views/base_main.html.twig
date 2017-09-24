@@ -66,11 +66,13 @@
                             </div>
                             <div class="col-sm-2 col-sm-offset-1 margin-top-15">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <select id="subscription" class="mdl-textfield__input">
-                                        <option value="date">Date</option>
-                                        <option value="viewsCount"> Views count</option>
+                                    <select id="sorting" name="sorting" onchange="onSelectChange()" class="mdl-textfield__input">
+                                        <option {{ 'selected'|styleSelector(isAscending, isOrderByDate) }}>Date &uarr;</option>
+                                        <option {{ 'selected'|styleSelector(not isAscending, isOrderByDate) }}>Date &darr;</option>
+                                        <option {{ 'selected'|styleSelector(isAscending, not isOrderByDate) }}>Views count &uarr;</option>
+                                        <option {{ 'selected'|styleSelector(not isAscending, not isOrderByDate) }}>Views count &darr;</option>
                                     </select>
-                                    <label class="mdl-textfield__label" for="subscription">Sort by</label>
+                                    <label class="mdl-textfield__label" for="sorting">Sort by</label>
                                 </div>
                             </div>
                         </div>
@@ -101,10 +103,31 @@
             <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" id="subscribe">{{ 'main.dialog.button.subscribe'|trans }}</button>
         </div>
     </dialog>
+</div>
 <script src="{{ asset('public/js/jquery-3.2.1.min.js') }}"></script>
 <script src="{{ asset('public/bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('public/mdl/material.min.js') }}"></script>
 <script src="{{ asset('public/js/logic.js') }}"></script>
-{% block javascript %}{% endblock %}
+{% block javascript %}
+    <script>
+        function onSelectChange() {
+            var ind = document.getElementById('sorting').options.selectedIndex;
+            switch (ind) {
+                case 0:
+                    window.location.href = "{{ path('sorting-params', {'isAscending': 1, 'isOrderByDate': 1}) }}";
+                    break;
+                case 1:
+                    window.location.href = "{{ path('sorting-params', {'isAscending': 0, 'isOrderByDate':1}) }}";
+                    break;
+                case 2:
+                    window.location.href = "{{ path('sorting-params', {'isAscending': 1, 'isOrderByDate':0}) }}";
+                    break;
+                case 3:
+                    window.location.href = "{{ path('sorting-params', {'isAscending': 0, 'isOrderByDate':0}) }}";
+                    break;
+            }
+        }
+    </script>
+{% endblock %}
 </body>
 </html>
