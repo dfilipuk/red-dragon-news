@@ -70,18 +70,30 @@ function addPagination(pagesAmo) {
     if (currentPage === 1) {
         pagination += 'class="disabled"';
     } else {
+        pagination += 'onclick="getPage(' + (1) + ')"';
+    }
+    pagination += '"><a href=#>First</a></li>';
+    pagination += '<li ';
+    if (currentPage === 1) {
+        pagination += 'class="disabled"';
+    } else {
         pagination += 'onclick="getPage(' + (currentPage - 1) + ')"';
     }
     pagination += '"><a href=#>Previous</a></li>';
 
-    for (var i = 0; i < pagesAmo; i++) {
+    var startPage = currentPage - 2;
+    var lastPage = currentPage + 2;
+
+    lastPage = lastPage > pagesAmo ? pagesAmo : lastPage;
+    startPage = startPage < 1 ? 1 : startPage;
+    for (var i = startPage; i <= lastPage; i++) {
         pagination += '<li ';
-        if (currentPage === i + 1) {
+        if (currentPage === i) {
             pagination += 'class="active"';
         } else {
-            pagination += 'onclick="getPage(' + (i + 1) + ')"';
+            pagination += 'onclick="getPage(' + (i) + ')"';
         }
-        pagination += '><a href=#>' + (i + 1) + '</a></li>';
+        pagination += '><a href=#>' + (i) + '</a></li>';
     }
 
     pagination += '<li ';
@@ -91,7 +103,13 @@ function addPagination(pagesAmo) {
         pagination += 'onclick="getPage(' + (currentPage + 1) + ')"';
     }
     pagination += '"><a href=#>Next</a></li>';
-
+    pagination += '<li ';
+    if (currentPage === pagesAmo) {
+        pagination += 'class="disabled"';
+    } else {
+        pagination += 'onclick="getPage(' + (pagesAmo) + ')"';
+    }
+    pagination += '"><a href=#>Last</a></li>';
     $("#pagination").append(pagination);
 }
 
