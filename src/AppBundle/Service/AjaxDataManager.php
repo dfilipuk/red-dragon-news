@@ -219,7 +219,7 @@ class AjaxDataManager
             }
             $result[$i] = [
                 $articles[$i]->getId(),
-                $articles[$i]->getAuthor()->getEmail(),
+                $articles[$i]->getAuthor() === null ? 'Anonymous' : $articles[$i]->getAuthor()->getEmail(),
                 $articles[$i]->getCategory()->getName(),
                 $title,
                 $articles[$i]->getDate()->format('d-m-Y'),
