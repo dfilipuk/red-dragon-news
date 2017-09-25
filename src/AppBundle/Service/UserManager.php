@@ -20,6 +20,12 @@ class UserManager
     private $encoder;
     private $mailManager;
 
+    /**
+     * UserManager constructor.
+     * @param ManagerRegistry $doctrine
+     * @param MailManager $mailManager
+     * @param UserPasswordEncoderInterface $encoder
+     */
     public function __construct(ManagerRegistry $doctrine, MailManager $mailManager, UserPasswordEncoderInterface $encoder)
     {
         $this->doctrine = $doctrine;
@@ -27,7 +33,10 @@ class UserManager
         $this->mailManager = $mailManager;
     }
 
-    public function registerNewUser(User $newUser)
+    /**
+     * @param User $newUser
+     */
+    public function registerNewUser(User $newUser): void
     {
         if (!$this->isUserAlreadyExists($newUser)) {
             $token = $this->createSecurityTokenForAccountActivation();
@@ -37,7 +46,11 @@ class UserManager
         }
     }
 
-    public function resetPasswordForUser(int $tokenId, User $userWithPassword)
+    /**
+     * @param int $tokenId
+     * @param User $userWithPassword
+     */
+    public function resetPasswordForUser(int $tokenId, User $userWithPassword): void
     {
         $token = $this->getResetPasswordToken($tokenId);
         if ($token !== null) {
@@ -48,7 +61,10 @@ class UserManager
         }
     }
 
-    public function setResetPasswordTokenForUser(User $userWithEmail)
+    /**
+     * @param User $userWithEmail
+     */
+    public function setResetPasswordTokenForUser(User $userWithEmail): void
     {
         $user = $this->getUserByEmail($userWithEmail->getEmail());
         if ($user !== null) {
@@ -58,6 +74,11 @@ class UserManager
         }
     }
 
+    /**
+     * @param int $id
+     * @param string $tokenValue
+     * @return bool
+     */
     public function isResetPasswordTokenValid(int $id, string $tokenValue): bool
     {
         $token = $this->getResetPasswordToken($id);
@@ -75,6 +96,11 @@ class UserManager
         }
     }
 
+    /**
+     * @param int $id
+     * @param string $tokenValue
+     * @return bool
+     */
     public function isUserAccountActivationSucceed(int $id, string $tokenValue): bool
     {
         $token = $this->getActivationToken($id);
@@ -88,6 +114,10 @@ class UserManager
         return true;
     }
 
+    /**
+     * @param User $user
+     * @return bool
+     */
     public function isUserAlreadyExists(User $user): bool
     {
         if ($this->getUserByEmail($user->getEmail()) === null) {
@@ -97,19 +127,32 @@ class UserManager
         }
     }
 
-    private function getUserByEmail(string $userEmail):? User
+    /**
+     * @param string $userEmail
+     * @return User|null
+     */
+    private function getUserByEmail(string $userEmail): ?User
     {
         $repository = $this->doctrine->getManager()->getRepository(User::class);
         return $repository->findOneBy(['email' => $userEmail]);
     }
 
-    public function getUserById(int $id):? User
+    /**
+     * @param int $id
+     * @return User|null
+     */
+    public function getUserById(int $id): ?User
     {
         $repository = $this->doctrine->getManager()->getRepository(User::class);
         return $repository->findOneBy(['id' => $id]);
     }
 
-    private function prepareEntitiesForSavingInDatabase(User $user, Token $token)
+
+    /**
+     * @param User $user
+     * @param Token $token
+     */
+    private function prepareEntitiesForSavingInDatabase(User $user, Token $token): void
     {
         $this->encodeUserPassword($user, $user->getPlainPassword());
         $user->setRole(self::USER_ROLE_NAME);
@@ -117,20 +160,32 @@ class UserManager
         $token->setUser($user);
     }
 
-    private function encodeUserPassword(User $user, string $plainPassword)
+
+    /**
+     * @param User $user
+     * @param string $plainPassword
+     */
+    private function encodeUserPassword(User $user, string $plainPassword): void
     {
         $encodedPassword = $this->encoder->encodePassword($user, $plainPassword);
         $user->setPassword($encodedPassword);
     }
 
-    private function updateUserInformation(User $user)
+    /**
+     * @param User $user
+     */
+    private function updateUserInformation(User $user): void
     {
         $manager = $this->doctrine->getManager();
         $manager->persist($user);
         $manager->flush();
     }
 
-    private function saveEntitiesToDatabase(User $user, Token $token)
+    /**
+     * @param User $user
+     * @param Token $token
+     */
+    private function saveEntitiesToDatabase(User $user, Token $token): void
     {
         $manager = $this->doctrine->getManager();
         $manager->persist($user);
@@ -139,7 +194,11 @@ class UserManager
         $manager->flush();
     }
 
-    private function saveResetTokenToDatabase(User $user, Token $token)
+    /**
+     * @param User $user
+     * @param Token $token
+     */
+    private function saveResetTokenToDatabase(User $user, Token $token): void
     {
         $token->setUser($user);
         $manager = $this->doctrine->getManager();
@@ -147,7 +206,10 @@ class UserManager
         $manager->flush();
     }
 
-    private function activateUserAccount(Token $token)
+    /**
+     * @param Token $token
+     */
+    private function activateUserAccount(Token $token): void
     {
         $manager = $this->doctrine->getManager();
         $manager->persist($token);
@@ -158,6 +220,9 @@ class UserManager
         $manager->flush();
     }
 
+    /**
+     * @return Token
+     */
     private function createSecurityTokenForAccountActivation(): Token
     {
         $token = new Token();
@@ -167,6 +232,9 @@ class UserManager
         return $token;
     }
 
+    /**
+     * @return Token
+     */
     private function createSecurityTokenForPasswordReset(): Token
     {
         $token = new Token();
@@ -177,7 +245,11 @@ class UserManager
         return $token;
     }
 
-    private function getActivationToken(int $id):? Token
+    /**
+     * @param int $id
+     * @return Token|null
+     */
+    private function getActivationToken(int $id): ?Token
     {
         $repository = $this->doctrine->getManager()->getRepository(Token::class);
         return $repository->findOneBy([
@@ -186,7 +258,11 @@ class UserManager
         ]);
     }
 
-    private function getResetPasswordToken(int $id):? Token
+    /**
+     * @param int $id
+     * @return Token|null
+     */
+    private function getResetPasswordToken(int $id): ?Token
     {
         $repository = $this->doctrine->getManager()->getRepository(Token::class);
         return $repository->findOneBy([
@@ -195,14 +271,22 @@ class UserManager
         ]);
     }
 
-    private function removeResetPasswordTokenFromDatabase(Token $token)
+    /**
+     * @param Token $token
+     */
+    private function removeResetPasswordTokenFromDatabase(Token $token): void
     {
         $manager = $this->doctrine->getManager();
         $manager->remove($token);
         $manager->flush();
     }
 
-    public function editUser(User $user,  \Symfony\Component\Form\Form $form, string $originalPass)
+    /**
+     * @param User $user
+     * @param \Symfony\Component\Form\Form $form
+     * @param string $originalPass
+     */
+    public function editUser(User $user,  \Symfony\Component\Form\Form $form, string $originalPass): void
     {
         $manager = $this->doctrine->getManager();
         $plainPassword = $form->get('plainPassword')->getData();
@@ -217,7 +301,10 @@ class UserManager
         $manager->flush();
     }
 
-    public function deleteUserById(int $id)
+    /**
+     * @param int $id
+     */
+    public function deleteUserById(int $id): void
     {
         $manager = $this->doctrine->getManager();
         $user = $this->getUserById($id);
@@ -231,7 +318,11 @@ class UserManager
         }
     }
 
-    public function updateSubscribe($subscribe, User $user)
+    /**
+     * @param $subscribe
+     * @param User $user
+     */
+    public function updateSubscribe($subscribe, User $user): void
     {
         $manager = $this->doctrine->getManager();
         $user->setIsSubscribe($subscribe);

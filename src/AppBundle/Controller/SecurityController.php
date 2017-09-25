@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Translation\TranslatorInterface as Translator;
 
@@ -19,8 +20,11 @@ class SecurityController extends Controller
 {
     /**
      * @Route("/auth/sign-in", name="sign_in")
+     *
+     * @param AuthenticationUtils $authUtils
+     * @return Response
      */
-    public function signInAction(AuthenticationUtils $authUtils)
+    public function signInAction(AuthenticationUtils $authUtils): Response
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('homepage');
@@ -35,8 +39,13 @@ class SecurityController extends Controller
 
     /**
      * @Route("/auth/sign-up", name="sign_up")
+     *
+     * @param Request $request
+     * @param UserManager $userManager
+     * @param Translator $translator
+     * @return Response
      */
-    public function signUpAction(Request $request, UserManager $userManager, Translator $translator)
+    public function signUpAction(Request $request, UserManager $userManager, Translator $translator): Response
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('homepage');
@@ -59,8 +68,13 @@ class SecurityController extends Controller
 
     /**
      * @Route("/auth/reset-password", name="reset_password")
+     *
+     * @param Request $request
+     * @param UserManager $userManager
+     * @param Translator $translator
+     * @return Response
      */
-    public function resetPasswordAction(Request $request, UserManager $userManager, Translator $translator)
+    public function resetPasswordAction(Request $request, UserManager $userManager, Translator $translator): Response
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('homepage');
@@ -68,7 +82,7 @@ class SecurityController extends Controller
         $user = new User();
         $form = $this->createForm(UserEmailType::class, $user, ['validation_groups' => 'checkEmail']);
         $form->handleRequest($request);
-        if ($this->isEmailCheckFormValid($form, $user, $userManager)) {
+        if ($this->isEmailCheckFormValid($form, $user, $userManager, $translator)) {
             $userManager->setResetPasswordTokenForUser($user);
             $title = $translator->trans('security.message.reset.title');
             return $this->renderMessage(
@@ -83,11 +97,18 @@ class SecurityController extends Controller
 
     /**
      * @Route("auth/new-password/{id}/{token}", name="new_password", requirements={"id": "\d+"})
+     *
+     * @param Request $request
+     * @param int $id
+     * @param string $token
+     * @param UserManager $userManager
+     * @param Translator $translator
+     * @return Response
      */
-    public function newPasswordAction(Request $request, int $id, string $token, UserManager $userManager, Translator $translator)
+    public function newPasswordAction(Request $request, int $id, string $token, UserManager $userManager, Translator $translator): Response
     {
         if ($userManager->isResetPasswordTokenValid($id, $token)) {
-            return $this->workWithNewPasswordForm($request, $id, $userManager);
+            return $this->workWithNewPasswordForm($request, $id, $userManager, $translator);
         } else {
             $title = $translator->trans('security.message.access.denied');
             return $this->renderMessage(
@@ -101,8 +122,14 @@ class SecurityController extends Controller
 
     /**
      * @Route("auth/activation/{id}/{token}", name="account_activation", requirements={"id": "\d+"})
+     *
+     * @param int $id
+     * @param string $token
+     * @param UserManager $userManager
+     * @param Translator $translator
+     * @return Response
      */
-    public function accountActivationAction(int $id, string $token, UserManager $userManager, Translator $translator)
+    public function accountActivationAction(int $id, string $token, UserManager $userManager, Translator $translator): Response
     {
         if ($userManager->isUserAccountActivationSucceed($id, $token)) {
             $title = $translator->trans('security.message.account.activation.success');
@@ -123,7 +150,14 @@ class SecurityController extends Controller
         }
     }
 
-    private function workWithNewPasswordForm(Request $request, int $tokenId, UserManager $userManager, Translator $translator)
+    /**
+     * @param Request $request
+     * @param int $tokenId
+     * @param UserManager $userManager
+     * @param Translator $translator
+     * @return Response
+     */
+    private function workWithNewPasswordForm(Request $request, int $tokenId, UserManager $userManager, Translator $translator): Response
     {
         $user = new User();
         $form = $this->createForm(NewPasswordType::class, $user, ['validation_groups' => 'passwordReset']);
@@ -141,6 +175,13 @@ class SecurityController extends Controller
         return $this->renderFormErrors($form, 'auth/new_password.html.twig');
     }
 
+    /**
+     * @param Form $form
+     * @param User $user
+     * @param UserManager $userManager
+     * @param Translator $translator
+     * @return bool
+     */
     private function isEmailCheckFormValid(Form $form, User $user, UserManager $userManager, Translator $translator): bool
     {
         if ($form->isSubmitted() && $form->isValid()) {
@@ -156,7 +197,14 @@ class SecurityController extends Controller
         }
     }
 
-    private function renderMessage(string $baseTemplate, array $params, string $messageTemplate, string $title)
+    /**
+     * @param string $baseTemplate
+     * @param array $params
+     * @param string $messageTemplate
+     * @param string $title
+     * @return Response
+     */
+    private function renderMessage(string $baseTemplate, array $params, string $messageTemplate, string $title): Response
     {
         return $this->render($baseTemplate, [
             'params' => $params,
@@ -165,7 +213,12 @@ class SecurityController extends Controller
         ]);
     }
 
-    private function renderFormErrors(Form $form, string $template)
+    /**
+     * @param Form $form
+     * @param string $template
+     * @return Response
+     */
+    private function renderFormErrors(Form $form, string $template): Response
     {
         return $this->render($template, [
             'form' => $form->createView(),

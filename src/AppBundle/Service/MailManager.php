@@ -4,7 +4,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Token;
 use AppBundle\Entity\User;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Templating\EngineInterface;
 
 class MailManager
@@ -18,6 +18,12 @@ class MailManager
     private $mailer;
     private $mailerUser;
 
+    /**
+     * MailManager constructor.
+     * @param string $mailerUser
+     * @param EngineInterface $twigEngine
+     * @param \Swift_Mailer $mailer
+     */
     public function __construct(string $mailerUser, EngineInterface $twigEngine, \Swift_Mailer $mailer)
     {
         $this->twigEngine = $twigEngine;
@@ -25,7 +31,11 @@ class MailManager
         $this->mailerUser = $mailerUser;
     }
 
-    public function sendActivationEmail(User $user, Token $activationToken)
+    /**
+     * @param User $user
+     * @param Token $activationToken
+     */
+    public function sendActivationEmail(User $user, Token $activationToken): void
     {
         $message = (new \Swift_Message(self::WELCOME_HEADER))
             ->setFrom($this->mailerUser)
@@ -37,7 +47,11 @@ class MailManager
         $this->mailer->send($message);
     }
 
-    public function sendResetPasswordEmail(User $user, Token $activationToken)
+    /**'
+     * @param User $user
+     * @param Token $activationToken
+     */
+    public function sendResetPasswordEmail(User $user, Token $activationToken): void
     {
         $message = (new \Swift_Message(self::RESET_PASSWORD_HEADER))
             ->setFrom($this->mailerUser)
@@ -49,21 +63,33 @@ class MailManager
         $this->mailer->send($message);
     }
 
-    private function renderActivationEmailBody(Token $token)
+    /**
+     * @param Token $token
+     * @return string
+     */
+    private function renderActivationEmailBody(Token $token): string
     {
         return $this->twigEngine->render('auth/activation_email.html.twig', [
             'token' => $token
         ]);
     }
 
-    private function renderResetPasswordEmailBody(Token $token)
+    /**
+     * @param Token $token
+     * @return string
+     */
+    private function renderResetPasswordEmailBody(Token $token): string
     {
         return $this->twigEngine->render('auth/reset_password_email.html.twig', [
             'token' => $token
         ]);
     }
 
-    public function sendSubscriptionEmail(User $user, string $mailBody)
+    /**
+     * @param User $user
+     * @param string $mailBody
+     */
+    public function sendSubscriptionEmail(User $user, string $mailBody): void
     {
         $message = (new \Swift_Message(self::SUBSCRIPTION_HEADER))
             ->setFrom($this->mailerUser)
@@ -75,7 +101,12 @@ class MailManager
         $this->mailer->send($message);
     }
 
-    public function generateSubscriptionMailBody(array $posts, string $type)
+    /**
+     * @param array $posts
+     * @param string $type
+     * @return string
+     */
+    public function generateSubscriptionMailBody(array $posts, string $type): string
     {
 
         return $this->twigEngine->render('subscription/mail.html.twig', [

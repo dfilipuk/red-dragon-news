@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service;
 
-use Symfony\Component\HttpFoundation\Session\Session;
+
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SessionManager
@@ -12,6 +12,10 @@ class SessionManager
 
     private $session;
 
+    /**
+     * SessionManager constructor.
+     * @param SessionInterface $session
+     */
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
@@ -20,31 +24,52 @@ class SessionManager
         }
     }
 
+    /**
+     * @return bool
+     */
     public function getIsAscending(): bool
     {
         return $this->getValue(self::IS_ASCENDING_KEY, false);
     }
 
+    /**
+     * @return bool
+     */
     public function getIsOrderByDate(): bool
     {
         return $this->getValue(self::IS_ORDER_BY_DATE_KEY, true);
     }
 
-    public function setIsAscending(bool $value)
+    /**
+     * @param bool $value
+     */
+    public function setIsAscending(bool $value): void
     {
         $this->setValue(self::IS_ASCENDING_KEY, $value);
     }
 
-    public function setIsOrderByDate(bool $value)
+    /**
+     * @param bool $value
+     */
+    public function setIsOrderByDate(bool $value): void
     {
         $this->setValue(self::IS_ORDER_BY_DATE_KEY, $value);
     }
 
-    private function setValue(string $keyName, bool $value)
+    /**
+     * @param string $keyName
+     * @param bool $value
+     */
+    private function setValue(string $keyName, bool $value): void
     {
         $this->session->set($keyName, $value);
     }
 
+    /**
+     * @param string $keyName
+     * @param bool $defaultValue
+     * @return bool
+     */
     private function getValue(string $keyName, bool $defaultValue): bool
     {
         if ($this->session->has($keyName)) {
