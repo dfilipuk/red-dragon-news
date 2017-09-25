@@ -1,8 +1,8 @@
 {% extends 'base_admin.html.twig' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}{{ 'admin.home.title'|trans }}{% endblock %}
 
-{% block admin_title %}Home{% endblock %}
+{% block admin_title %}{{ 'admin.home.title'|trans }}{% endblock %}
 
 
 {% block body %}
@@ -10,7 +10,7 @@
         <div class="mdl-grid admin-content">
             <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
                 <div  class="mdl-cell mdl-cell--6-col mdl-cell--3-offset">
-                    <h1 class="date font-52">Do not waste your time</h1>
+                    <h1 class="date font-52">{{ 'admin.clock.top.phrase'|trans }}</h1>
                     <div class="clock">
                         <div class="date" id="Date"></div>
                         <br>

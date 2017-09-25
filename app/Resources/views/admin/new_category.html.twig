@@ -1,8 +1,8 @@
 {% extends 'base_admin.html.twig' %}
 
-{% block title %}New category{% endblock %}
+{% block title %}{{ 'admin.category.new.title'|trans }}{% endblock %}
 
-{% block admin_title %}New category{% endblock %}
+{% block admin_title %}{{ 'admin.category.new.title'|trans }}{% endblock %}
 
 {% block body %}
     <main class="mdl-layout__content mdl-color--grey-100">
@@ -22,7 +22,7 @@
                                     'id': 'name'
                                 }})
                                 }}
-                                <label class="mdl-textfield__label " for="name">Category name</label>
+                                <label class="mdl-textfield__label " for="name">{{ 'admin.category.new.categoty.name.label'|trans }}</label>
                             </div>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                                 }})
                                 }}
                                 </div>
-                                <label class="mdl-textfield__label " for="parent-name">Parent category name</label>
+                                <label class="mdl-textfield__label " for="parent-name">{{ 'admin.category.new.parent.category.label'|trans }}</label>
                             </div>
                         </div>
                     </div>
@@ -58,14 +58,14 @@
                                     'id': 'root-category'
                                 }})
                                 }}
-                                <label class="mdl-checkbox__label" for="root-category">Root category</label>
+                                <label class="mdl-checkbox__label" for="root-category">{{ 'admin.category.new.root.category.label'|trans }}</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="mdl-card__actions row margin-escape">
                         <div class="col-sm-4 col-sm-offset-4">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20">Create category</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect col-sm-12 margin-bottom-20">{{ 'admin.category.new.create.label'|trans }}</button>
                         </div>
                     </div>
                     {{ form_end(form) }}
