@@ -21,6 +21,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface as Translator;
 
 class AdminController extends Controller
 {
@@ -142,13 +143,13 @@ class AdminController extends Controller
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/admin/categories/create", name="create-category")
      */
-    public function createCategoryAction(Request $request, CategoryManager $categoryManager)
+    public function createCategoryAction(Request $request, CategoryManager $categoryManager, Translator $translator)
     {
         $newCategory = new Category();
         $parentCategory = null;
         $form = $this->createForm(CategoryNewType::class, $newCategory);
         $form->handleRequest($request);
-        if ($this->validateNewCategoryForm($categoryManager, $form, $newCategory, $parentCategory)) {
+        if ($this->validateNewCategoryForm($categoryManager, $form, $newCategory, $parentCategory, $translator)) {
             $categoryManager->addCategory($newCategory, $parentCategory);
             return $this->redirectToRoute('categories_page');
         } else {
@@ -195,7 +196,7 @@ class AdminController extends Controller
     }
 
     private function validateNewCategoryForm(CategoryManager $categoryManager, Form $form, Category $newCategory,
-                                             ?Category &$parentCategory)
+                                             ?Category &$parentCategory, Translator $translator)
     {
         if (!($form->isSubmitted() && $form->isValid())) {
             return false;
@@ -205,11 +206,13 @@ class AdminController extends Controller
         }
         $parentCategory = $categoryManager->getCategoryByName($newCategory->getParentName());
         if ($parentCategory === null) {
-            $form->addError(new FormError('No such parent directory'));
+            $error = $translator->trans('admin.controller.error.validation.1');
+            $form->addError(new FormError($error));
             return false;
         }
         if ($parentCategory->isLeafOfTree()) {
-            $form->addError(new FormError('Specified parent category can\'t have children'));
+            $error = $translator->trans('admin.controller.error.validation.2');
+            $form->addError(new FormError($error));
             return false;
         } else {
             return true;
@@ -246,7 +249,7 @@ class AdminController extends Controller
     /**
      * @Route("/admin/articles/create", name="create-article")
      */
-    public function createArticleAction(Request $request, NewsManager $newsManager, CategoryManager $categoryManager)
+    public function createArticleAction(Request $request, NewsManager $newsManager, CategoryManager $categoryManager, Translator $translator)
     {
 
         $newArticle = new Article();
@@ -262,7 +265,8 @@ class AdminController extends Controller
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $category = $categoryManager->getCategoryByName($newArticle->getCategory());
             if ($category === null){
-                $form->addError(new FormError("Bad category"));
+                $error = $translator->trans('admin.controller.error.validation.3');
+                $form->addError(new FormError($error));
             } else{
                 $newsManager->createArticle($newArticle, $form, $user, $category, $savePath, $similars);
                 return $this->render('admin/articles.html.twig');
