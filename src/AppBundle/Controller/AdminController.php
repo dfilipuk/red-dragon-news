@@ -47,26 +47,25 @@ class AdminController extends Controller
         return $this->render('admin/users.html.twig');
     }
 
-     /**
-      *@Security("has_role('ROLE_ADMIN')")
-     * @Route("/admin/users/{id}/edit", name="edit-user", requirements={"id": "\d{0,9}"})
-     *
-     * @param int $id
-     * @param UserManager $userManager
-     * @param Request $request
-     * @return Response
-     */
+    /**
+     *@Security("has_role('ROLE_ADMIN')")
+    * @Route("/admin/users/{id}/edit", name="edit-user", requirements={"id": "\d{0,9}"})
+    *
+    * @param int $id
+    * @param UserManager $userManager
+    * @param Request $request
+    * @return Response
+    */
     public function editUserAction(int $id, UserManager $userManager, Request $request): Response
     {
         $user = $userManager->getUserById($id);
-        if ($user === null){
+        if ($user === null) {
             throw $this->createNotFoundException();
         }
         $originalPassword = $user->getPassword();
         $form = $this->createForm(UserEditType::class, $user, ['validation_groups' => 'editUser']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $userManager->editUser($user, $form, $originalPassword);
             return $this->render('admin/users.html.twig');
         }
@@ -145,7 +144,7 @@ class AdminController extends Controller
     public function editCategoryAction(int $id, CategoryManager $categoryManager, Request $request):Response
     {
         $category = $categoryManager->getCategoryById($id);
-        if ($category === null){
+        if ($category === null) {
             throw $this->createNotFoundException();
         }
         $form = $this->createForm(CategoryEditType::class, $category, ['validation_groups' => 'editCategory']);
@@ -255,9 +254,13 @@ class AdminController extends Controller
      * @param Translator $translator
      * @return bool
      */
-    private function validateNewCategoryForm(CategoryManager $categoryManager, Form $form, Category $newCategory,
-                                             ?Category &$parentCategory, Translator $translator): bool
-    {
+    private function validateNewCategoryForm(
+        CategoryManager $categoryManager,
+        Form $form,
+        Category $newCategory,
+                                             ?Category &$parentCategory,
+        Translator $translator
+    ): bool {
         if (!($form->isSubmitted() && $form->isValid())) {
             return false;
         }
@@ -324,27 +327,25 @@ class AdminController extends Controller
      */
     public function createArticleAction(Request $request, NewsManager $newsManager, CategoryManager $categoryManager, Translator $translator): Response
     {
-
         $newArticle = new Article();
         $form = $this->createForm(ArticleNewType::class, $newArticle);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $similar = $request->request->get('similarNews');
             $similars = explode(",", $similar);
-            if($similars[0] === ""){
+            if ($similars[0] === "") {
                 $similars = null;
             }
             $savePath = $this->getParameter('pictures_directory');
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $category = $categoryManager->getCategoryByName($newArticle->getCategory());
-            if ($category === null){
+            if ($category === null) {
                 $error = $translator->trans('admin.controller.error.validation.3');
                 $form->addError(new FormError($error));
-            } else{
+            } else {
                 $newsManager->createArticle($newArticle, $form, $user, $category, $savePath, $similars);
                 return $this->render('admin/articles.html.twig');
             }
-
         }
         return $this->render('admin/create_article.html.twig', [
             'form' => $form->createView(),
@@ -364,7 +365,7 @@ class AdminController extends Controller
     public function editArticleAction(int $id, Request $request, NewsManager $newsManager, CategoryManager $categoryManager): Response
     {
         $article = $newsManager->findNewsById($id);
-        if ($article === null){
+        if ($article === null) {
             throw $this->createNotFoundException();
         }
         $similars = $article->getSimilarArticles();
@@ -376,7 +377,7 @@ class AdminController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $similar = $request->request->get('similarNews');
             $similars = explode(",", $similar);
-            if($similars[0] === ""){
+            if ($similars[0] === "") {
                 $similars = null;
             }
             $savePath = $this->getParameter('pictures_directory');
@@ -419,7 +420,7 @@ class AdminController extends Controller
         $searchRequest = urldecode($request->query->get('term'));
         $searchedNews = $finder->find('*'.$searchRequest . '*');
         $responseArray = [];
-        foreach ($searchedNews as $searchedNewOne){
+        foreach ($searchedNews as $searchedNewOne) {
             array_push($responseArray, [$searchedNewOne->getId(), $searchedNewOne->getTitle()]);
         }
         $response = new Response(json_encode($responseArray));

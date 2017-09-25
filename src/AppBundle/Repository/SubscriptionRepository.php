@@ -48,5 +48,4 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
             ->setMaxResults($rowsPerRequest)
             ->getResult();
     }
-
 }

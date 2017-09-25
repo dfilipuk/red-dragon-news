@@ -108,13 +108,10 @@ class MailManager
      */
     public function generateSubscriptionMailBody(array $posts, string $type): string
     {
-
         return $this->twigEngine->render('subscription/mail.html.twig', [
             'posts' => $posts,
             'type' => $type,
             'host' => self::HOST_NAME
         ]);
     }
-
-
 }
