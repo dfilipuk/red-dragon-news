@@ -19,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
+use Symfony\Component\Translation\TranslatorInterface as Translator;
 
 class MainController extends Controller
 {
@@ -36,17 +37,18 @@ class MainController extends Controller
     /**
      * @Route("/main/", name="homepage")
      */
-    public function indexAction(Request $request, NewsManager $newsManager, SessionManager $sessionManager)
+    public function indexAction(Request $request, NewsManager $newsManager, SessionManager $sessionManager, Translator $translator)
     {
         $isAscending = $sessionManager->getIsAscending();
         $isOrderByDate = $sessionManager->getIsOrderByDate();
         $allNews = $newsManager->findAllNews($isOrderByDate, $isAscending);
         $generalCategories = $newsManager->findGeneralCategories();
         $newsOnPage = $this->paginateNews($request, $allNews);
+        $title = $translator->trans('main.base.title');
         return $this->render("main/index.html.twig", [
             'news' => $newsOnPage,
             'categories' => $generalCategories,
-            'title' => 'Red Dragon news',
+            'title' => $title,
             'isAscending' => $isAscending,
             'isOrderByDate' => $isOrderByDate
         ]);
@@ -137,7 +139,7 @@ class MainController extends Controller
     /**
      * @Route("/search", name="search")
      */
-    public function searchAction(Request $request, NewsManager $newsManager, SessionManager $sessionManager)
+    public function searchAction(Request $request, NewsManager $newsManager, SessionManager $sessionManager, Translator $translator)
     {
         $isAscending = $sessionManager->getIsAscending();
         $isOrderByDate = $sessionManager->getIsOrderByDate();
@@ -156,10 +158,11 @@ class MainController extends Controller
 
         $generalCategories = $newsManager->findGeneralCategories();
         $newsOnPage = $this->paginateNews($request, $searchedNews);
+        $title = $translator->trans('main.base.title');
         return $this->render("main/index.html.twig", [
             'news' => $newsOnPage,
             'categories' => $generalCategories,
-            'title' => 'Red Dragon news',
+            'title' => $title,
             'isAscending' => $isAscending,
             'isOrderByDate' => $isOrderByDate
         ]);

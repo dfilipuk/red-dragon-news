@@ -7,6 +7,8 @@ main.base.unsubscribe.button: Unsubscribe
 main.base.admin.panel.a: Admin panel
 main.base.all.categories.a: All categories
 main.base.search.something.label: Search something...
+main.base.sort.date.text: Date
+main.base.sort.views.count.text: Views count
 main.dialog.choose.type.label: Choose type
 main.dialog.select.daily: Daily
 main.dialog.select.weekly: Weekly
@@ -14,6 +16,7 @@ main.dialog.select.monthly: Monthly
 main.dialog.subscription.type.label: Subscription type
 main.dialog.button.close: Close
 main.dialog.button.subscribe: Subscribe!
+main.base.title: Red Dragon news
 
 # base_admin.html.twig
 admin.base.back.to.site.a: Back to the site
@@ -23,6 +26,9 @@ admin.base.add.category.a: Add category
 admin.base.show.categories: Show categories
 admin.base.add.article: Add article
 admin.base.show.articles: Show articles
+admin.controller.error.validation.1: No such parent directory
+admin.controller.error.validation.2: Specified parent category can't have children
+admin.controller.error.validation.3: Bad category
 
 #mail.html.twig
 mail.head.part.1: Hello, take your
@@ -130,3 +136,12 @@ auth.messages.registration.finish.second.string: Check your mail
 auth.messages.registration.finish.third.string: and follow instructions.
 auth.messages.reset.pass.continue.first.string: To reset your password check mail
 auth.messages.reset.pass.continue.second.string: and follow instructions
+
+# SecurityController
+security.message.signup.continue: Registration continue
+security.message.reset.title: Reset password continue
+security.message.access.denied: Access denied
+security.message.account.activation.success: Account activation success
+security.message.account.activation.fail: Account activation fail
+security.message.pass.change: Password changed
+security.message.no.account.with.this.email: No account with the same e-mail

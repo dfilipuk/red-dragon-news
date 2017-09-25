@@ -13,6 +13,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Translation\TranslatorInterface as Translator;
 
 class SecurityController extends Controller
 {
@@ -35,7 +36,7 @@ class SecurityController extends Controller
     /**
      * @Route("/auth/sign-up", name="sign_up")
      */
-    public function signUpAction(Request $request, UserManager $userManager)
+    public function signUpAction(Request $request, UserManager $userManager, Translator $translator)
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('homepage');
@@ -45,11 +46,12 @@ class SecurityController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $userManager->registerNewUser($user);
+            $title = $translator->trans('security.message.signup.continue');
             return $this->renderMessage(
                 'auth/message.twig',
                 ['email' => $user->getEmail()],
                 'auth/messages/registration_finished.html.twig',
-                'Registration continue'
+                $title
             );
         }
         return $this->renderFormErrors($form, 'auth/register.html.twig');
@@ -58,7 +60,7 @@ class SecurityController extends Controller
     /**
      * @Route("/auth/reset-password", name="reset_password")
      */
-    public function resetPasswordAction(Request $request, UserManager $userManager)
+    public function resetPasswordAction(Request $request, UserManager $userManager, Translator $translator)
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('homepage');
@@ -68,11 +70,12 @@ class SecurityController extends Controller
         $form->handleRequest($request);
         if ($this->isEmailCheckFormValid($form, $user, $userManager)) {
             $userManager->setResetPasswordTokenForUser($user);
+            $title = $translator->trans('security.message.reset.title');
             return $this->renderMessage(
                 'auth/message.twig',
                 ['email' => $user->getEmail()],
                 'auth/messages/reset_password_continue.html.twig',
-                'Reset password continue'
+                $title
             );
         }
         return $this->renderFormErrors($form, 'auth/email_check.html.twig');
@@ -81,16 +84,17 @@ class SecurityController extends Controller
     /**
      * @Route("auth/new-password/{id}/{token}", name="new_password", requirements={"id": "\d+"})
      */
-    public function newPasswordAction(Request $request, int $id, string $token, UserManager $userManager)
+    public function newPasswordAction(Request $request, int $id, string $token, UserManager $userManager, Translator $translator)
     {
         if ($userManager->isResetPasswordTokenValid($id, $token)) {
             return $this->workWithNewPasswordForm($request, $id, $userManager);
         } else {
+            $title = $translator->trans('security.message.access.denied');
             return $this->renderMessage(
                 'auth/message.twig',
                 [],
                 'auth/messages/password_changed.html.twig',
-                'Access denied'
+                $title
             );
         }
     }
@@ -98,49 +102,53 @@ class SecurityController extends Controller
     /**
      * @Route("auth/activation/{id}/{token}", name="account_activation", requirements={"id": "\d+"})
      */
-    public function accountActivationAction(int $id, string $token, UserManager $userManager)
+    public function accountActivationAction(int $id, string $token, UserManager $userManager, Translator $translator)
     {
         if ($userManager->isUserAccountActivationSucceed($id, $token)) {
+            $title = $translator->trans('security.message.account.activation.success');
             return $this->renderMessage(
                 'auth/message.twig',
                 [],
                 'auth/messages/activation_success.html.twig',
-                'Account activation success'
+                $title
             );
         } else {
+            $title = $translator->trans('security.message.account.activation.fail');
             return $this->renderMessage(
                 'auth/message.twig',
                 [],
                 'auth/messages/activation_fail.html.twig',
-                'Account activation fail'
+                $title
             );
         }
     }
 
-    private function workWithNewPasswordForm(Request $request, int $tokenId, UserManager $userManager)
+    private function workWithNewPasswordForm(Request $request, int $tokenId, UserManager $userManager, Translator $translator)
     {
         $user = new User();
         $form = $this->createForm(NewPasswordType::class, $user, ['validation_groups' => 'passwordReset']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $userManager->resetPasswordForUser($tokenId, $user);
+            $title = $translator->trans('security.message.pass.change');
             return $this->renderMessage(
                 'auth/message.twig',
                 [],
                 'auth/messages/password_changed.html.twig',
-                'Password changed'
+                $title
             );
         }
         return $this->renderFormErrors($form, 'auth/new_password.html.twig');
     }
 
-    private function isEmailCheckFormValid(Form $form, User $user, UserManager $userManager): bool
+    private function isEmailCheckFormValid(Form $form, User $user, UserManager $userManager, Translator $translator): bool
     {
         if ($form->isSubmitted() && $form->isValid()) {
             if ($userManager->isUserAlreadyExists($user)) {
                 return true;
             } else {
-                $form->addError(new FormError('No account with the same e-mail'));
+                $error = $translator->trans('security.message.no.account.with.this.email');
+                $form->addError(new FormError($error));
                 return false;
             }
         } else {
