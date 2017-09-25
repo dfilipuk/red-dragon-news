@@ -10,6 +10,10 @@ namespace AppBundle\Repository;
  */
 class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param string $type
+     * @return int
+     */
     public function getSubscribedUsersCount(string $type): int
     {
         return $this->getEntityManager()
@@ -21,7 +25,13 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getSubscribedUsers(string $type, int $offset, int $rowsPerRequest): array
+    /**
+     * @param string $type
+     * @param int $offset
+     * @param int $rowsPerRequest
+     * @return array|null
+     */
+    public function getSubscribedUsers(string $type, int $offset, int $rowsPerRequest): ?array
     {
         return $this->getEntityManager()
             ->createQuery(

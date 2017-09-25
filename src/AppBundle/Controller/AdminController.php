@@ -12,7 +12,6 @@ use AppBundle\Service\AjaxDataManager;
 use AppBundle\Service\AjaxRequestManager;
 use AppBundle\Service\CategoryManager;
 use AppBundle\Service\NewsManager;
-use AppBundle\Service\SessionManager;
 use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -30,16 +29,20 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/", name="admin-home")
+     *
+     * @return Response
      */
-    public function indexAction()
+    public function indexAction(): Response
     {
         return $this->render('admin/home.html.twig');
     }
 
     /**
      * @Route("/admin/users", name="users_page")
+     *
+     * @return Response
      */
-    public function usersPageAction()
+    public function usersPageAction(): Response
     {
         return $this->render('admin/users.html.twig');
     }
@@ -47,8 +50,13 @@ class AdminController extends Controller
      /**
       *@Security("has_role('ROLE_ADMIN')")
      * @Route("/admin/users/{id}/edit", name="edit-user", requirements={"id": "\d{0,9}"})
+     *
+     * @param int $id
+     * @param UserManager $userManager
+     * @param Request $request
+     * @return Response
      */
-    public function editUserAction(int $id, UserManager $userManager, Request $request)
+    public function editUserAction(int $id, UserManager $userManager, Request $request): Response
     {
         $user = $userManager->getUserById($id);
         if ($user === null){
@@ -71,8 +79,13 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/users/{id}/delete", name="delete-user", requirements={"id": "\d{0,9}"})
+     *
+     * @param int $id
+     * @param UserManager $userManager
+     * @param Session $session
+     * @return Response
      */
-    public function deleteUserAction(int $id, UserManager $userManager, Session $session)
+    public function deleteUserAction(int $id, UserManager $userManager, Session $session): Response
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $adminId = $user->getId();
@@ -87,8 +100,13 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/ajax/users", name="ajax_users")
+     *
+     * @param Request $request
+     * @param AjaxRequestManager $ajaxRequestManager
+     * @param AjaxDataManager $dataManager
+     * @return JsonResponse
      */
-    public function usersAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
+    public function usersAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager): JsonResponse
     {
         if ($ajaxRequestManager->parseRequestParams($request)) {
             $result = [
@@ -107,8 +125,10 @@ class AdminController extends Controller
     /**
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/admin/categories", name="categories_page")
+     *
+     * @return Response
      */
-    public function categoriesPageAction()
+    public function categoriesPageAction(): Response
     {
         return $this->render('admin/categories.html.twig');
     }
@@ -116,8 +136,13 @@ class AdminController extends Controller
     /**
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/admin/categories/{id}/edit", name="edit-category", requirements={"id": "\d{0,9}"})
+     *
+     * @param int $id
+     * @param CategoryManager $categoryManager
+     * @param Request $request
+     * @return Response
      */
-    public function editCategoryAction(int $id, CategoryManager $categoryManager, Request $request)
+    public function editCategoryAction(int $id, CategoryManager $categoryManager, Request $request):Response
     {
         $category = $categoryManager->getCategoryById($id);
         if ($category === null){
@@ -140,8 +165,12 @@ class AdminController extends Controller
     /**
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/admin/categories/{id}/delete", name="delete-category", requirements={"id": "\d{0,9}"})
+     *
+     * @param int $id
+     * @param CategoryManager $categoryManager
+     * @return Response
      */
-    public function deleteCategoryAction(int $id, CategoryManager $categoryManager)
+    public function deleteCategoryAction(int $id, CategoryManager $categoryManager): Response
     {
         $categoryManager->deleteCategoryById($id);
         return $this->redirectToRoute('categories_page');
@@ -150,8 +179,13 @@ class AdminController extends Controller
     /**
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/admin/categories/create", name="create-category")
+     *
+     * @param Request $request
+     * @param CategoryManager $categoryManager
+     * @param Translator $translator
+     * @return Response
      */
-    public function createCategoryAction(Request $request, CategoryManager $categoryManager, Translator $translator)
+    public function createCategoryAction(Request $request, CategoryManager $categoryManager, Translator $translator): Response
     {
         $newCategory = new Category();
         $parentCategory = null;
@@ -170,8 +204,13 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/ajax/similar-categories/{level}", name="ajax_similar_categories")
+     *
+     * @param Request $request
+     * @param CategoryManager $categoryManager
+     * @param int $level
+     * @return Response
      */
-    public function similarCategoriesAction(Request $request, CategoryManager $categoryManager, int $level)
+    public function similarCategoriesAction(Request $request, CategoryManager $categoryManager, int $level): Response
     {
         $similar = $request->request->get('similar');
         $categories = [];
@@ -186,8 +225,13 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/ajax/categories", name="ajax_categories")
+     *
+     * @param Request $request
+     * @param AjaxRequestManager $ajaxRequestManager
+     * @param AjaxDataManager $dataManager
+     * @return JsonResponse
      */
-    public function categoriesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
+    public function categoriesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager): JsonResponse
     {
         if ($ajaxRequestManager->parseRequestParams($request)) {
             $result = [
@@ -203,8 +247,16 @@ class AdminController extends Controller
         return new JsonResponse($result);
     }
 
+    /**
+     * @param CategoryManager $categoryManager
+     * @param Form $form
+     * @param Category $newCategory
+     * @param Category|null $parentCategory
+     * @param Translator $translator
+     * @return bool
+     */
     private function validateNewCategoryForm(CategoryManager $categoryManager, Form $form, Category $newCategory,
-                                             ?Category &$parentCategory, Translator $translator)
+                                             ?Category &$parentCategory, Translator $translator): bool
     {
         if (!($form->isSubmitted() && $form->isValid())) {
             return false;
@@ -229,16 +281,23 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/articles", name="articles_page")
+     *
+     * @return Response
      */
-    public function articlesPageAction()
+    public function articlesPageAction(): Response
     {
         return $this->render('admin/articles.html.twig');
     }
 
     /**
      * @Route("/admin/ajax/articles", name="ajax_articles")
+     *
+     * @param Request $request
+     * @param AjaxRequestManager $ajaxRequestManager
+     * @param AjaxDataManager $dataManager
+     * @return JsonResponse
      */
-    public function articlesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager)
+    public function articlesAction(Request $request, AjaxRequestManager $ajaxRequestManager, AjaxDataManager $dataManager): JsonResponse
     {
         if ($ajaxRequestManager->parseRequestParams($request)) {
             $result = [
@@ -256,8 +315,14 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/articles/create", name="create-article")
+     *
+     * @param Request $request
+     * @param NewsManager $newsManager
+     * @param CategoryManager $categoryManager
+     * @param Translator $translator
+     * @return Response
      */
-    public function createArticleAction(Request $request, NewsManager $newsManager, CategoryManager $categoryManager, Translator $translator)
+    public function createArticleAction(Request $request, NewsManager $newsManager, CategoryManager $categoryManager, Translator $translator): Response
     {
 
         $newArticle = new Article();
@@ -289,8 +354,14 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/articles/{id}/edit", name="edit-article", requirements={"id": "\d{0,9}"})
+     *
+     * @param int $id
+     * @param Request $request
+     * @param NewsManager $newsManager
+     * @param CategoryManager $categoryManager
+     * @return Response
      */
-    public function editArticleAction(int $id, Request $request, NewsManager $newsManager, CategoryManager $categoryManager)
+    public function editArticleAction(int $id, Request $request, NewsManager $newsManager, CategoryManager $categoryManager): Response
     {
         $article = $newsManager->findNewsById($id);
         if ($article === null){
@@ -323,8 +394,12 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/articles/{id}/delete", name="delete-article", requirements={"id": "\d{0,9}"})
+     *
+     * @param int $id
+     * @param NewsManager $newsManager
+     * @return Response
      */
-    public function deleteArticleAction(int $id, NewsManager $newsManager)
+    public function deleteArticleAction(int $id, NewsManager $newsManager): Response
     {
         $savePath = $this->getParameter('pictures_directory');
         $newsManager->deleteArticleById($id, $savePath);
@@ -334,8 +409,11 @@ class AdminController extends Controller
 
     /**
      * @Route("/admin/ajax/search", name="ajax_search")
+     *
+     * @param Request $request
+     * @return Response
      */
-    public function seacrhAction(Request $request)
+    public function seacrhAction(Request $request): Response
     {
         $finder = $this->container->get('fos_elastica.finder.search.posts');
         $searchRequest = urldecode($request->query->get('term'));
