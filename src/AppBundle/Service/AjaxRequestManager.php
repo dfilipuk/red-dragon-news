@@ -16,6 +16,9 @@ class AjaxRequestManager
     private $filters;
     private $pagesAmo;
 
+    /**
+     * AjaxRequestManager constructor.
+     */
     public function __construct()
     {
         $this->page = 0;
@@ -27,6 +30,10 @@ class AjaxRequestManager
         $this->pagesAmo = 0;
     }
 
+    /**
+     * @param Request $request
+     * @return bool
+     */
     public function parseRequestParams(Request $request): bool
     {
         if (!$request->request->has('rowsamo')) {
@@ -56,6 +63,9 @@ class AjaxRequestManager
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function getFilters(): array
     {
         if ($this->filters === null) {
@@ -64,31 +74,49 @@ class AjaxRequestManager
         return $this->filters;
     }
 
+    /**
+     * @return bool
+     */
     public function isAscendingSort(): bool
     {
         return $this->isAscendingSort;
     }
 
+    /**
+     * @return int
+     */
     public function getPage(): int
     {
         return $this->page;
     }
 
+    /**
+     * @return int
+     */
     public function getRowsPerPage(): int
     {
         return $this->rowsPerPage;
     }
 
+    /**
+     * @return string
+     */
     public function getSortColumn(): string
     {
         return $this->sortColumn;
     }
 
+    /**
+     * @return int
+     */
     public function getPagesAmo(): int
     {
         return $this->pagesAmo;
     }
 
+    /**
+     * @param int $pagesAmo
+     */
     public function setPagesAmo(int $pagesAmo)
     {
         $this->pagesAmo = $pagesAmo;

@@ -19,11 +19,19 @@ class NewsManager
     private const TREE_ROOT = 0;
     private $doctrine;
 
+    /**
+     * NewsManager constructor.
+     * @param ManagerRegistry $doctrine
+     */
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }
 
+    /**
+     * @param array $categories
+     * @return array
+     */
     private function categoriesToArray(array $categories): array
     {
         $categoryArray = [];
@@ -42,6 +50,11 @@ class NewsManager
         return $categoryArray;
     }
 
+    /**
+     * @param array $items
+     * @param int $root
+     * @return array
+     */
     private function makeCategoriesTree(array $items, int $root = self::TREE_ROOT): array
     {
         $tree = [];
@@ -57,6 +70,10 @@ class NewsManager
         return $tree;
     }
 
+    /**
+     * @param array $categoryAndChildrensTree
+     * @param array $categoriesID
+     */
     private function getCategoriesAndChildrensID(array $categoryAndChildrensTree, array &$categoriesID): void
     {
         if(!is_null($categoryAndChildrensTree) && count($categoryAndChildrensTree) > 0) {
@@ -67,6 +84,10 @@ class NewsManager
         }
     }
 
+    /**
+     * @param array $categories
+     * @return array
+     */
     private function transformToTree(array $categories): array
     {
         $transformedArray = $this->categoriesToArray($categories);
@@ -74,6 +95,9 @@ class NewsManager
 
     }
 
+    /**
+     * @return array
+     */
     public function getSortedCategories(): array
     {
         $categories = $this->findAllCategories();
@@ -83,6 +107,11 @@ class NewsManager
         return $categories;
     }
 
+    /**
+     * @param bool $isOrderByDate
+     * @param bool $isAscending
+     * @return array
+     */
     public function findAllNews(bool $isOrderByDate, bool $isAscending): array
     {
         return $this->doctrine->getManager()
@@ -90,16 +119,26 @@ class NewsManager
             ->findAllNewsWithSorting($isOrderByDate, $isAscending);
     }
 
+    /**
+     * @return array
+     */
     public function findAllCategories(): array
     {
         return $this->doctrine->getManager()->getRepository(Category::class)->findAll();
     }
 
+    /**
+     * @return array
+     */
     public function findGeneralCategories(): array
     {
         return $this->doctrine->getManager()->getRepository(Category::class)->findGeneralCategories();
     }
 
+    /**
+     * @param string $category
+     * @return array|null
+     */
     public function getCategoryAndChildrenID(string $category): ?array
     {
         $categories = $this->findAllCategories();
@@ -116,6 +155,12 @@ class NewsManager
         return $categoryWithChildrensID;
     }
 
+    /**
+     * @param string $category
+     * @param bool $isOrderByDate
+     * @param bool $isAscending
+     * @return array|null
+     */
     public function findNewsByCategory(string $category, bool $isOrderByDate, bool $isAscending): ?array
     {
         $categoriesID = $this->getCategoryAndChildrenID($category);
@@ -128,12 +173,19 @@ class NewsManager
         return $result;
     }
 
+    /**
+     * @param int $id
+     * @return Article|null
+     */
     public function findNewsById(int $id): ?Article
     {
         $result = $this->doctrine->getManager()->getRepository(Article::class)->findNewsById($id);
         return array_key_exists(0, $result) ? $result[0] : null;
     }
 
+    /**
+     * @param int $id
+     */
     public function updateWatchCount(int $id): void
     {
         $article = $this->findNewsById($id);
@@ -143,6 +195,10 @@ class NewsManager
         $manager->flush();
     }
 
+    /**
+     * @param array $similars
+     * @return array
+     */
     private function getSimilarNewsById(array $similars): array
     {
         $similars = array_unique($similars);
@@ -152,7 +208,16 @@ class NewsManager
 
     }
 
-    public function createArticle(Article $article,  \Symfony\Component\Form\Form $form,User $user, Category $category, string $savePath, ?array $similars)
+
+    /**
+     * @param Article $article
+     * @param \Symfony\Component\Form\Form $form
+     * @param User $user
+     * @param Category $category
+     * @param string $savePath
+     * @param array|null $similars
+     */
+    public function createArticle(Article $article,  \Symfony\Component\Form\Form $form,User $user, Category $category, string $savePath, ?array $similars): void
     {
         $manager = $this->doctrine->getManager();
         $file = $article->getPicture();
@@ -186,7 +251,15 @@ class NewsManager
     }
 
 
-    public function editArticle(Article $article,  \Symfony\Component\Form\Form $form, Category $category, string $savePath, ?string $oldPicture, ?array $similars)
+    /**
+     * @param Article $article
+     * @param \Symfony\Component\Form\Form $form
+     * @param Category $category
+     * @param string $savePath
+     * @param null|string $oldPicture
+     * @param array|null $similars
+     */
+    public function editArticle(Article $article,  \Symfony\Component\Form\Form $form, Category $category, string $savePath, ?string $oldPicture, ?array $similars): void
     {
         $manager = $this->doctrine->getManager();
         $file = $article->getPicture();
@@ -222,7 +295,11 @@ class NewsManager
         $manager->flush();
     }
 
-    public function deleteArticleById(int $id, string $savePath)
+    /**
+     * @param int $id
+     * @param string $savePath
+     */
+    public function deleteArticleById(int $id, string $savePath): void
     {
         $manager = $this->doctrine->getManager();
         $article = $this->findNewsById($id);

@@ -16,11 +16,20 @@ class AjaxDataManager
 
     private $doctrine;
 
+
+    /**
+     * AjaxDataManager constructor.
+     * @param ManagerRegistry $doctrine
+     */
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }
 
+    /**
+     * @param AjaxRequestManager $ajaxRequestManager
+     * @return array
+     */
     public function getUsersList(AjaxRequestManager $ajaxRequestManager): array
     {
         $repository = $this->doctrine->getManager()->getRepository(User::class);
@@ -41,6 +50,10 @@ class AjaxDataManager
         return $this->convertUserObjectsToArray($users);
     }
 
+    /**
+     * @param AjaxRequestManager $ajaxRequestManager
+     * @return array
+     */
     public function getCategoriesList(AjaxRequestManager $ajaxRequestManager): array
     {
         $repository = $this->doctrine->getManager()->getRepository(Category::class);
@@ -61,6 +74,10 @@ class AjaxDataManager
         return $this->convertCategoriesObjectsToArray($categories);
     }
 
+    /**
+     * @param AjaxRequestManager $ajaxRequestManager
+     * @return array
+     */
     public function getArticlesList(AjaxRequestManager $ajaxRequestManager): array
     {
         $repository = $this->doctrine->getManager()->getRepository(Article::class);
@@ -83,6 +100,10 @@ class AjaxDataManager
         return $this->convertArticlesObjectsToArray($articles);
     }
 
+    /**
+     * @param array $filters
+     * @return array
+     */
     private function prepareFiltersForUserEntity(array $filters): array
     {
         $result = [];
@@ -125,6 +146,10 @@ class AjaxDataManager
         return $result;
     }
 
+    /**
+     * @param array $filters
+     * @return array
+     */
     private function prepareFiltersForArticleEntity(array $filters): array
     {
         $result = [];
@@ -173,6 +198,10 @@ class AjaxDataManager
         return $result;
     }
 
+    /**
+     * @param string $sortColumn
+     * @return string
+     */
     private function prepareArticleSortColumn(string $sortColumn): string
     {
         $result = 'a.'.$sortColumn;
@@ -183,6 +212,10 @@ class AjaxDataManager
         return $result;
     }
 
+    /**
+     * @param array $users
+     * @return array
+     */
     private function convertUserObjectsToArray(array $users): array
     {
         $result = [];
@@ -203,6 +236,10 @@ class AjaxDataManager
         return $result;
     }
 
+    /**
+     * @param array $articles
+     * @return array
+     */
     private function convertArticlesObjectsToArray(array $articles): array
     {
         $result = [];
@@ -229,6 +266,10 @@ class AjaxDataManager
         return $result;
     }
 
+    /**
+     * @param array $catefories
+     * @return array
+     */
     private function convertCategoriesObjectsToArray(array $catefories): array
     {
         $result = [];
@@ -241,11 +282,20 @@ class AjaxDataManager
         return $result;
     }
 
+    /**
+     * @param AjaxRequestManager $ajaxRequestManager
+     * @return int
+     */
     private function getPageOffset(AjaxRequestManager $ajaxRequestManager): int
     {
         return ($ajaxRequestManager->getPage() - 1) * $ajaxRequestManager->getRowsPerPage();
     }
 
+    /**
+     * @param AjaxRequestManager $ajaxRequestManager
+     * @param int $itemsAmount
+     * @return int
+     */
     private function getPagesAmount(AjaxRequestManager $ajaxRequestManager, int $itemsAmount): int
     {
         if (($itemsAmount % $ajaxRequestManager->getRowsPerPage()) === 0) {

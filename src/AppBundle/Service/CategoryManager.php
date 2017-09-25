@@ -9,31 +9,49 @@ class CategoryManager
 {
     private $doctrine;
 
+    /**
+     * CategoryManager constructor.
+     * @param ManagerRegistry $doctrine
+     */
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }
 
-    public function getCategoryById(int $id):? Category
+    /**
+     * @param int $id
+     * @return Category|null
+     */
+    public function getCategoryById(int $id): ?Category
     {
         $result = $this->doctrine->getManager()->getRepository(Category::class)->findCategoryById($id);
         return array_key_exists(0, $result) ? $result[0] : null;
     }
 
-    public function getCategoryByName(string $name):? Category
+    /**
+     * @param string $name
+     * @return Category|null
+     */
+    public function getCategoryByName(string $name): ?Category
     {
         $repository = $this->doctrine->getManager()->getRepository(Category::class);
         return $repository->findOneBy(['name' => $name]);
     }
 
-    public function editCategory(Category $category)
+    /**
+     * @param Category $category
+     */
+    public function editCategory(Category $category): void
     {
         $manager = $this->doctrine->getManager();
         $manager->persist($category);
         $manager->flush();
     }
 
-    public function deleteCategoryById(int $id)
+    /**
+     * @param int $id
+     */
+    public function deleteCategoryById(int $id): void
     {
         $manager = $this->doctrine->getManager();
         $category = $this->getCategoryById($id);
@@ -43,7 +61,11 @@ class CategoryManager
         }
     }
 
-    public function addCategory(Category $newCategory, ?Category $parentCategory)
+    /**
+     * @param Category $newCategory
+     * @param Category|null $parentCategory
+     */
+    public function addCategory(Category $newCategory, ?Category $parentCategory): void
     {
         $repository = $this->doctrine->getManager();
         if ($parentCategory !== null) {
@@ -56,6 +78,11 @@ class CategoryManager
         $repository->flush();
     }
 
+    /**
+     * @param string $similar
+     * @param int $maxLevel
+     * @return array
+     */
     public function getSimilarCategoriesForAjax(string $similar, int $maxLevel): array
     {
         $repository = $this->doctrine->getRepository(Category::class);
@@ -63,6 +90,10 @@ class CategoryManager
         return $this->converteCategoryiesEntitiesToArray($categories);
     }
 
+    /**
+     * @param array $categories
+     * @return array
+     */
     private function converteCategoryiesEntitiesToArray(array $categories): array
     {
         $result = [];

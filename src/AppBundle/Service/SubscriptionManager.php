@@ -20,12 +20,21 @@ class SubscriptionManager
     private $doctrine;
     private $mailManager;
 
+    /**
+     * SubscriptionManager constructor.
+     * @param ManagerRegistry $doctrine
+     * @param MailManager $mailManager
+     */
     public function __construct(ManagerRegistry $doctrine, MailManager $mailManager)
     {
         $this->doctrine = $doctrine;
         $this->mailManager = $mailManager;
     }
 
+    /**
+     * @param string $type
+     * @return array|null
+     */
     private function getPosts(string $type): ?array
     {
         $manager = $this->doctrine->getManager();
@@ -53,7 +62,10 @@ class SubscriptionManager
     }
 
 
-    public function sendSubscriptionEmails(string $type)
+    /**
+     * @param string $type
+     */
+    public function sendSubscriptionEmails(string $type): void
     {
         $manager = $this->doctrine->getManager();
         $repository = $manager->getRepository(Subscription::class);
@@ -75,7 +87,11 @@ class SubscriptionManager
         }
     }
 
-    public function subscribeUser(User $user, ?string $type)
+    /**
+     * @param User $user
+     * @param null|string $type
+     */
+    public function subscribeUser(User $user, ?string $type): void
     {
         $manager = $this->doctrine->getManager();
         $repository = $manager->getRepository(Subscription::class);
