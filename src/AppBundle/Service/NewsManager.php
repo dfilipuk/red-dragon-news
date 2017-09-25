@@ -207,6 +207,10 @@ class NewsManager
         }
 
         if($similars !== null){
+            $key = array_search($article->getId(), $similars);
+            if ($key !== false) {
+                unset($similars[$key]);
+            }
             $article->setSimilarArticles($this->getSimilarNewsById($similars));
         } else{
             $article->setSimilarArticles([]);
