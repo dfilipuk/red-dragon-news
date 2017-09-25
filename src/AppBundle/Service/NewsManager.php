@@ -35,12 +35,12 @@ class NewsManager
     private function categoriesToArray(array $categories): array
     {
         $categoryArray = [];
-        foreach ($categories as $category){
+        foreach ($categories as $category) {
             $temp = [];
 
             $temp['id'] = $category->getId();
             $temp['name'] = $category->getName();
-            if ($category->getParent() === null){
+            if ($category->getParent() === null) {
                 $temp['parent_id'] = self::TREE_ROOT;
             } else {
                 $temp['parent_id'] = $category->getParent()->getId();
@@ -58,12 +58,12 @@ class NewsManager
     private function makeCategoriesTree(array $items, int $root = self::TREE_ROOT): array
     {
         $tree = [];
-        foreach($items as $item) {
-            if($item['parent_id'] == $root && $item['id'] != $item['parent_id']) {
+        foreach ($items as $item) {
+            if ($item['parent_id'] == $root && $item['id'] != $item['parent_id']) {
                 unset($items[$item['id']]);
                 $tree[$item['id']] = array(
                     $item['id'] => $item,
-                    'children' => $this->makeCategoriesTree($items, $item['id'] )
+                    'children' => $this->makeCategoriesTree($items, $item['id'])
                 );
             }
         }
@@ -76,9 +76,9 @@ class NewsManager
      */
     private function getCategoriesAndChildrensID(array $categoryAndChildrensTree, array &$categoriesID): void
     {
-        if(!is_null($categoryAndChildrensTree) && count($categoryAndChildrensTree) > 0) {
-            foreach($categoryAndChildrensTree as $key=>$node) {
-                array_push($categoriesID,$node[$key]['id']);
+        if (!is_null($categoryAndChildrensTree) && count($categoryAndChildrensTree) > 0) {
+            foreach ($categoryAndChildrensTree as $key=>$node) {
+                array_push($categoriesID, $node[$key]['id']);
                 $this->getCategoriesAndChildrensID($node['children'], $categoriesID);
             }
         }
@@ -92,7 +92,6 @@ class NewsManager
     {
         $transformedArray = $this->categoriesToArray($categories);
         return $this->makeCategoriesTree($transformedArray);
-
     }
 
     /**
@@ -145,7 +144,7 @@ class NewsManager
         $transformedArray = array_values($this->categoriesToArray($categories));
         $category = array_search($category, array_column($transformedArray, 'name'));
         $categoryWithChildrensID = [];
-        if ($category === false){
+        if ($category === false) {
             return $categoryWithChildrensID;
         }
         $categoryID = $transformedArray[$category]['id'];
@@ -165,7 +164,7 @@ class NewsManager
     {
         $categoriesID = $this->getCategoryAndChildrenID($category);
         $result = [];
-        if (array_key_exists(0, $categoriesID)){
+        if (array_key_exists(0, $categoriesID)) {
             $result = $this->doctrine->getManager()
                 ->getRepository(Article::class)
                 ->findNewsByCategoryWithSort($categoriesID, $isOrderByDate, $isAscending);
@@ -205,7 +204,6 @@ class NewsManager
         $manager = $this->doctrine->getManager();
         $repository = $manager->getRepository(Article::class);
         return $repository->getSimilarArticles($similars);
-
     }
 
 
@@ -217,7 +215,7 @@ class NewsManager
      * @param string $savePath
      * @param array|null $similars
      */
-    public function createArticle(Article $article,  \Symfony\Component\Form\Form $form,User $user, Category $category, string $savePath, ?array $similars): void
+    public function createArticle(Article $article, \Symfony\Component\Form\Form $form, User $user, Category $category, string $savePath, ?array $similars): void
     {
         $manager = $this->doctrine->getManager();
         $file = $article->getPicture();
@@ -226,7 +224,7 @@ class NewsManager
             $article->setText('');
         }
 
-        if ($file !== null){
+        if ($file !== null) {
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $file->move(
                 $savePath,
@@ -235,9 +233,9 @@ class NewsManager
             $article->setPicture($fileName);
         }
 
-        if($similars !== null){
+        if ($similars !== null) {
             $article->setSimilarArticles($this->getSimilarNewsById($similars));
-        } else{
+        } else {
             $article->setSimilarArticles([]);
         }
 
@@ -259,7 +257,7 @@ class NewsManager
      * @param null|string $oldPicture
      * @param array|null $similars
      */
-    public function editArticle(Article $article,  \Symfony\Component\Form\Form $form, Category $category, string $savePath, ?string $oldPicture, ?array $similars): void
+    public function editArticle(Article $article, \Symfony\Component\Form\Form $form, Category $category, string $savePath, ?string $oldPicture, ?array $similars): void
     {
         $manager = $this->doctrine->getManager();
         $file = $article->getPicture();
@@ -268,24 +266,24 @@ class NewsManager
             $article->setText('');
         }
 
-        if ($file !== null){
+        if ($file !== null) {
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $file->move(
                 $savePath,
                 $fileName
             );
             $article->setPicture($fileName);
-        } else{
+        } else {
             $article->setPicture($oldPicture);
         }
 
-        if($similars !== null){
+        if ($similars !== null) {
             $key = array_search($article->getId(), $similars);
             if ($key !== false) {
                 unset($similars[$key]);
             }
             $article->setSimilarArticles($this->getSimilarNewsById($similars));
-        } else{
+        } else {
             $article->setSimilarArticles([]);
         }
 
@@ -306,9 +304,9 @@ class NewsManager
         if ($article !== null) {
             $picturePath = $article->getPicture();
             $fs = new Filesystem();
-            if ($picturePath !== null){
+            if ($picturePath !== null) {
                 $path = $savePath.'/'.$picturePath;
-                if($fs->exists($path)){
+                if ($fs->exists($path)) {
                     $fs->remove($path);
                 }
             }

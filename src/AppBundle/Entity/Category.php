@@ -199,7 +199,8 @@ class Category
         $this->parentName = $parentName;
     }
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
         $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->isRootCategory = false;
@@ -225,4 +226,3 @@ class Category
         return $this->articles->count() !== 0;
     }
 }
-

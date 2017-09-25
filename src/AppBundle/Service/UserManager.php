@@ -286,15 +286,14 @@ class UserManager
      * @param \Symfony\Component\Form\Form $form
      * @param string $originalPass
      */
-    public function editUser(User $user,  \Symfony\Component\Form\Form $form, string $originalPass): void
+    public function editUser(User $user, \Symfony\Component\Form\Form $form, string $originalPass): void
     {
         $manager = $this->doctrine->getManager();
         $plainPassword = $form->get('plainPassword')->getData();
-        if (!empty($plainPassword))  {
+        if (!empty($plainPassword)) {
             $encodedPassword = $this->encoder->encodePassword($user, $plainPassword);
             $user->setPassword($encodedPassword);
-        }
-        else {
+        } else {
             $user->setPassword($originalPass);
         }
         $manager->persist($user);
@@ -310,7 +309,6 @@ class UserManager
         $user = $this->getUserById($id);
         $role = $user->getRole();
         if ($role === self::MANAGER_ROLE_NAME || $role === self::ADMIN_ROLE_NAME) {
-
         }
         if ($user !== null) {
             $manager->remove($user);
@@ -328,6 +326,5 @@ class UserManager
         $user->setIsSubscribe($subscribe);
         $manager->persist($user);
         $manager->flush();
-
     }
 }

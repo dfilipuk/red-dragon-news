@@ -241,7 +241,7 @@ class User implements AdvancedUserInterface, \Serializable
 
     public function unserialize($serialized)
     {
-        list (
+        list(
             $this->id,
             $this->email,
             $this->password,
@@ -270,4 +270,3 @@ class User implements AdvancedUserInterface, \Serializable
         $this->isSubscribe = $isSubscribe;
     }
 }
-

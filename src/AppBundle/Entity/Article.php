@@ -277,9 +277,9 @@ class Article
         $this->articlesWithThis = $articlesWithThis;
     }
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->articlesWithThis = new \Doctrine\Common\Collections\ArrayCollection();
         $this->similarArticles = new \Doctrine\Common\Collections\ArrayCollection();
     }
 }
-

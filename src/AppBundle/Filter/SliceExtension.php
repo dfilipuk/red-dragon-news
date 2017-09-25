@@ -8,7 +8,6 @@
 
 namespace AppBundle\Filter;
 
-
 class SliceExtension extends \Twig_Extension
 {
     public function getFilters()
@@ -20,9 +19,9 @@ class SliceExtension extends \Twig_Extension
 
     public function sliceFilter($text, int $sliceCount)
     {
-        if (strlen($text) < $sliceCount){
+        if (strlen($text) < $sliceCount) {
             $text = substr($text, 0, strlen($text));
-        } else{
+        } else {
             $text = substr($text, 0, $sliceCount);
             $text = rtrim($text, "!,.-");
             $text = substr($text, 0, strrpos($text, ' '));

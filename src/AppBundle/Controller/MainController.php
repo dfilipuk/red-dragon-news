@@ -78,7 +78,7 @@ class MainController extends Controller
         $isAscending = $sessionManager->getIsAscending();
         $isOrderByDate = $sessionManager->getIsOrderByDate();
         $generalCategories = $newsManager->findGeneralCategories();
-        if ($category === 'all-categories'){
+        if ($category === 'all-categories') {
             return $this->render("main/all_categories.html.twig", [
                 'categories' => $generalCategories,
                 'isAscending' => $isAscending,
@@ -111,13 +111,14 @@ class MainController extends Controller
         $generalCategories = $newsManager->findGeneralCategories();
         $oneNews = $newsManager->findNewsById($id);
         $author = $oneNews->getAuthor();
-        if ($author !== null){
+        if ($author !== null) {
             $author = $author->getEmail();
-        } else{
+        } else {
             $author = "Anonymous";
         }
-        if ($oneNews === null)
+        if ($oneNews === null) {
             return $this->redirectToRoute("homepage");
+        }
         return $this->render("main/news.html.twig", [
             'news' => $oneNews,
             'author' => $author,
@@ -164,9 +165,9 @@ class MainController extends Controller
     public function subscribeUserAction(Request $request, SubscriptionManager $subscriptionManager, UserManager $userManager): Response
     {
         $subscribe = $request->request->get('subscribe');
-        if ($subscribe){
+        if ($subscribe) {
             $type = $request->request->get('type');
-        } else{
+        } else {
             $type = null;
         }
 

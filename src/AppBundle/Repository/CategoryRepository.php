@@ -30,7 +30,7 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
      * @param int $maxLevel
      * @return array|null
      */
-    public function getSimilarCategories(string $similar,int $maxLevel): ?array
+    public function getSimilarCategories(string $similar, int $maxLevel): ?array
     {
         return $this->getEntityManager()
             ->createQuery(

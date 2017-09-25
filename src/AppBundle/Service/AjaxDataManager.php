@@ -140,7 +140,6 @@ class AjaxDataManager
                     0 => 'isActive',
                     1 => self::MAGIC_CONST
                 ];
-
             }
         }
         return $result;
@@ -205,10 +204,12 @@ class AjaxDataManager
     private function prepareArticleSortColumn(string $sortColumn): string
     {
         $result = 'a.'.$sortColumn;
-        if ($sortColumn == 'author')
+        if ($sortColumn == 'author') {
             $result = 'author.email';
-        if ($sortColumn == 'category')
+        }
+        if ($sortColumn == 'category') {
             $result = 'category.name';
+        }
         return $result;
     }
 
@@ -220,10 +221,9 @@ class AjaxDataManager
     {
         $result = [];
         for ($i = 0; $i < count($users); $i++) {
-            if ($users[$i]->getIsActive())
-            {
+            if ($users[$i]->getIsActive()) {
                 $isActive = self::ACTIVE_USER;
-            } else{
+            } else {
                 $isActive = self::DISABLED_USER;
             }
             $result[$i] = [
@@ -246,9 +246,9 @@ class AjaxDataManager
         $sliceCount = 100;
         for ($i = 0; $i < count($articles); $i++) {
             $title = $articles[$i]->getTitle();
-            if (strlen($title) < $sliceCount){
+            if (strlen($title) < $sliceCount) {
                 $title = substr($title, 0, strlen($title));
-            } else{
+            } else {
                 $title = substr($title, 0, $sliceCount);
                 $title = rtrim($title, "!,.-");
                 $title = substr($title, 0, strrpos($title, ' '));

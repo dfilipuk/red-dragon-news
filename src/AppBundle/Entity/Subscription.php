@@ -88,7 +88,4 @@ class Subscription
     {
         $this->userID = $userID;
     }
-
-
 }
-

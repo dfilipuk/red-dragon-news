@@ -2,7 +2,6 @@
 
 namespace AppBundle\Service;
 
-
 use Symfony\Component\HttpFoundation\Request;
 
 class AjaxRequestManager
@@ -69,7 +68,7 @@ class AjaxRequestManager
     public function getFilters(): array
     {
         if ($this->filters === null) {
-           return [];
+            return [];
         }
         return $this->filters;
     }

@@ -8,7 +8,6 @@
 
 namespace AppBundle\Service;
 
-
 use AppBundle\Entity\Article;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\User;
@@ -42,7 +41,7 @@ class SubscriptionManager
 
         $time = new \DateTime();
 
-        switch ($type){
+        switch ($type) {
             case 'daily':
                 $timeFrom = $time->modify('-1 day');
                 break;
@@ -58,7 +57,6 @@ class SubscriptionManager
         }
 
         return $repository->getArticlesAfterTime($timeFrom);
-
     }
 
 
@@ -73,12 +71,12 @@ class SubscriptionManager
         $posts = $this->getPosts($type);
 
         $sendIterationCount = ceil($usersCount / self::USERS_PER_ITERATION);
-        if ($posts !== null){
+        if ($posts !== null) {
             $mailBody = $this->mailManager->generateSubscriptionMailBody($posts, $type);
-            for ($i = 0; $i < $sendIterationCount; $i++){
+            for ($i = 0; $i < $sendIterationCount; $i++) {
                 $offset = $i * self::USERS_PER_ITERATION;
                 $notifyedUsers = $repository->getSubscribedUsers($type, $offset, self::USERS_PER_ITERATION);
-                foreach($notifyedUsers as $notifyedUser) {
+                foreach ($notifyedUsers as $notifyedUser) {
                     $this->mailManager->sendSubscriptionEmail($notifyedUser->getUserID(), $mailBody);
                     $manager->detach($notifyedUser);
                 }
@@ -95,11 +93,10 @@ class SubscriptionManager
     {
         $manager = $this->doctrine->getManager();
         $repository = $manager->getRepository(Subscription::class);
-        if ($type === null){
+        if ($type === null) {
             $subscription = $repository->findOneBy(['userID' => $user->getId()]);
             $manager->remove($subscription);
             $manager->flush();
-
         } else {
             $subscription = new Subscription();
             $subscription->setUserID($user);
@@ -108,6 +105,4 @@ class SubscriptionManager
             $manager->flush();
         }
     }
-
-
 }

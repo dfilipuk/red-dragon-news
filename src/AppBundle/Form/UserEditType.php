@@ -8,7 +8,6 @@
 
 namespace AppBundle\Form;
 
-
 use AppBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -24,7 +23,7 @@ class UserEditType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class)
-            ->add('role',ChoiceType::class, array(
+            ->add('role', ChoiceType::class, array(
                 'choices'  => array(
                     'user' => 'ROLE_USER',
                     'manager' => 'ROLE_MANAGER',

@@ -22,8 +22,7 @@ class StyleSelectorExtension extends \Twig_Extension
         if ($condition1 && $condition2) {
             return $style;
         } else {
-           return '';
+            return '';
         }
-
     }
 }
