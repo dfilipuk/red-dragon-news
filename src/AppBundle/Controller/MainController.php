@@ -89,10 +89,17 @@ class MainController extends Controller
         $isOrderByDate = $sessionManager->getIsOrderByDate();
         $generalCategories = $newsManager->findGeneralCategories();
         $oneNews = $newsManager->findNewsById($id);
+        $author = $oneNews->getAuthor();
+        if ($author !== null){
+            $author = $author->getEmail();
+        } else{
+            $author = "Anonymous";
+        }
         if ($oneNews === null)
             return $this->redirectToRoute("homepage");
         return $this->render("main/news.html.twig", [
             'news' => $oneNews,
+            'author' => $author,
             'categories' => $generalCategories,
             'isAscending' => $isAscending,
             'isOrderByDate' => $isOrderByDate

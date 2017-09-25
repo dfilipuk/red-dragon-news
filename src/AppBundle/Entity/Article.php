@@ -64,7 +64,7 @@ class Article
 
     /**
      * @ManyToOne(targetEntity="User")
-     * @JoinColumn(name="author_id", referencedColumnName="id")
+     * @JoinColumn(name="author_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     private $author;
 

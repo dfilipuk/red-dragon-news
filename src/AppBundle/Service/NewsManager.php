@@ -157,6 +157,10 @@ class NewsManager
         $manager = $this->doctrine->getManager();
         $file = $article->getPicture();
 
+        if ($article->getText() === null) {
+            $article->setText('');
+        }
+
         if ($file !== null){
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $file->move(
@@ -186,6 +190,10 @@ class NewsManager
     {
         $manager = $this->doctrine->getManager();
         $file = $article->getPicture();
+
+        if ($article->getText() === null) {
+            $article->setText('');
+        }
 
         if ($file !== null){
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();

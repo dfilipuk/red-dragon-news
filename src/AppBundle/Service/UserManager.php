@@ -221,6 +221,10 @@ class UserManager
     {
         $manager = $this->doctrine->getManager();
         $user = $this->getUserById($id);
+        $role = $user->getRole();
+        if ($role === self::MANAGER_ROLE_NAME || $role === self::ADMIN_ROLE_NAME) {
+
+        }
         if ($user !== null) {
             $manager->remove($user);
             $manager->flush();
