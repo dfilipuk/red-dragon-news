@@ -507,3 +507,12 @@ border-color: rgb(244,67,54);
   position: relative;
   padding-bottom: 90px;
 }
+
+.text-32{
+  font-size: 32px;
+}
+
+#categoryDiv{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
