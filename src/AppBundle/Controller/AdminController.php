@@ -12,6 +12,7 @@ use AppBundle\Service\AjaxDataManager;
 use AppBundle\Service\AjaxRequestManager;
 use AppBundle\Service\CategoryManager;
 use AppBundle\Service\NewsManager;
+use AppBundle\Service\SessionManager;
 use AppBundle\Service\UserManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\TranslatorInterface as Translator;
+use Symfony\Component\HttpFoundation\Session\SessionInterface as Session;
 
 class AdminController extends Controller
 {
@@ -70,10 +72,16 @@ class AdminController extends Controller
     /**
      * @Route("/admin/users/{id}/delete", name="delete-user", requirements={"id": "\d{0,9}"})
      */
-    public function deleteUserAction(int $id, UserManager $userManager)
+    public function deleteUserAction(int $id, UserManager $userManager, Session $session)
     {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $adminId = $user->getId();
         $userManager->deleteUserById($id);
-        return $this->render('admin/users.html.twig');
+        if ($adminId === $id) {
+            $this->get('security.token_storage')->setToken(null);
+            $session->invalidate(0);
+        }
+        return $this->redirectToRoute('users_page');
     }
 
 

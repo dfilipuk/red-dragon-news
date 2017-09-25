@@ -17,7 +17,7 @@
                     <img src="{{ asset('uploads/user_images/' ~ news.picture) }}" class="news-image">
                 {% endif %}
                 <div class="text-center margin-top-10">
-                    <p>{{ 'main.news.author.text'|trans }}: <b>{{ news.author.email }}</b>. {{ 'main.news.date.text'|trans }}: <b>{{ news.date|date }}</b>. {{ 'main.news.number.views.text'|trans }}: <b>{{ news.viewsCount }}</b></p>
+                    <p>{{ 'main.news.author.text'|trans }}: <b>{{ author }}</b>. {{ 'main.news.date.text'|trans }}: <b>{{ news.date|date("j F Y") }}</b>. {{ 'main.news.number.views.text'|trans }}: <b>{{ news.viewsCount }}</b></p>
                 </div>
 
                 <h3>{{ news.title }}</h3>
