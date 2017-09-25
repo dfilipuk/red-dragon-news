@@ -3,7 +3,19 @@
 {% block title %}
     {{ title }}
 {% endblock %}
-
+{% block sort %}
+    <div class="col-sm-2 col-sm-offset-1 margin-top-15">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <select id="sorting" name="sorting" onchange="onSelectChange()" class="mdl-textfield__input">
+                <option {{ 'selected'|styleSelector(isAscending, isOrderByDate) }}>{{ 'main.base.sort.date.text'|trans }} &uarr;</option>
+                <option {{ 'selected'|styleSelector(not isAscending, isOrderByDate) }}>{{ 'main.base.sort.date.text'|trans }} &darr;</option>
+                <option {{ 'selected'|styleSelector(isAscending, not isOrderByDate) }}>{{ 'main.base.sort.views.count.text'|trans }} &uarr;</option>
+                <option {{ 'selected'|styleSelector(not isAscending, not isOrderByDate) }}>{{ 'main.base.sort.views.count.text'|trans }} &darr;</option>
+            </select>
+            <label class="mdl-textfield__label" for="sorting">Sort by</label>
+        </div>
+    </div>
+{% endblock %}
 {% block body %}
 
 <div class="row">
@@ -60,4 +72,24 @@
 </div>
 
 {% endblock %}
-
+{% block javascript %}
+<script>
+    function onSelectChange() {
+        var ind = document.getElementById('sorting').options.selectedIndex;
+        switch (ind) {
+            case 0:
+                window.location.href = "{{ path('sorting-params', {'isAscending': 1, 'isOrderByDate': 1}) }}";
+                break;
+            case 1:
+                window.location.href = "{{ path('sorting-params', {'isAscending': 0, 'isOrderByDate':1}) }}";
+                break;
+            case 2:
+                window.location.href = "{{ path('sorting-params', {'isAscending': 1, 'isOrderByDate':0}) }}";
+                break;
+            case 3:
+                window.location.href = "{{ path('sorting-params', {'isAscending': 0, 'isOrderByDate':0}) }}";
+                break;
+        }
+    }
+</script>
+{% endblock %}
