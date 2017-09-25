@@ -9,7 +9,7 @@
             <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
             <div class="news-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
                 {% if news is null %}
-                    <h3 class="text-center first-color-text margin-top-70">Nothing found</h3>
+                    <h3 class="text-center first-color-text margin-top-70">{{ 'main.index.nothing.found'|trans }}</h3>
                 {% endif %}
                 {% if news.picture is null %}
                     <img src="{{ asset('public/img/no-photo.png') }}" class="news-image">
@@ -17,7 +17,7 @@
                     <img src="{{ asset('uploads/user_images/' ~ news.picture) }}" class="news-image">
                 {% endif %}
                 <div class="text-center margin-top-10">
-                    <p>Author: <b>{{ news.author.email }}</b>. Date: <b>{{ news.date|date }}</b>. Number of Views: <b>{{ news.viewsCount }}</b></p>
+                    <p>{{ 'main.news.author.text'|trans }}: <b>{{ news.author.email }}</b>. {{ 'main.news.date.text'|trans }}: <b>{{ news.date|date }}</b>. {{ 'main.news.number.views.text'|trans }}: <b>{{ news.viewsCount }}</b></p>
                 </div>
 
                 <h3>{{ news.title }}</h3>
@@ -25,7 +25,7 @@
                     {{ news.text|raw }}
                 </p>
                 {% if news.similarArticles|length != 0 %}
-                    <h5>Similar news:</h5>
+                    <h5>{{ 'main.news.similar.news'|trans }}:</h5>
                     <ul>
                         {% for one_news in news.similarArticles %}
                             <li><a href="{{ path('news-page', {'id': one_news.id}) }}">{{ one_news.title }}</a></li>

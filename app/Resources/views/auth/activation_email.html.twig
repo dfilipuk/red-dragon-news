@@ -1,10 +1,10 @@
 <html>
     <body>
-        <h3>{% trans %}Thank you for choosing Red Dragon News!{% endtrans %}</h3>
+        <h3>{{ 'auth.activation.email.header.text'|trans }}</h3>
         <p>
-            {% trans %}To activate your account{% endtrans %}
+            {{ 'auth.activation.email.main.text'|trans }}
             <a href="{{ url('account_activation', {'id': token.getId(), 'token': token.getToken()}) }}">
-                {% trans %}Click here{% endtrans %}
+                {{ 'auth.activation.email.a.text'|trans }}
             </a>
         </p>
     </body>
