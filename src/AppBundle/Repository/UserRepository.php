@@ -2,7 +2,7 @@
 
 namespace AppBundle\Repository;
 
-use Doctrine\Common\Collections\ArrayCollection;
+
 use Doctrine\ORM\Query;
 
 /**
@@ -13,6 +13,15 @@ use Doctrine\ORM\Query;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * @param string $sortField
+     * @param bool $isAscending
+     * @param array $filters
+     * @param int $offset
+     * @param int $itemsPerPage
+     * @return array
+     */
     public function getUsersList(string $sortField, bool $isAscending, array $filters, int $offset, int $itemsPerPage): array
     {
         $query = 'SELECT u FROM AppBundle:User u';
@@ -22,6 +31,12 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    /**
+     * @param string $sortField
+     * @param bool $isAscending
+     * @param array $filters
+     * @return int
+     */
     public function getUsersCount(string $sortField, bool $isAscending, array $filters): int
     {
         $query = 'SELECT COUNT(u) FROM AppBundle:User u';
@@ -29,6 +44,13 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * @param string $query
+     * @param string $sortField
+     * @param bool $isAscending
+     * @param array $filters
+     * @return Query
+     */
     private function getSortedAndFilteredUsers(string $query, string $sortField, bool $isAscending, array $filters): Query
     {
         $query .= $this->getDQLWithFilters($filters);
@@ -44,6 +66,10 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->setParameters($temp);
     }
 
+    /**
+     * @param array $filters
+     * @return string
+     */
     private function getDQLWithFilters(array $filters): string
     {
         $result = '';

@@ -12,7 +12,13 @@ use Doctrine\ORM\Query;
  */
 class ArticleRepository extends \Doctrine\ORM\  EntityRepository
 {
-    public function findNewsByCategoryWithSort(array $categoriesID, bool $isOrderByDate, bool $isAscending)
+    /**
+     * @param array $categoriesID
+     * @param bool $isOrderByDate
+     * @param bool $isAscending
+     * @return array|null
+     */
+    public function findNewsByCategoryWithSort(array $categoriesID, bool $isOrderByDate, bool $isAscending): ?array
     {
         return $this->getEntityManager()
             ->createQuery(
@@ -23,7 +29,12 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
             ->getResult();
     }
 
-    public function findAllNewsWithSorting(bool $isOrderByDate, bool $isAscending)
+    /**
+     * @param bool $isOrderByDate
+     * @param bool $isAscending
+     * @return array|null
+     */
+    public function findAllNewsWithSorting(bool $isOrderByDate, bool $isAscending): ?array
     {
         return $this->getEntityManager()
             ->createQuery(
@@ -33,7 +44,11 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
             ->getResult();
     }
 
-    public function findNewsById(int $id)
+    /**
+     * @param int $id
+     * @return array|null
+     */
+    public function findNewsById(int $id): ?array
     {
         return $this->getEntityManager()
             ->createQuery(
@@ -49,7 +64,15 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
             ->getResult();
     }
 
-    public function getArticlesList(string $sortField, bool $isAscending, array $filters, int $offset, int $itemsPerPage): array
+    /**
+     * @param string $sortField
+     * @param bool $isAscending
+     * @param array $filters
+     * @param int $offset
+     * @param int $itemsPerPage
+     * @return array|null
+     */
+    public function getArticlesList(string $sortField, bool $isAscending, array $filters, int $offset, int $itemsPerPage): ?array
     {
         $query = 'SELECT a, author, category FROM AppBundle:Article a
                     LEFT JOIN 
@@ -62,6 +85,12 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
             ->getResult();
     }
 
+    /**
+     * @param string $sortField
+     * @param bool $isAscending
+     * @param array $filters
+     * @return int
+     */
     public function getArticlesCount(string $sortField, bool $isAscending, array $filters): int
     {
         $query = 'SELECT COUNT(a) FROM AppBundle:Article a
@@ -73,6 +102,13 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * @param string $query
+     * @param string $sortField
+     * @param bool $isAscending
+     * @param array $filters
+     * @return Query
+     */
     private function getSortedAndFilteredArticles(string $query, string $sortField, bool $isAscending, array $filters): Query
     {
         $query .= $this->getDQLWithFilters($filters);
@@ -87,6 +123,10 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
             ->setParameters($temp);
     }
 
+    /**
+     * @param array $filters
+     * @return string
+     */
     private function getDQLWithFilters(array $filters): string
     {
         $result = '';
@@ -100,6 +140,10 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
         return $result;
     }
 
+    /**
+     * @param \DateTime $dateFrom
+     * @return array|null
+     */
     public function getArticlesAfterTime(\DateTime $dateFrom): ?array
     {
         return $this->getEntityManager()
@@ -110,6 +154,10 @@ class ArticleRepository extends \Doctrine\ORM\  EntityRepository
             ->getResult();
     }
 
+    /**
+     * @param array $similars
+     * @return array|null
+     */
     public function getSimilarArticles(array $similars): ?array
     {
         return $this->getEntityManager()

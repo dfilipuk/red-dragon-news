@@ -19,9 +19,14 @@ class MonthlyEmailCommand extends ContainerAwareCommand
     {
         $this
             ->setName('app:subscription:monthly')
-            ->setDescription('Send daily email');
+            ->setDescription('Send monthly email');
     }
-    protected function execute(InputInterface $input, OutputInterface $output)
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $manager = $this->getContainer()->get('subscription_manager');
         $manager->sendSubscriptionEmails('monthly');

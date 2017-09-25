@@ -12,7 +12,11 @@ use Doctrine\ORM\Query;
  */
 class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findGeneralCategories()
+
+    /**
+     * @return array|null
+     */
+    public function findGeneralCategories(): ?array
     {
         return $this->getEntityManager()
             ->createQuery(
@@ -21,7 +25,12 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getSimilarCategories(string $similar,int $maxLevel)
+    /**
+     * @param string $similar
+     * @param int $maxLevel
+     * @return array|null
+     */
+    public function getSimilarCategories(string $similar,int $maxLevel): ?array
     {
         return $this->getEntityManager()
             ->createQuery(
@@ -33,7 +42,15 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getCategoriesList(string $sortField, bool $isAscending, array $filters, int $offset, int $itemsPerPage): array
+    /**
+     * @param string $sortField
+     * @param bool $isAscending
+     * @param array $filters
+     * @param int $offset
+     * @param int $itemsPerPage
+     * @return array|null
+     */
+    public function getCategoriesList(string $sortField, bool $isAscending, array $filters, int $offset, int $itemsPerPage): ?array
     {
         $query = 'SELECT c FROM AppBundle:Category c';
         return $this->getSortedAndFilteredCategories($query, $sortField, $isAscending, $filters)
@@ -42,6 +59,12 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    /**
+     * @param string $sortField
+     * @param bool $isAscending
+     * @param array $filters
+     * @return int
+     */
     public function getCategoriesCount(string $sortField, bool $isAscending, array $filters): int
     {
         $query = 'SELECT COUNT(c) FROM AppBundle:Category c';
@@ -49,7 +72,11 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findCategoryById(int $id): array
+    /**
+     * @param int $id
+     * @return array|null
+     */
+    public function findCategoryById(int $id): ?array
     {
         return $this->getEntityManager()
             ->createQuery(
@@ -67,6 +94,13 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    /**
+     * @param string $query
+     * @param string $sortField
+     * @param bool $isAscending
+     * @param array $filters
+     * @return Query
+     */
     private function getSortedAndFilteredCategories(string $query, string $sortField, bool $isAscending, array $filters): Query
     {
         $query .= $this->getDQLWithFilters($filters);
@@ -82,6 +116,10 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
             ->setParameters($temp);
     }
 
+    /**
+     * @param array $filters
+     * @return string
+     */
     private function getDQLWithFilters(array $filters): string
     {
         $result = '';
