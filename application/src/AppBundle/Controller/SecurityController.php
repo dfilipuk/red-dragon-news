@@ -114,7 +114,7 @@ class SecurityController extends Controller
             return $this->renderMessage(
                 'auth/message.twig',
                 [],
-                'auth/messages/password_changed.html.twig',
+                'auth/messages/bad_reset_password_link.html.twig',
                 $title
             );
         }
