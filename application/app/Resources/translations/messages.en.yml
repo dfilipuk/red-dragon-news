@@ -137,6 +137,10 @@ auth.messages.registration.finish.third.string: and follow instructions.
 auth.messages.reset.pass.continue.first.string: To reset your password check mail
 auth.messages.reset.pass.continue.second.string: and follow instructions
 
+# exceptions
+exception.403.message: Access denied
+exception.404.message: Not found
+
 # SecurityController
 security.message.signup.continue: Registration continue
 security.message.reset.title: Reset password continue
