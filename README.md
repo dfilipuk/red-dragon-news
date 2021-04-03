@@ -1,6 +1,6 @@
 # Red Dragon News
 
-News portal in Syfony 3
+News portal in Symfony 3
 
 ## Build and run
 
