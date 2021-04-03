@@ -273,6 +273,7 @@ class NewsManager
                 $fileName
             );
             $article->setPicture($fileName);
+            $this->deletePicture($savePath, $oldPicture);
         } else {
             $article->setPicture($oldPicture);
         }
@@ -303,15 +304,24 @@ class NewsManager
         $article = $this->findNewsById($id);
         if ($article !== null) {
             $picturePath = $article->getPicture();
-            $fs = new Filesystem();
-            if ($picturePath !== null) {
-                $path = $savePath.'/'.$picturePath;
-                if ($fs->exists($path)) {
-                    $fs->remove($path);
-                }
-            }
+            $this->deletePicture($savePath, $picturePath);
             $manager->remove($article);
             $manager->flush();
+        }
+    }
+
+    /**
+     * @param string $savePath
+     * @param string $fileName
+     */
+    private function deletePicture(string $savePath, string $fileName): void
+    {
+        if ($fileName !== null) {
+            $fs = new Filesystem();
+            $path = $savePath . '/' . $fileName;
+            if ($fs->exists($path)) {
+                $fs->remove($path);
+            }
         }
     }
 }
