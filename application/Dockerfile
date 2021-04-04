@@ -15,5 +15,7 @@ RUN mv app/config/parameters.docker.yml app/config/parameters.yml
 RUN php composer.phar install
 RUN php bin/console ckeditor:install
 RUN php bin/console assets:install web
+RUN mkdir web/uploads
+RUN mkdir web/uploads/user_images
 
 ENTRYPOINT ["php", "bin/console", "server:run", "0.0.0.0:8000"]
