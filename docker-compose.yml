@@ -1,0 +1,49 @@
+  
+version: "3.9"
+services:
+  application:
+    image: red-dragon-news
+    container_name: rdn-application
+    build: ./application
+    volumes:
+      - ./application/app/Resources:/app/app/Resources
+      - ./application/src/AppBundle:/app/src/AppBundle
+      - ./application/web/public/css:/app/web/public/css
+      - ./application/web/public/js:/app/web/public/js
+    ports:
+      - 8000:8000
+    depends_on:
+      - mysql
+      - mailcatcher
+      - elasticsearch
+
+  mysql:
+    image: mysql
+    container_name: rdn-database
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_USER: rdn-app
+      MYSQL_PASSWORD: 12345
+      MYSQL_DATABASE: red-dragon-news
+      MYSQL_ROOT_PASSWORD: root
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
+    container_name: rdn-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    container_name: rdn-mail-inbox
+    ports:
+      - 8001:1080
+
+  adminer:
+    image: adminer
+    container_name: rdn-database-management
+    ports:
+      - 8002:8080
+    depends_on: 
+      - mysql

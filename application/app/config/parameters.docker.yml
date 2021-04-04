@@ -1,0 +1,19 @@
+parameters:
+    database_host: mysql
+    database_port: 3306
+    database_name: red-dragon-news
+    database_user: rdn-app
+    database_password: 12345
+
+    mailer_transport: smtp
+    mailer_port: 1025
+    mailer_host: mailcatcher
+    mailer_user: 'no-reply@red-dragon-news.com'
+    mailer_password: ~
+    mailer_auth: ~
+    mailer_enctype: ~
+
+    elasticsearch_host: elasticsearch
+    elasticsearch_port: 9200
+
+    secret: ThisTokenIsNotSoSecretChangeIt
