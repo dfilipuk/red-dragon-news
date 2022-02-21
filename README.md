@@ -9,7 +9,7 @@ News portal in Symfony 3
 - Create database schema:  `docker exec -it rdn-application php bin/console doctrine:schema:update --force`
 
 ### Data
-- Restore data from backup: `docker exec -i rdn-database mysql -urdn-app -p12345 < ./data/db-dump.sql`
+- Restore data from backup: `docker exec -i rdn-database mysql -urdn-app -p12345 -h 127.0.0.1 < ./data/db-dump.sql`
 - Create Elasticsearch index: `docker exec -it rdn-application php bin/console fos:elastica:populate`
 - Copy images: `docker cp ./data/img/. rdn-application:/app/web/uploads/user_images`
 
