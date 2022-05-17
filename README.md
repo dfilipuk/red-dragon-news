@@ -21,3 +21,16 @@ News portal in Symfony 3
 - Send daily news summary: `docker exec -it rdn-application php bin/console app:subscription:daily`
 - Send weekly news summary: `docker exec -it rdn-application php bin/console app:subscription:weekly`
 - Send monthly news summary: `docker exec -it rdn-application php bin/console app:subscription:monthly`
+
+## Demo
+
+![](./demo/01.png)
+![](./demo/02.png)
+![](./demo/03.png)
+![](./demo/04.png)
+![](./demo/05.png)
+![](./demo/06.png)
+![](./demo/07.png)
+![](./demo/08.png)
+![](./demo/09.png)
+![](./demo/10.png)
